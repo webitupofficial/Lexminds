@@ -1,0 +1,33 @@
+# LexMinds Robots.txt
+# https://lexminds.in
+
+User-agent: *
+Allow: /
+Allow: /articles
+Allow: /internships
+Allow: /publish
+Allow: /about
+Allow: /contact
+Allow: /editorial-policy
+Allow: /llms.txt
+Disallow: /admin
+Disallow: /api/
+Disallow: /_next/
+
+# AI Crawlers & LLM Indexing
+User-agent: GPTBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: ClaudeBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: PerplexityBot
+Allow: /
+Allow: /llms.txt
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://lexminds.in/sitemap.xml

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Core Pages -->
+  <url>
+    <loc>https://lexminds.in/</loc>
+    <lastmod>2026-09-01T00:00:00+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  
+  <url>
+    <loc>https://lexminds.in/internships</loc>
+    <lastmod>2026-09-01T00:00:00+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/articles</loc>
+    <lastmod>2026-09-01T00:00:00+05:30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/publish</loc>
+    <lastmod>2026-09-01T00:00:00+05:30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/about</loc>
+    <lastmod>2026-09-01T00:00:00+05:30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/editorial-policy</loc>
+    <lastmod>2026-09-01T00:00:00+05:30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/contact</loc>
+    <lastmod>2026-09-01T00:00:00+05:30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
+  <!-- Featured Articles -->
+  <url>
+    <loc>https://lexminds.in/articles/digital-personal-data-protection-act-2023-compliance-framework</loc>
+    <lastmod>2026-08-28T00:00:00+05:30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lexminds.in/articles/bharatiya-nyaya-sanhita-criminal-jurisprudence-transition</loc>
+    <lastmod>2026-08-24T00:00:00+05:30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/articles/generative-ai-copyright-infringement-fair-use-india</loc>
+    <lastmod>2026-08-20T00:00:00+05:30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/articles/cross-border-ma-antitrust-regulations-cci</loc>
+    <lastmod>2026-08-15T00:00:00+05:30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Featured Internships -->
+  <url>
+    <loc>https://lexminds.in/internships/corporate-ma-research-fellowship-shardul-amarchand</loc>
+    <lastmod>2026-08-30T00:00:00+05:30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/internships/supreme-court-litigation-clerkship-delhi</loc>
+    <lastmod>2026-08-29T00:00:00+05:30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/internships/tech-data-privacy-policy-analyst-trilegal</loc>
+    <lastmod>2026-08-27T00:00:00+05:30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <url>
+    <loc>https://lexminds.in/internships/ipr-patent-prosecution-associate-intern</loc>
+    <lastmod>2026-08-25T00:00:00+05:30</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+</urlset>

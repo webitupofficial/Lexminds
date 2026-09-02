@@ -1,0 +1,41 @@
+# LexMinds (`https://lexminds.in`)
+> Bridging Legal Education & Industry Practice
+
+## Overview
+LexMinds is India's premier legal ecosystem platform dedicated to connecting law students, young advocates, and legal researchers with verified industry internships, high-impact mentorship, and a peer-reviewed, double-blind legal article publishing journal.
+
+## Core Capabilities & Services
+
+### 1. Legal Internship Portal (`/internships`)
+- **Verified Listings**: Curated internships across Tier-1 law firms, Supreme Court & High Court senior advocate chambers, corporate legal departments, fintech startups, and think tanks.
+- **Practice Areas**:
+  - Corporate Mergers & Acquisitions (M&A) and Securities Law
+  - Constitutional & Appellate Litigation
+  - Intellectual Property Rights (IPR & Patent Litigation)
+  - Technology, Data Privacy & AI Governance
+  - Commercial Arbitration & Dispute Resolution
+  - Criminal Law & Criminal Jurisprudence (BNS / BNSS / BSA)
+- **Application Workflow**: Structured multi-step application with Statement of Purpose (SOP), academic credentials, verified resume submission, and seamless Razorpay processing fee checkout.
+
+### 2. Article Publishing & Legal Journal (`/articles` & `/publish`)
+- **Peer-Reviewed Journal**: Publishing authoritative research articles, case commentaries, legislative analyses, and policy briefs.
+- **Publish With Us**: Transparent manuscript submission system with anti-plagiarism verification (Turnitin < 10%), double-blind editorial review, and formal certificate of publication.
+- **Citation Standards**: Formatted to Indian legal citation standards, Bluebook (21st ed.), and OSCOLA.
+
+### 3. Editorial & Mentorship Network (`/about`)
+- Advisory board of Senior Advocates, Partners from leading law firms, and National Law University (NLU) faculty members.
+- Practical legal drafting workshops, moot court masterclasses, and career coaching.
+
+## Key URLs
+- Home: https://lexminds.in/
+- Internship Portal: https://lexminds.in/internships
+- Articles Archive: https://lexminds.in/articles
+- Publish With Us: https://lexminds.in/publish
+- Editorial Policy: https://lexminds.in/editorial-policy
+- About LexMinds: https://lexminds.in/about
+- Contact & Support: https://lexminds.in/contact
+
+## Contact & Grievance Redressal
+- Email: editorial@lexminds.in | internships@lexminds.in
+- Domain: lexminds.in
+- Headquarters: New Delhi, India

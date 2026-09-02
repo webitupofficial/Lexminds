@@ -1,0 +1,17 @@
+{
+  "name": "LexMinds | Bridging Legal Education & Industry Practice",
+  "short_name": "LexMinds",
+  "description": "Connecting law students to legal industry exposure through verified internships and a peer-reviewed article publishing platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#040814",
+  "theme_color": "#070f26",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
