@@ -11,13 +11,15 @@ import {
   Auth
 } from 'firebase/auth';
 
+const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'lex-minds';
+
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'demo-api-key',
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'lexminds-demo.firebaseapp.com',
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'lexminds-demo',
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || 'lexminds-demo.appspot.com',
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '1234567890',
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '1:1234567890:web:demo',
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '',
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || `${projectId}.firebaseapp.com`,
+  projectId: projectId,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || `${projectId}.appspot.com`,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '',
 };
 
 // Singleton Firebase App instance
@@ -44,21 +46,11 @@ export interface GoogleAuthResult {
  * Triggers native Google Sign-in popup via Firebase Auth
  */
 export async function signInWithGoogle(): Promise<GoogleAuthResult> {
-  // If no real API key is configured yet in .env.local, provide interactive test fallback for dev
-  if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY || process.env.NEXT_PUBLIC_FIREBASE_API_KEY === 'demo-api-key') {
-    console.warn('[Firebase Auth]: Operating in Dev Mock Mode because NEXT_PUBLIC_FIREBASE_API_KEY is not set.');
-    const mockUser = {
-      uid: 'demo_scholar_uid_101',
-      displayName: 'Adv. Manav Verma',
-      email: 'scholar.manav@lexminds.in',
-      emailVerified: true,
-      photoURL: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      getIdToken: async () => `mock_firebase_id_token_${Date.now()}`
-    } as unknown as User;
-
+  if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
     return {
-      user: mockUser,
-      idToken: await mockUser.getIdToken()
+      user: null,
+      idToken: null,
+      error: 'Firebase Web API Key is not configured. Please add NEXT_PUBLIC_FIREBASE_API_KEY in your environment.'
     };
   }
 
