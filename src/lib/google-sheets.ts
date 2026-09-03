@@ -113,21 +113,23 @@ export function resetTestStore(): void {
  * Initializes authenticated Google Sheets API client.
  * Returns null if credentials are not configured.
  */
+function formatPrivateKey(rawKey: string | undefined): string | null {
+  if (!rawKey || typeof rawKey !== 'string') return null;
+  let key = rawKey.trim();
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1).trim();
+  }
+  key = key.replace(/\\n/g, '\n').replace(/\r\n/g, '\n');
+  return key;
+}
+
 function getGoogleSheetsClient() {
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
   const clientEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  let privateKey = process.env.GOOGLE_PRIVATE_KEY;
+  const privateKey = formatPrivateKey(process.env.GOOGLE_PRIVATE_KEY);
 
   if (!spreadsheetId || !clientEmail || !privateKey) {
     return null;
-  }
-
-  if (privateKey.includes('\\n')) {
-    privateKey = privateKey.replace(/\\n/g, '\n');
-  }
-
-  if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
-    privateKey = privateKey.slice(1, -1);
   }
 
   const auth = new google.auth.JWT({

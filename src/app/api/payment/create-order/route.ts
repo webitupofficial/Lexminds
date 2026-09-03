@@ -50,8 +50,8 @@ export async function POST(req: Request) {
   } catch (err: any) {
     console.error('[Create Order API Error]:', err.message || err);
     return NextResponse.json(
-      { error: err.message || 'Internal server error while creating payment order.' },
-      { status: 500 }
+      { error: err.message || 'Error while creating payment order.' },
+      { status: 400 }
     );
   }
 }

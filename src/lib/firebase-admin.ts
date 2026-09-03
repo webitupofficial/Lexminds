@@ -12,6 +12,16 @@ export interface VerifiedAuthUser {
 /**
  * Initializes or retrieves singleton Firebase Admin SDK instance.
  */
+function formatPrivateKey(rawKey: string | undefined): string | null {
+  if (!rawKey || typeof rawKey !== 'string') return null;
+  let key = rawKey.trim();
+  if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
+    key = key.slice(1, -1).trim();
+  }
+  key = key.replace(/\\n/g, '\n').replace(/\r\n/g, '\n');
+  return key;
+}
+
 function getFirebaseAdminApp(): App | null {
   const existingApps = getApps();
   if (existingApps.length > 0) {
@@ -20,27 +30,24 @@ function getFirebaseAdminApp(): App | null {
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  const privateKey = formatPrivateKey(process.env.FIREBASE_PRIVATE_KEY);
 
   if (!projectId || !clientEmail || !privateKey) {
     return null;
   }
 
-  if (privateKey.includes('\\n')) {
-    privateKey = privateKey.replace(/\\n/g, '\n');
+  try {
+    return initializeApp({
+      credential: cert({
+        projectId,
+        clientEmail,
+        privateKey,
+      }),
+    });
+  } catch (err: any) {
+    console.error('[Firebase Admin Init Error]:', err.message || err);
+    return null;
   }
-
-  if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
-    privateKey = privateKey.slice(1, -1);
-  }
-
-  return initializeApp({
-    credential: cert({
-      projectId,
-      clientEmail,
-      privateKey,
-    }),
-  });
 }
 
 /**
