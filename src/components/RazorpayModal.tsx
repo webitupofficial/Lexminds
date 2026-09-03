@@ -74,7 +74,14 @@ export default function RazorpayModal({
         }),
       });
 
-      const orderData = await res.json();
+      const rawText = await res.text();
+      let orderData;
+      try {
+        orderData = JSON.parse(rawText);
+      } catch {
+        throw new Error(`Server returned an error (${res.status}). Details: ${rawText.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 160).trim()}`);
+      }
+
       if (!res.ok || !orderData.id) {
         throw new Error(orderData.error || 'Failed to initialize payment order.');
       }
@@ -115,7 +122,14 @@ export default function RazorpayModal({
               }),
             });
 
-            const verifyData = await verifyRes.json();
+            const verifyRaw = await verifyRes.text();
+            let verifyData;
+            try {
+              verifyData = JSON.parse(verifyRaw);
+            } catch {
+              throw new Error(`Verification server error (${verifyRes.status}): ${verifyRaw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').slice(0, 160).trim()}`);
+            }
+
             if (!verifyRes.ok || !verifyData.verified) {
               throw new Error(verifyData.error || 'Payment signature verification failed.');
             }
