@@ -1,53 +1,117 @@
 import { google } from 'googleapis';
 
-export type SheetTabName = 'Articles' | 'Internship-XYZ' | 'Contact-Us';
+export type SheetTabName =
+  | 'Applications'
+  | 'ArticleSubmissions'
+  | 'Payments'
+  | 'ContactTickets'
+  | 'Certificates';
 
 export const SHEET_TAB_HEADERS: Record<SheetTabName, string[]> = {
-  'Articles': [
-    'Timestamp',
-    'Submission ID',
-    'Verified Email',
-    'Author Name',
-    'Phone',
-    'Institution / University',
-    'Paper Title',
-    'Abstract',
-    'Theme / Track',
-    'Manuscript Drive / Document URL',
-    'Payment Status',
-    'Payment ID'
-  ],
-  'Internship-XYZ': [
-    'Timestamp',
+  Applications: [
     'Application ID',
+    'Firebase UID',
     'Verified Email',
     'Applicant Name',
     'Phone',
-    'College / Law School',
+    'Institution',
     'Year of Study',
-    'CGPA / Grade',
-    'LinkedIn Profile URL',
-    'Resume Drive URL',
-    'Statement of Purpose',
-    'Payment Status',
-    'Payment ID',
-    'Amount Paid (INR)'
+    'Academic Score',
+    'Internship Key',
+    'Status',
+    'Payment Record ID',
+    'Admin Notes',
+    'Created At',
+    'Updated At',
   ],
-  'Contact-Us': [
-    'Timestamp',
+  ArticleSubmissions: [
+    'Submission ID',
+    'Firebase UID',
+    'Verified Email',
+    'Author Name',
+    'Designation',
+    'Institution',
+    'Author Bio',
+    'Signature Line',
+    'Title',
+    'Category',
+    'Keywords',
+    'Abstract',
+    'Content / Doc URL',
+    'Originality Declaration',
+    'Consent to Publish',
+    'Payment Record ID',
+    'Status',
+    'Reviewer Notes',
+    'Plagiarism Notes',
+    'AI Review Notes',
+    'Publication URL',
+    'Created At',
+    'Reviewed At',
+    'Published At',
+    'Reviewer Email',
+  ],
+  Payments: [
+    'Payment Record ID',
+    'Product Key',
+    'Internal Reference',
+    'Firebase UID',
+    'Verified Email',
+    'Razorpay Order ID',
+    'Razorpay Payment ID',
+    'Amount (Paise)',
+    'Currency',
+    'Status',
+    'Linked Entity ID',
+    'Receipt',
+    'Created At',
+    'Verified At',
+    'Webhook At',
+    'Refund Status',
+    'Raw Payload Hash',
+  ],
+  ContactTickets: [
     'Ticket ID',
     'Verified Email',
-    'Full Name',
-    'Phone Number',
-    'Address / Institution',
-    'Category / Subject',
-    'Message / Query',
-    'Anti-Spam Security Check'
-  ]
+    'Name',
+    'Phone',
+    'Institution',
+    'Subject',
+    'Message',
+    'Status',
+    'Created At',
+  ],
+  Certificates: [
+    'Certificate ID',
+    'Linked Application ID',
+    'Student Name',
+    'Internship Title',
+    'Mentor',
+    'Completion Date',
+    'Verification URL',
+    'Issued Status',
+    'Issued At',
+  ],
 };
 
+// In-memory test store exclusively for isolated automated tests (APP_ENV === 'test')
+const testStore: Record<SheetTabName, string[][]> = {
+  Applications: [],
+  ArticleSubmissions: [],
+  Payments: [],
+  ContactTickets: [],
+  Certificates: [],
+};
+
+export function resetTestStore(): void {
+  for (const tab of Object.keys(testStore) as SheetTabName[]) {
+    testStore[tab] = [];
+  }
+}
+
 /**
- * Initializes authenticated Google Sheets API client
+ * Initializes authenticated Google Sheets API client.
+ * Returns null if credentials are not configured.
  */
 function getGoogleSheetsClient() {
   const spreadsheetId = process.env.GOOGLE_SHEET_ID;
@@ -58,12 +122,10 @@ function getGoogleSheetsClient() {
     return null;
   }
 
-  // Handle newline formatting in environment variables (e.g. from Vercel / .env files)
   if (privateKey.includes('\\n')) {
     privateKey = privateKey.replace(/\\n/g, '\n');
   }
 
-  // Clean surrounding quotes if passed with them
   if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
     privateKey = privateKey.slice(1, -1);
   }
@@ -79,42 +141,23 @@ function getGoogleSheetsClient() {
 }
 
 /**
- * Appends a row of verified data to a specific sheet tab.
- * Automatically checks and initializes the header row if the sheet is blank.
+ * Ensures tab header row is initialized in Google Sheets.
  */
-export async function appendToGoogleSheet(
-  tabName: SheetTabName,
-  rowValues: (string | number | boolean | null | undefined)[]
-): Promise<{ success: boolean; simulated?: boolean; message?: string }> {
+async function ensureHeadersInitialized(tabName: SheetTabName): Promise<void> {
   const client = getGoogleSheetsClient();
-
-  // If credentials are not set in .env.local, operate in safe Dev Simulation Mode
-  if (!client) {
-    console.warn(
-      `[Google Sheets Warning]: Credentials not configured in .env.local. Operating in Simulation Mode.\n` +
-      `Target Sheet: "${tabName}"\nPayload:`,
-      rowValues
-    );
-    return {
-      success: true,
-      simulated: true,
-      message: `Simulated append to "${tabName}". Set GOOGLE_SHEET_ID, GOOGLE_SERVICE_ACCOUNT_EMAIL, and GOOGLE_PRIVATE_KEY to push to live Google Sheets.`
-    };
-  }
+  if (!client) return;
 
   const { sheets, spreadsheetId } = client;
+  const rangeCheck = `${tabName}!A1:Z1`;
 
   try {
-    // 1. Check if headers exist in row 1 of the tab
-    const rangeCheck = `${tabName}!A1:Z1`;
-    const checkResponse = await sheets.spreadsheets.values.get({
+    const res = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: rangeCheck,
     });
 
-    const existingRows = checkResponse.data.values;
-    if (!existingRows || existingRows.length === 0 || existingRows[0].length === 0) {
-      // Sheet tab is empty -> append standard headers first
+    const rows = res.data.values;
+    if (!rows || rows.length === 0 || rows[0].length === 0) {
       const headers = SHEET_TAB_HEADERS[tabName];
       await sheets.spreadsheets.values.append({
         spreadsheetId,
@@ -122,30 +165,169 @@ export async function appendToGoogleSheet(
         valueInputOption: 'USER_ENTERED',
         insertDataOption: 'INSERT_ROWS',
         requestBody: {
-          values: [headers]
-        }
+          values: [headers],
+        },
       });
-      console.log(`[Google Sheets]: Initialized header row for tab "${tabName}".`);
     }
+  } catch (err: any) {
+    console.error(`[Google Sheets]: Header initialization failed for ${tabName}:`, err.message || err);
+  }
+}
 
-    // 2. Format row values (convert undefined/null to empty string)
-    const sanitizedRow = rowValues.map((val) => (val === undefined || val === null ? '' : String(val)));
+/**
+ * Appends a row to a tab.
+ * Fails closed in production if credentials are not configured.
+ */
+export async function appendToSheet(
+  tabName: SheetTabName,
+  rowValues: (string | number | boolean | null | undefined)[]
+): Promise<{ success: boolean }> {
+  const sanitizedRow = rowValues.map((v) => (v === undefined || v === null ? '' : String(v)));
 
-    // 3. Append the row
-    await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: `${tabName}!A1`,
-      valueInputOption: 'USER_ENTERED',
-      insertDataOption: 'INSERT_ROWS',
-      requestBody: {
-        values: [sanitizedRow]
-      }
-    });
-
-    console.log(`[Google Sheets]: Successfully appended row to "${tabName}".`);
+  if (process.env.APP_ENV === 'test') {
+    testStore[tabName].push(sanitizedRow);
     return { success: true };
-  } catch (error: any) {
-    console.error(`[Google Sheets Error] Failed appending to "${tabName}":`, error.message || error);
-    throw new Error(`Google Sheets API Error: ${error.message || 'Failed to append row'}`);
+  }
+
+  const client = getGoogleSheetsClient();
+  if (!client) {
+    throw new Error(`Google Sheets credentials missing. Cannot write to ${tabName}. Failing closed.`);
+  }
+
+  await ensureHeadersInitialized(tabName);
+
+  const { sheets, spreadsheetId } = client;
+  await sheets.spreadsheets.values.append({
+    spreadsheetId,
+    range: `${tabName}!A1`,
+    valueInputOption: 'USER_ENTERED',
+    insertDataOption: 'INSERT_ROWS',
+    requestBody: {
+      values: [sanitizedRow],
+    },
+  });
+
+  return { success: true };
+}
+
+/**
+ * Reads all rows from a tab (excluding header row).
+ */
+export async function getTabRows(tabName: SheetTabName): Promise<string[][]> {
+  if (process.env.APP_ENV === 'test') {
+    return [...testStore[tabName]];
+  }
+
+  const client = getGoogleSheetsClient();
+  if (!client) {
+    throw new Error(`Google Sheets credentials missing. Cannot read ${tabName}. Failing closed.`);
+  }
+
+  const { sheets, spreadsheetId } = client;
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId,
+    range: `${tabName}!A2:Z`,
+  });
+
+  return (res.data.values as string[][]) || [];
+}
+
+/**
+ * Finds a row by internal ID in a given column index (0-indexed).
+ */
+export async function findRowById(
+  tabName: SheetTabName,
+  idColumnIndex: number,
+  idValue: string
+): Promise<{ rowIndex: number; row: string[] } | null> {
+  if (!idValue) return null;
+
+  if (process.env.APP_ENV === 'test') {
+    const rows = testStore[tabName];
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i][idColumnIndex] === idValue) {
+        return { rowIndex: i + 2, row: rows[i] };
+      }
+    }
+    return null;
+  }
+
+  const client = getGoogleSheetsClient();
+  if (!client) {
+    throw new Error(`Google Sheets credentials missing. Cannot lookup row in ${tabName}. Failing closed.`);
+  }
+
+  const rows = await getTabRows(tabName);
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i][idColumnIndex] === idValue) {
+      // 1-indexed sheet row: row 1 is header, so row 2 is index 0
+      return { rowIndex: i + 2, row: rows[i] };
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Updates a row by internal ID.
+ */
+export async function updateRowById(
+  tabName: SheetTabName,
+  idColumnIndex: number,
+  idValue: string,
+  updatedValues: (string | number | boolean | null | undefined)[]
+): Promise<boolean> {
+  const sanitized = updatedValues.map((v) => (v === undefined || v === null ? '' : String(v)));
+
+  if (process.env.APP_ENV === 'test') {
+    const rows = testStore[tabName];
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i][idColumnIndex] === idValue) {
+        rows[i] = sanitized;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  const found = await findRowById(tabName, idColumnIndex, idValue);
+  if (!found) return false;
+
+  const client = getGoogleSheetsClient();
+  if (!client) {
+    throw new Error(`Google Sheets credentials missing. Cannot update ${tabName}. Failing closed.`);
+  }
+
+  const { sheets, spreadsheetId } = client;
+  const range = `${tabName}!A${found.rowIndex}:Z${found.rowIndex}`;
+
+  await sheets.spreadsheets.values.update({
+    spreadsheetId,
+    range,
+    valueInputOption: 'USER_ENTERED',
+    requestBody: {
+      values: [sanitized],
+    },
+  });
+
+  return true;
+}
+
+/**
+ * Idempotently upserts a row: updates if exists, otherwise appends.
+ */
+export async function upsertRowById(
+  tabName: SheetTabName,
+  idColumnIndex: number,
+  idValue: string,
+  rowValues: (string | number | boolean | null | undefined)[]
+): Promise<{ operation: 'inserted' | 'updated' }> {
+  const existing = await findRowById(tabName, idColumnIndex, idValue);
+  if (existing) {
+    await updateRowById(tabName, idColumnIndex, idValue, rowValues);
+    return { operation: 'updated' };
+  } else {
+    await appendToSheet(tabName, rowValues);
+    return { operation: 'inserted' };
   }
 }

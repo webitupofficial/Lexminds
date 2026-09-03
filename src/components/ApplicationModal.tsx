@@ -13,10 +13,13 @@ import {
   CreditCard,
   Building2,
   Sparkles,
-  Loader2
+  Loader2,
+  AlertCircle
 } from 'lucide-react';
 import { Internship } from '@/lib/types';
+import GoogleAuthGate from './GoogleAuthGate';
 import RazorpayModal from './RazorpayModal';
+import { User as FirebaseUser } from 'firebase/auth';
 
 interface ApplicationModalProps {
   internship: Internship;
@@ -29,40 +32,50 @@ export default function ApplicationModal({
   isOpen,
   onClose
 }: ApplicationModalProps) {
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     fullName: '',
-    email: '',
     phone: '',
     collegeName: '',
     yearOfStudy: '4th Year (5-Year B.A. LL.B)',
-    cgpa: '',
-    linkedinUrl: '',
-    resumeUrl: '',
+    academicScore: '',
     sop: '',
+    declaration: false,
   });
 
   const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [applicationId, setApplicationId] = useState('');
+  const [confirmedDocket, setConfirmedDocket] = useState('');
+  const [confirmedPaymentId, setConfirmedPaymentId] = useState('');
 
   if (!isOpen) return null;
 
+  // Deadline check
+  const isDeadlinePassed = new Date(internship.deadline) < new Date(new Date().toDateString());
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData(prev => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const validateStep1 = () => {
-    return formData.fullName.trim() !== '' && formData.email.trim() !== '' && formData.phone.trim() !== '';
+    return formData.fullName.trim() !== '' && formData.phone.trim().length >= 10;
   };
 
   const validateStep2 = () => {
-    return formData.collegeName.trim() !== '' && formData.cgpa.trim() !== '';
+    return formData.collegeName.trim() !== '' && formData.academicScore.trim() !== '';
   };
 
   const validateStep3 = () => {
-    return formData.resumeUrl.trim() !== '' && formData.sop.trim().length >= 30;
+    return formData.sop.trim().length >= 30 && formData.declaration;
   };
 
   const handleNext = () => {
@@ -70,38 +83,6 @@ export default function ApplicationModal({
     else if (step === 2 && validateStep2()) setStep(3);
     else if (step === 3 && validateStep3()) {
       setIsRazorpayOpen(true);
-    }
-  };
-
-  const handlePaymentSuccess = async (paymentId: string) => {
-    setIsRazorpayOpen(false);
-    setSubmitting(true);
-
-    try {
-      const res = await fetch('/api/applications', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          internshipId: internship.id,
-          internshipTitle: internship.title,
-          ...formData,
-          paymentStatus: 'submitted',
-          paymentId,
-          amountPaid: internship.applicationFee,
-        })
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setApplicationId(data.application.id);
-        setSubmitted(true);
-      }
-    } catch (err) {
-      console.error(err);
-      alert('Application saved with confirmed payment!');
-      setSubmitted(true);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -128,47 +109,70 @@ export default function ApplicationModal({
                 </p>
               </div>
             </div>
-            {!submitting && (
-              <button
-                onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-legal-800 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            )}
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-legal-800 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
-          {/* Stepper Progress Bar */}
-          {!submitted && (
-            <div className="px-6 pt-4 pb-2 bg-slate-50 dark:bg-legal-900/40 border-b border-slate-200 dark:border-legal-800 shrink-0">
-              <div className="flex items-center justify-between text-xs font-semibold">
-                <div className={`flex items-center space-x-1.5 ${step >= 1 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
-                  <span className="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">1</span>
-                  <span>Personal</span>
+          {/* Modal Body */}
+          <div className="p-6 overflow-y-auto space-y-6 flex-1">
+            {isDeadlinePassed ? (
+              <div className="p-6 text-center space-y-4">
+                <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto">
+                  <AlertCircle className="w-6 h-6" />
                 </div>
-                <div className="h-[1px] flex-1 mx-2 bg-slate-200 dark:bg-legal-800" />
-                <div className={`flex items-center space-x-1.5 ${step >= 2 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
-                  <span className="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">2</span>
-                  <span>Academics</span>
-                </div>
-                <div className="h-[1px] flex-1 mx-2 bg-slate-200 dark:bg-legal-800" />
-                <div className={`flex items-center space-x-1.5 ${step >= 3 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
-                  <span className="w-5 h-5 rounded-full border border-current flex items-center justify-center text-[10px]">3</span>
-                  <span>Resume &amp; SOP</span>
-                </div>
+                <h4 className="text-lg font-serif font-bold text-slate-900 dark:text-white">
+                  Applications Closed
+                </h4>
+                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+                  The application deadline for this research fellowship closed on {internship.deadline}. Please explore our other upcoming cohorts.
+                </p>
               </div>
-            </div>
-          )}
+            ) : !submitted ? (
+              <GoogleAuthGate
+                requireAuthBeforeRender={true}
+                title="Google Account Verification Required"
+                description="Sign in with your verified Google account. This links your official payment receipt to your enrollment record."
+                onAuthStateChange={(user, token) => {
+                  setCurrentUser(user);
+                  setAuthToken(token);
+                  if (user?.displayName && !formData.fullName) {
+                    setFormData(prev => ({ ...prev, fullName: user.displayName || '' }));
+                  }
+                }}
+              >
+                {/* Step Indicators */}
+                <div className="grid grid-cols-3 gap-2 border-b border-slate-200 dark:border-legal-800 pb-4 text-xs font-semibold">
+                  <div className={`flex items-center space-x-2 ${step >= 1 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-gold-500 text-slate-950 font-bold' : 'bg-slate-200 dark:bg-legal-800'}`}>1</span>
+                    <span>Applicant</span>
+                  </div>
+                  <div className={`flex items-center space-x-2 ${step >= 2 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-gold-500 text-slate-950 font-bold' : 'bg-slate-200 dark:bg-legal-800'}`}>2</span>
+                    <span>Academics</span>
+                  </div>
+                  <div className={`flex items-center space-x-2 ${step >= 3 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-gold-500 text-slate-950 font-bold' : 'bg-slate-200 dark:bg-legal-800'}`}>3</span>
+                    <span>Rationale &amp; Pay</span>
+                  </div>
+                </div>
 
-          {/* Modal Form Content */}
-          <div className="p-6 overflow-y-auto flex-1 space-y-4 text-sm">
-            {!submitted ? (
-              <>
+                {/* Step 1: Applicant Details */}
                 {step === 1 && (
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2 text-gold-700 dark:text-gold-400 text-xs font-bold uppercase tracking-wider">
-                      <User className="w-4 h-4" />
-                      <span>Step 1: Personal &amp; Contact Credentials</span>
+                  <div className="space-y-4 animate-fade-in">
+                    <div>
+                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                        Verified Google Account
+                      </label>
+                      <input
+                        type="text"
+                        disabled
+                        value={currentUser?.email || ''}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-500 text-xs font-mono cursor-not-allowed"
+                      />
                     </div>
 
                     <div>
@@ -180,251 +184,221 @@ export default function ApplicationModal({
                         name="fullName"
                         value={formData.fullName}
                         onChange={handleChange}
-                        placeholder="e.g. Adv. Priya Sen / Rahul Verma"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                        required
+                        placeholder="e.g. Adv. Rhea Chakraborty"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                       />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Email Address <span className="text-rose-500">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          placeholder="name@lawcollege.edu.in"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Mobile / WhatsApp Number <span className="text-rose-500">*</span>
-                        </label>
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleChange}
-                          placeholder="+91 98765 43210"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                          required
-                        />
-                      </div>
                     </div>
 
                     <div>
                       <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        LinkedIn Profile URL (Optional)
+                        Phone Number (WhatsApp for updates) <span className="text-rose-500">*</span>
                       </label>
                       <input
-                        type="url"
-                        name="linkedinUrl"
-                        value={formData.linkedinUrl}
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
                         onChange={handleChange}
-                        placeholder="https://linkedin.com/in/your-profile"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
+                        placeholder="+91 98300 12345"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                       />
                     </div>
                   </div>
                 )}
 
+                {/* Step 2: Academic Profile */}
                 {step === 2 && (
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2 text-gold-700 dark:text-gold-400 text-xs font-bold uppercase tracking-wider">
-                      <GraduationCap className="w-4 h-4" />
-                      <span>Step 2: Law School &amp; Academic Profile</span>
-                    </div>
-
+                  <div className="space-y-4 animate-fade-in">
                     <div>
                       <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Law College / University Name <span className="text-rose-500">*</span>
+                        Law College / University <span className="text-rose-500">*</span>
                       </label>
                       <input
                         type="text"
                         name="collegeName"
                         value={formData.collegeName}
                         onChange={handleChange}
-                        placeholder="e.g. NLSIU Bengaluru / NALSAR Hyderabad / Faculty of Law DU"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                        required
+                        placeholder="e.g. National Law University Odisha (NLUO)"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                       />
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Current Year of Study
+                          Current Year of Study <span className="text-rose-500">*</span>
                         </label>
                         <select
                           name="yearOfStudy"
                           value={formData.yearOfStudy}
                           onChange={handleChange}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                         >
-                          <option value="1st Year (5-Year / 3-Year)">1st Year Law</option>
-                          <option value="2nd Year (5-Year / 3-Year)">2nd Year Law</option>
-                          <option value="3rd Year (5-Year / 3-Year)">3rd Year Law</option>
-                          <option value="4th Year (5-Year B.A. LL.B)">4th Year (5-Year B.A. LL.B)</option>
-                          <option value="5th Year (Final Year)">5th Year (Final Year)</option>
-                          <option value="LL.M Candidate">LL.M Candidate</option>
-                          <option value="Recent Law Graduate">Recent Law Graduate</option>
+                          <option>1st Year (5-Year B.A. LL.B / B.B.A. LL.B)</option>
+                          <option>2nd Year (5-Year B.A. LL.B / B.B.A. LL.B)</option>
+                          <option>3rd Year (3-Year or 5-Year LL.B)</option>
+                          <option>4th Year (5-Year Integrated LL.B)</option>
+                          <option>5th Year (Final Year Scholar)</option>
+                          <option>LL.M / Postgraduate Scholar</option>
                         </select>
                       </div>
+
                       <div>
                         <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Current CGPA / Percentage <span className="text-rose-500">*</span>
+                          Academic Score / CGPA / Grade <span className="text-rose-500">*</span>
                         </label>
                         <input
                           type="text"
-                          name="cgpa"
-                          value={formData.cgpa}
+                          name="academicScore"
+                          value={formData.academicScore}
                           onChange={handleChange}
                           placeholder="e.g. 8.4 / 10.0 or 74%"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                          required
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                         />
                       </div>
                     </div>
                   </div>
                 )}
 
+                {/* Step 3: Rationale & Declaration */}
                 {step === 3 && (
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2 text-gold-700 dark:text-gold-400 text-xs font-bold uppercase tracking-wider">
-                      <FileText className="w-4 h-4" />
-                      <span>Step 3: Resume &amp; Statement of Purpose (SOP)</span>
-                    </div>
-
+                  <div className="space-y-4 animate-fade-in">
                     <div>
                       <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Resume Cloud Link (Google Drive / Dropbox) <span className="text-rose-500">*</span>
-                      </label>
-                      <input
-                        type="url"
-                        name="resumeUrl"
-                        value={formData.resumeUrl}
-                        onChange={handleChange}
-                        placeholder="https://drive.google.com/file/d/your-resume-link"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Statement of Purpose (Why are you applying for this role?) <span className="text-rose-500">*</span>
+                        Statement of Purpose &amp; Research Interest (Min 30 chars) <span className="text-rose-500">*</span>
                       </label>
                       <textarea
-                        rows={4}
                         name="sop"
+                        rows={4}
                         value={formData.sop}
                         onChange={handleChange}
-                        placeholder="Detail your relevant coursework, research publications, moot court achievements, and alignment with the chamber's practice area (minimum 30 characters)..."
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset resize-none"
-                        required
+                        placeholder="Detail your research focus, prior academic publications, or areas of jurisprudence you wish to specialize in during this fellowship..."
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                       />
+                      <p className="text-[10px] text-slate-400 text-right mt-0.5">
+                        {formData.sop.length}/30 characters minimum
+                      </p>
                     </div>
 
-                    <div className="p-3 bg-gold-50 dark:bg-gold-950/40 rounded-xl border border-gold-500/20 text-xs text-gold-800 dark:text-gold-300 flex items-start space-x-2">
-                      <CreditCard className="w-4 h-4 text-gold-600 dark:text-gold-400 shrink-0 mt-0.5" />
-                      <span>
-                        Final Step: Clicking &quot;Proceed to Razorpay Checkout&quot; will open the secure verification fee gateway (₹{internship.applicationFee}). Once paid, your application is submitted directly to the firm partner review queue.
-                      </span>
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-legal-900/60 border border-slate-200 dark:border-legal-800 space-y-2">
+                      <label className="flex items-start space-x-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          name="declaration"
+                          checked={formData.declaration}
+                          onChange={handleChange}
+                          className="mt-0.5 rounded border-slate-300 text-gold-500 focus:ring-gold-500"
+                        />
+                        <span className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+                          I confirm that all details provided are accurate. I understand that completion certificates are issued strictly upon verified completion of assigned research milestones, and this enrollment fee covers processing and editorial coordination.
+                        </span>
+                      </label>
                     </div>
                   </div>
                 )}
-              </>
-            ) : (
-              /* Success Screen */
-              <div className="text-center py-6 space-y-4">
-                <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 rounded-2xl border border-emerald-500/40 flex items-center justify-center mx-auto shadow-sm dark:shadow-glow-gold animate-pulse">
-                  <CheckCircle2 className="w-10 h-10" />
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-xl font-serif font-bold text-slate-900 dark:text-white">Application Successfully Submitted!</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Application Docket ID: <span className="font-mono text-gold-700 dark:text-gold-400 font-bold">{applicationId || 'APP-LEX-9921'}</span>
-                  </p>
-                </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed max-w-md mx-auto">
-                  Your application for <strong className="text-slate-900 dark:text-white">{internship.title}</strong> at <strong className="text-slate-900 dark:text-white">{internship.organization}</strong> has been transmitted. The hiring committee will review your SOP and resume within 3 business days.
-                </p>
-                <div className="pt-2">
+
+                {/* Navigation Buttons */}
+                <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-legal-800">
+                  {step > 1 ? (
+                    <button
+                      type="button"
+                      onClick={() => setStep(step - 1)}
+                      className="px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                      <span>Back</span>
+                    </button>
+                  ) : <div />}
+
                   <button
-                    onClick={onClose}
-                    className="px-6 py-2.5 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
+                    type="button"
+                    onClick={handleNext}
+                    disabled={
+                      (step === 1 && !validateStep1()) ||
+                      (step === 2 && !validateStep2()) ||
+                      (step === 3 && !validateStep3())
+                    }
+                    className="px-6 py-2.5 bg-slate-900 dark:bg-gold-500 hover:bg-slate-800 dark:hover:bg-gold-400 text-white dark:text-slate-950 text-xs font-bold uppercase tracking-wider rounded-xl transition-all disabled:opacity-50 flex items-center space-x-1.5 shadow-md"
                   >
-                    Done &amp; Return to Portal
+                    <span>{step === 3 ? `Pay ₹${internship.applicationFee} & Submit` : 'Continue'}</span>
+                    <ChevronRight className="w-4 h-4" />
                   </button>
                 </div>
+              </GoogleAuthGate>
+            ) : (
+              /* Success / Enrolled Screen */
+              <div className="text-center py-6 space-y-5">
+                <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 rounded-2xl border border-emerald-500/40 flex items-center justify-center mx-auto shadow-lg">
+                  <CheckCircle2 className="w-10 h-10" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <h3 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                    Fellowship Application Registered
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+                    Your application and payment have been verified. An editorial coordinator will review your statement of purpose and schedule the preliminary roundtable.
+                  </p>
+                </div>
+
+                <div className="bg-slate-50 dark:bg-legal-900/70 p-4 rounded-xl border border-slate-200 dark:border-legal-800 text-left space-y-2 text-xs max-w-md mx-auto">
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500 dark:text-slate-400">Application Docket:</span>
+                    <span className="font-mono font-bold text-gold-700 dark:text-gold-400">{confirmedDocket}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-slate-500 dark:text-slate-400">Transaction ID:</span>
+                    <span className="font-mono text-slate-800 dark:text-slate-200">{confirmedPaymentId}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-500 dark:text-slate-400">
+                    <span className="text-slate-500 dark:text-slate-400">Registered Email:</span>
+                    <span className="font-mono text-slate-800 dark:text-slate-200">{currentUser?.email}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-500 dark:text-slate-400">
+                    <span>Status:</span>
+                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold uppercase">Paid &amp; Under Review</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={onClose}
+                  className="px-8 py-3 bg-slate-900 dark:bg-gold-500 text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all"
+                >
+                  Close
+                </button>
               </div>
             )}
           </div>
 
-          {/* Footer Controls */}
-          {!submitted && (
-            <div className="bg-slate-100 dark:bg-legal-900/70 px-6 py-4 border-t border-slate-200 dark:border-legal-800 flex items-center justify-between shrink-0">
-              {step > 1 ? (
-                <button
-                  type="button"
-                  onClick={() => setStep(step - 1)}
-                  className="px-4 py-2 text-xs font-semibold uppercase text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white bg-white dark:bg-legal-850 hover:bg-slate-200 dark:hover:bg-legal-800 border border-slate-200 dark:border-legal-700 rounded-lg flex items-center space-x-1"
-                >
-                  <ChevronLeft className="w-4 h-4" />
-                  <span>Previous</span>
-                </button>
-              ) : <div />}
-
-              <button
-                type="button"
-                onClick={handleNext}
-                disabled={
-                  (step === 1 && !validateStep1()) ||
-                  (step === 2 && !validateStep2()) ||
-                  (step === 3 && !validateStep3()) ||
-                  submitting
-                }
-                className="px-5 py-2.5 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 hover:from-gold-300 hover:to-gold-500 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-sm dark:shadow-glow-gold disabled:opacity-40 flex items-center space-x-1.5"
-              >
-                {step < 3 ? (
-                  <>
-                    <span>Next Step</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" />
-                    <span>Pay ₹{internship.applicationFee} &amp; Submit</span>
-                  </>
-                )}
-              </button>
-            </div>
-          )}
-
         </div>
       </div>
 
-      {/* Razorpay Checkout Modal */}
-      {isRazorpayOpen && (
+      {/* Razorpay Modal */}
+      {isRazorpayOpen && authToken && (
         <RazorpayModal
           isOpen={isRazorpayOpen}
           onClose={() => setIsRazorpayOpen(false)}
           title={internship.title}
-          subtitle={`Internship Application Fee • ${internship.organization}`}
+          subtitle={`Fellowship Enrollment • ${internship.organization}`}
           amount={internship.applicationFee}
-          type="internship_fee"
+          productKey="internship_enrollment"
+          authToken={authToken}
           metadata={{
             applicantName: formData.fullName,
-            email: formData.email,
             phone: formData.phone,
-            targetTitle: internship.title,
+            institution: formData.collegeName,
+            yearOfStudy: formData.yearOfStudy,
+            academicScore: formData.academicScore,
+            sop: formData.sop,
+            internshipKey: internship.slug,
+            internshipId: internship.id,
+            internshipTitle: internship.title,
           }}
-          onSuccess={handlePaymentSuccess}
+          onSuccess={({ referenceId, paymentId }) => {
+            setConfirmedDocket(referenceId);
+            setConfirmedPaymentId(paymentId);
+            setIsRazorpayOpen(false);
+            setSubmitted(true);
+          }}
         />
       )}
     </>

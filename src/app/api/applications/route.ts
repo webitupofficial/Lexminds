@@ -1,63 +1,28 @@
 import { NextResponse } from 'next/server';
-import { dataStore } from '@/lib/data-store';
 
+/**
+ * Legacy Applications Endpoint.
+ * Disallowed to prevent unauthenticated data exposure or spoofed applications.
+ * Authorized admin access is routed through /api/admin/applications.
+ * Student enrollment is routed through /api/payment/create-order and /api/payment/verify.
+ */
 export async function GET() {
-  return NextResponse.json({
-    applications: dataStore.getApplications(),
-    internships: dataStore.getInternships()
-  });
+  return NextResponse.json(
+    { error: 'Unauthorized access. Application registry requires administrative authorization via /api/admin/applications.' },
+    { status: 403 }
+  );
 }
 
-export async function POST(req: Request) {
-  try {
-    const body = await req.json();
-
-    if (!body.internshipId || !body.fullName || !body.email) {
-      return NextResponse.json({ error: 'Missing required applicant fields' }, { status: 400 });
-    }
-
-    const newApp = {
-      id: `app-${Date.now()}`,
-      internshipId: body.internshipId,
-      internshipTitle: body.internshipTitle || 'Legal Internship',
-      fullName: body.fullName,
-      email: body.email,
-      phone: body.phone || '',
-      collegeName: body.collegeName || 'National Law University',
-      yearOfStudy: body.yearOfStudy || '4th Year',
-      cgpa: body.cgpa || '8.0/10',
-      linkedinUrl: body.linkedinUrl || '',
-      resumeUrl: body.resumeUrl || 'https://drive.google.com/sample-resume',
-      sop: body.sop || '',
-      paymentStatus: (body.paymentStatus || 'submitted') as any,
-      paymentId: body.paymentId || `pay_app_${Date.now()}`,
-      amountPaid: body.amountPaid || 299,
-      createdAt: new Date().toISOString()
-    };
-
-    dataStore.addApplication(newApp);
-    return NextResponse.json({ success: true, application: newApp });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+export async function POST() {
+  return NextResponse.json(
+    { error: 'Direct application submission rejected. Enrollment requires verified Razorpay checkout.' },
+    { status: 405 }
+  );
 }
 
-export async function PATCH(req: Request) {
-  try {
-    const body = await req.json();
-    const { applicationId, status } = body;
-
-    if (!applicationId || !status) {
-      return NextResponse.json({ error: 'Missing applicationId or status' }, { status: 400 });
-    }
-
-    const updated = dataStore.updateApplicationStatus(applicationId, status);
-    if (!updated) {
-      return NextResponse.json({ error: 'Application not found' }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, status, applications: dataStore.getApplications() });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
-  }
+export async function PATCH() {
+  return NextResponse.json(
+    { error: 'Unauthorized. Status updates must be authenticated via /api/admin/applications.' },
+    { status: 403 }
+  );
 }

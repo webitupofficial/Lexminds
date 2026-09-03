@@ -12,34 +12,40 @@ import {
   Sparkles, 
   CheckCircle2, 
   AlertCircle,
-  HelpCircle,
   Clock,
-  Award,
   ArrowRight,
-  GraduationCap
+  Lock,
+  Scale
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import GoogleAuthGate from '@/components/GoogleAuthGate';
 import RazorpayModal from '@/components/RazorpayModal';
+import { User as FirebaseUser } from 'firebase/auth';
 
 export default function PublishPage() {
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+
   const [formData, setFormData] = useState({
     authorName: '',
-    authorEmail: '',
-    authorPhone: '',
+    authorDesignation: 'Law Scholar',
     authorInstitution: '',
-    authorDesignation: 'Law Student / Researcher',
+    authorBio: '',
+    signatureLine: '',
     title: '',
     category: 'Data Privacy & Tech Law',
     abstract: '',
     content: '',
     keywords: '',
-    declaration: false,
+    originalityDeclaration: false,
+    aiReviewConsent: false,
+    consentToPublish: false,
   });
 
   const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [submissionId, setSubmissionId] = useState('');
+  const [confirmedDocket, setConfirmedDocket] = useState('');
+  const [confirmedPaymentId, setConfirmedPaymentId] = useState('');
 
   const categories = [
     'Data Privacy & Tech Law',
@@ -47,7 +53,7 @@ export default function PublishPage() {
     'Corporate & M&A',
     'Intellectual Property',
     'Arbitration & Banking',
-    'Environmental Jurisprudence'
+    'Environmental Jurisprudence',
   ];
 
   const handleChange = (
@@ -64,13 +70,17 @@ export default function PublishPage() {
 
   const isFormValid = () => {
     return (
+      Boolean(currentUser) &&
+      Boolean(authToken) &&
       formData.authorName.trim() !== '' &&
-      formData.authorEmail.trim() !== '' &&
       formData.authorInstitution.trim() !== '' &&
+      formData.signatureLine.trim() !== '' &&
       formData.title.trim() !== '' &&
       formData.abstract.trim().length >= 50 &&
-      formData.content.trim().length >= 100 &&
-      formData.declaration
+      formData.content.trim().length >= 80 &&
+      formData.originalityDeclaration &&
+      formData.aiReviewConsent &&
+      formData.consentToPublish
     );
   };
 
@@ -78,37 +88,6 @@ export default function PublishPage() {
     e.preventDefault();
     if (isFormValid()) {
       setIsRazorpayOpen(true);
-    }
-  };
-
-  const handlePaymentSuccess = async (paymentId: string) => {
-    setIsRazorpayOpen(false);
-    setSubmitting(true);
-
-    try {
-      const res = await fetch('/api/articles', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'submission',
-          ...formData,
-          paymentStatus: 'paid',
-          paymentId,
-          amountPaid: 499,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setSubmissionId(data.submission.id);
-        setSubmitted(true);
-      }
-    } catch (err) {
-      console.error('Error submitting article:', err);
-      alert('Manuscript submitted with confirmed payment!');
-      setSubmitted(true);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -131,7 +110,7 @@ export default function PublishPage() {
           </h1>
 
           <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-            Submit your research paper, case commentary, or legislative analysis to our peer-reviewed journal. Receive double-blind reviewer feedback, DOI citation indexing, and a formal Certificate of Publication.
+            Submit your research paper, case commentary, or legislative analysis to our peer-reviewed journal. Receive double-blind reviewer feedback and a formal publication docket upon acceptance.
           </p>
         </div>
       </div>
@@ -139,46 +118,68 @@ export default function PublishPage() {
       {!submitted ? (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
           
-          {/* Left Form (8 Cols) */}
-          <div className="lg:col-span-8 neumorph-card rounded-3xl p-6 sm:p-8 space-y-8">
+          {/* Main Submission Form (8 Cols) */}
+          <div className="lg:col-span-8 neumorph-card rounded-3xl p-6 sm:p-8 space-y-8 border border-slate-200 dark:border-gold-500/30">
             
+            {/* Google Authentication Gate */}
+            <div>
+              <h2 className="text-sm font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400 mb-2">
+                1. Author Identity Verification
+              </h2>
+              <GoogleAuthGate
+                requireAuthBeforeRender={false}
+                title="Author Google Verification"
+                description="Sign in with Google to authenticate your author submission and secure your review docket."
+                onAuthStateChange={(user, token) => {
+                  setCurrentUser(user);
+                  setAuthToken(token);
+                  if (user?.displayName && !formData.authorName) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      authorName: user.displayName || '',
+                      signatureLine: `${user.displayName || 'Scholar'}, Author`,
+                    }));
+                  }
+                }}
+              />
+            </div>
+
             <form onSubmit={handleSubmitClick} className="space-y-6">
               
-              {/* Step 1: Author Credentials */}
+              {/* Author Information */}
               <div className="space-y-4">
-                <div className="flex items-center space-x-2 text-gold-700 dark:text-gold-400 text-xs font-bold uppercase tracking-wider pb-2 border-b border-slate-200 dark:border-legal-800">
-                  <User className="w-4 h-4" />
-                  <span>Author &amp; Institution Credentials</span>
-                </div>
+                <h2 className="text-sm font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400 border-b border-slate-200 dark:border-legal-800 pb-2">
+                  2. Author Credentials &amp; Credit Line
+                </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Lead Author Name <span className="text-rose-500">*</span>
+                      Lead Author Full Name <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
                       name="authorName"
+                      required
                       value={formData.authorName}
                       onChange={handleChange}
-                      placeholder="e.g. Adv. Aarav Singhania"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                      required
+                      placeholder="e.g. Adv. Devansh Kothari"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Institutional Email <span className="text-rose-500">*</span>
+                      Designation / Role <span className="text-rose-500">*</span>
                     </label>
                     <input
-                      type="email"
-                      name="authorEmail"
-                      value={formData.authorEmail}
-                      onChange={handleChange}
-                      placeholder="author@lawcollege.ac.in"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
+                      type="text"
+                      name="authorDesignation"
                       required
+                      value={formData.authorDesignation}
+                      onChange={handleChange}
+                      placeholder="e.g. Advocate / 4th Year B.A. LL.B Scholar"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                     />
                   </div>
                 </div>
@@ -186,41 +187,55 @@ export default function PublishPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      University / Law School / Chamber <span className="text-rose-500">*</span>
+                      Affiliated Law School / Chamber <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
                       name="authorInstitution"
+                      required
                       value={formData.authorInstitution}
                       onChange={handleChange}
-                      placeholder="e.g. NLSIU Bengaluru / Delhi High Court"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                      required
+                      placeholder="e.g. National Law School of India University"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                     />
                   </div>
 
                   <div>
                     <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Designation / Standing
+                      Preferred Byline / Signature Credit <span className="text-rose-500">*</span>
                     </label>
                     <input
                       type="text"
-                      name="authorDesignation"
-                      value={formData.authorDesignation}
+                      name="signatureLine"
+                      required
+                      value={formData.signatureLine}
                       onChange={handleChange}
-                      placeholder="e.g. 5th Year B.A. LL.B / Advocate"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
+                      placeholder="e.g. Adv. Devansh Kothari, High Court of Delhi"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                     />
                   </div>
                 </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Short Author Bio (2-3 lines)
+                  </label>
+                  <textarea
+                    name="authorBio"
+                    rows={2}
+                    value={formData.authorBio}
+                    onChange={handleChange}
+                    placeholder="Brief background on your research focus, past publications, or professional practice area..."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                  />
+                </div>
               </div>
 
-              {/* Step 2: Manuscript Details */}
+              {/* Manuscript Details */}
               <div className="space-y-4">
-                <div className="flex items-center space-x-2 text-gold-700 dark:text-gold-400 text-xs font-bold uppercase tracking-wider pb-2 border-b border-slate-200 dark:border-legal-800">
-                  <FileText className="w-4 h-4" />
-                  <span>Manuscript &amp; Legal Scholarship Details</span>
-                </div>
+                <h2 className="text-sm font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400 border-b border-slate-200 dark:border-legal-800 pb-2">
+                  3. Manuscript Details
+                </h2>
 
                 <div>
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
@@ -229,220 +244,259 @@ export default function PublishPage() {
                   <input
                     type="text"
                     name="title"
+                    required
                     value={formData.title}
                     onChange={handleChange}
-                    placeholder="e.g. Critical Analysis of Section 10 under the DPDP Act 2023..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                    required
+                    placeholder="e.g. Interplay Between DPDP Act 2023 and the Right to Information Act"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Subject / Law Category <span className="text-rose-500">*</span>
+                      Jurisprudential Track <span className="text-rose-500">*</span>
                     </label>
                     <select
                       name="category"
                       value={formData.category}
                       onChange={handleChange}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                     >
-                      {categories.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
+                      {categories.map((c) => (
+                        <option key={c} value={c}>{c}</option>
                       ))}
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Keywords (Comma separated)
+                      Keywords (comma separated)
                     </label>
                     <input
                       type="text"
                       name="keywords"
                       value={formData.keywords}
                       onChange={handleChange}
-                      placeholder="DPDP Act, Privacy, MeitY, Compliance"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
+                      placeholder="e.g. DPDP Act, Section 44(3), RTI Act, Privacy"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                     />
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Abstract / Executive Summary (Min 50 characters) <span className="text-rose-500">*</span>
+                    Structured Abstract (Min 50 chars) <span className="text-rose-500">*</span>
                   </label>
                   <textarea
-                    rows={3}
                     name="abstract"
+                    rows={3}
+                    required
                     value={formData.abstract}
                     onChange={handleChange}
-                    placeholder="Summarize the core legal hypothesis, legislative problem statement, and primary conclusions..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset resize-none"
-                    required
+                    placeholder="Summarize your central thesis, statutory provisions analyzed, and primary conclusions..."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
                   />
+                  <p className="text-[10px] text-slate-400 text-right mt-0.5">
+                    {formData.abstract.length}/50 characters minimum
+                  </p>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Full Article Content (Markdown or Standard Text) <span className="text-rose-500">*</span>
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+                      Article Content OR Restricted Reviewer Document URL <span className="text-rose-500">*</span>
+                    </label>
+                  </div>
                   <textarea
-                    rows={8}
                     name="content"
+                    rows={6}
+                    required
                     value={formData.content}
                     onChange={handleChange}
-                    placeholder="Paste your full legal treatise here. Use markdown ## for headings, lists, tables, and statutory footnotes..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset font-mono"
-                    required
+                    placeholder="Paste the full text of your article in Markdown / clean text, OR enter a restricted Google Docs link (ensure link sharing allows reviewer access)..."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500 font-mono"
                   />
+                  <p className="text-[10px] text-slate-400 text-right mt-0.5">
+                    {formData.content.length}/80 characters minimum
+                  </p>
                 </div>
               </div>
 
-              {/* Declarations */}
-              <div className="p-4 rounded-2xl bg-slate-100 dark:bg-legal-950/80 border border-slate-200 dark:border-legal-800 space-y-3">
-                <label className="flex items-start space-x-3 cursor-pointer">
+              {/* Declarations & Consents */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-legal-900/60 border border-slate-200 dark:border-legal-800 space-y-3 text-xs">
+                <label className="flex items-start space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    name="declaration"
-                    checked={formData.declaration}
+                    name="originalityDeclaration"
+                    checked={formData.originalityDeclaration}
                     onChange={handleChange}
-                    className="mt-0.5 rounded border-slate-300 dark:border-legal-700 text-gold-600 dark:text-gold-500 focus:ring-0 focus:ring-offset-0 bg-white dark:bg-legal-900"
-                    required
+                    className="mt-0.5 rounded border-slate-300 text-gold-500 focus:ring-gold-500"
                   />
-                  <span className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
-                    I declare that this is an original manuscript, has not been published elsewhere, and contains less than 10% similarity on Turnitin. I agree to the double-blind peer review terms of the LexMinds Law Review.
+                  <span className="text-slate-600 dark:text-slate-300">
+                    <strong>Originality Declaration:</strong> I declare that this manuscript is my original scholarly work and has not been submitted or published elsewhere.
+                  </span>
+                </label>
+
+                <label className="flex items-start space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="aiReviewConsent"
+                    checked={formData.aiReviewConsent}
+                    onChange={handleChange}
+                    className="mt-0.5 rounded border-slate-300 text-gold-500 focus:ring-gold-500"
+                  />
+                  <span className="text-slate-600 dark:text-slate-300">
+                    <strong>Editorial Screening Consent:</strong> I consent to plagiarism screening (Turnitin) and editorial review by the LexMinds Editorial Board.
+                  </span>
+                </label>
+
+                <label className="flex items-start space-x-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="consentToPublish"
+                    checked={formData.consentToPublish}
+                    onChange={handleChange}
+                    className="mt-0.5 rounded border-slate-300 text-gold-500 focus:ring-gold-500"
+                  />
+                  <span className="text-slate-600 dark:text-slate-300">
+                    <strong>Publication Terms:</strong> I understand that paying the ₹499 fee initiates the double-blind review process. Articles are published only after reviewer approval.
                   </span>
                 </label>
               </div>
 
-              {/* Submit Button */}
+              {/* Submission CTA */}
               <button
                 type="submit"
                 disabled={!isFormValid()}
-                className="w-full py-4 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 hover:from-gold-300 hover:to-gold-500 text-slate-950 font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm dark:shadow-glow-gold transition-all disabled:opacity-40 flex items-center justify-center space-x-2"
+                className="w-full py-4 px-6 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 hover:from-gold-300 hover:to-gold-500 text-slate-950 font-bold text-xs uppercase tracking-widest rounded-2xl shadow-md transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
               >
-                <PenTool className="w-4 h-4" />
-                <span>Pay ₹499 Processing Fee &amp; Submit Manuscript</span>
+                <span>Pay ₹499 &amp; Submit Manuscript</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
 
           </div>
 
-          {/* Right Sidebar Guidelines (4 Cols) */}
+          {/* Right Sidebar: Policy & Fee Information (4 Cols) */}
           <div className="lg:col-span-4 space-y-6">
             
-            {/* Fee & Scope Card */}
-            <div className="neumorph-card rounded-2xl p-6 space-y-4 border border-slate-200 dark:border-gold-500/30">
-              <span className="text-xs font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400">
-                Editorial Review Docket
-              </span>
-
-              <div className="space-y-1">
-                <div className="text-3xl font-serif font-bold text-slate-900 dark:text-white">₹499.00</div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">Processing, Anti-Plagiarism &amp; Peer-Review Fee</p>
+            <div className="neumorph-card rounded-3xl p-6 border border-slate-200 dark:border-gold-500/30 space-y-4">
+              <div className="flex items-center space-x-3 text-gold-700 dark:text-gold-400">
+                <Scale className="w-5 h-5" />
+                <h3 className="font-serif font-bold text-slate-900 dark:text-white text-base">Editorial Policy</h3>
               </div>
 
-              <div className="space-y-2 pt-3 border-t border-slate-200 dark:border-legal-800 text-xs text-slate-700 dark:text-slate-300">
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <span>Double-Blind Peer Review by Faculty</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <span>Formal Turnitin Plagiarism Report</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <span>Official Certificate of Publication</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  <span>Bluebook / OSCOLA Citation Standard</span>
-                </div>
+              <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+                <p>
+                  <strong>Desk Screening:</strong> Manuscripts undergo double-blind plagiarism triage within 48 hours.
+                </p>
+                <p>
+                  <strong>Strict Standards:</strong> Only approved manuscripts that meet originality thresholds are published live.
+                </p>
+                <p>
+                  <strong>Author Credit:</strong> Published articles prominently display author byline, institution, bio, and standardized Bluebook / OSCOLA citations.
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-200 dark:border-legal-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+                <span>Article Processing Fee:</span>
+                <span className="font-bold text-slate-900 dark:text-white">₹499.00 INR</span>
               </div>
             </div>
 
-            {/* Editorial Policy Highlights */}
-            <div className="neumorph-card rounded-2xl p-6 space-y-4 text-xs text-slate-700 dark:text-slate-300">
-              <h4 className="font-serif font-bold text-sm text-slate-900 dark:text-white flex items-center space-x-2">
-                <ShieldCheck className="w-4 h-4 text-gold-700 dark:text-gold-400" />
-                <span>Publication Guidelines</span>
-              </h4>
-              <ul className="space-y-2 text-[11px] text-slate-600 dark:text-slate-400 list-disc list-inside">
-                <li>Articles should be between 1,500 to 5,000 words.</li>
-                <li>Case commentaries should be between 1,000 to 2,500 words.</li>
-                <li>Footnotes must follow the 21st Edition of the Bluebook or OSCOLA.</li>
-                <li>Peer review decisions are communicated within 4 to 7 business days.</li>
-              </ul>
-              <Link
-                href="/editorial-policy"
-                className="inline-block text-gold-700 dark:text-gold-400 hover:underline text-[11px] font-semibold"
-              >
-                Read Full Editorial &amp; Anti-Plagiarism Policy &rarr;
-              </Link>
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-legal-900/40 border border-slate-200 dark:border-legal-800 text-xs text-slate-500 space-y-2">
+              <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400">
+                <Lock className="w-4 h-4" />
+                <span className="font-semibold">Author Security</span>
+              </div>
+              <p>
+                All submissions are securely logged in our private registry. Authors do not need account dashboards; official decision notices and reviewer notes are sent directly to your registered email.
+              </p>
             </div>
 
           </div>
 
         </div>
       ) : (
-        /* Success Screen */
-        <div className="max-w-2xl mx-auto text-center py-12 space-y-6 neumorph-card rounded-3xl p-8 border border-slate-200 dark:border-gold-500/30">
-          <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 rounded-3xl border border-emerald-500/40 flex items-center justify-center mx-auto shadow-sm dark:shadow-glow-gold animate-bounce">
-            <CheckCircle2 className="w-12 h-12" />
+        /* Confirmation Screen */
+        <div className="neumorph-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-6 border border-slate-200 dark:border-gold-500/30">
+          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 rounded-2xl border border-emerald-500/40 flex items-center justify-center mx-auto shadow-lg animate-bounce">
+            <CheckCircle2 className="w-10 h-10" />
           </div>
 
           <div className="space-y-2">
             <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
-              Manuscript Successfully Received!
+              Manuscript Successfully Queued
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Submission Docket ID: <span className="font-mono text-gold-700 dark:text-gold-400 font-bold">{submissionId || 'SUB-LEX-2026-09'}</span>
+            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto">
+              Your manuscript and payment have been verified. The paper has entered our double-blind editorial review queue with status <span className="font-semibold text-gold-600 dark:text-gold-400">paid_submitted</span>.
             </p>
           </div>
 
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-lg mx-auto">
-            Your manuscript <strong className="text-slate-900 dark:text-white">&quot;{formData.title}&quot;</strong> has been entered into the LexMinds editorial review queue. Our senior editorial board will conduct plagiarism verification and peer assessment.
+          <div className="bg-slate-50 dark:bg-legal-900/70 p-4 rounded-xl border border-slate-200 dark:border-legal-800 text-left space-y-2 text-xs max-w-md mx-auto">
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500 dark:text-slate-400">Submission Docket:</span>
+              <span className="font-mono font-bold text-gold-700 dark:text-gold-400">{confirmedDocket}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500 dark:text-slate-400">Payment ID:</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{confirmedPaymentId}</span>
+            </div>
+            <div className="flex justify-between text-slate-500 dark:text-slate-400">
+              <span className="text-slate-500 dark:text-slate-400">Registered Author:</span>
+              <span className="font-mono text-slate-800 dark:text-slate-200">{currentUser?.email}</span>
+            </div>
+            <div className="flex justify-between text-slate-500 dark:text-slate-400">
+              <span>Status:</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold uppercase">Paid &bull; In Review Queue</span>
+            </div>
+          </div>
+
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+            Please retain your Submission Docket for correspondence. Articles are reviewed within 4-7 business days and published only upon editorial approval.
           </p>
 
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href="/articles"
-              className="px-6 py-3 bg-gradient-to-r from-gold-500 to-gold-600 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm"
-            >
-              Browse Published Articles
-            </Link>
-            <Link
-              href="/admin"
-              className="px-6 py-3 bg-slate-100 dark:bg-legal-950 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-legal-700 text-xs font-semibold uppercase tracking-wider rounded-xl transition-all"
-            >
-              View in Admin Queue
-            </Link>
-          </div>
+          <Link
+            href="/articles"
+            className="inline-block px-8 py-3 bg-slate-900 dark:bg-gold-500 text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md"
+          >
+            Browse Published Treatises
+          </Link>
         </div>
       )}
 
-      {/* Razorpay Modal */}
-      {isRazorpayOpen && (
+      {/* Razorpay Checkout Modal */}
+      {isRazorpayOpen && authToken && (
         <RazorpayModal
           isOpen={isRazorpayOpen}
           onClose={() => setIsRazorpayOpen(false)}
           title={formData.title}
-          subtitle={`Manuscript Processing Fee • ${formData.authorInstitution}`}
+          subtitle="Article Processing & Peer Review Fee"
           amount={499}
-          type="publication_fee"
+          productKey="article_submission"
+          authToken={authToken}
           metadata={{
-            applicantName: formData.authorName,
-            email: formData.authorEmail,
-            phone: formData.authorPhone,
+            authorName: formData.authorName,
+            designation: formData.authorDesignation,
+            institution: formData.authorInstitution,
+            authorBio: formData.authorBio,
+            signatureLine: formData.signatureLine,
+            title: formData.title,
+            category: formData.category,
+            keywords: formData.keywords,
+            abstract: formData.abstract,
+            content: formData.content,
+            originalityDeclaration: formData.originalityDeclaration,
+            consentToPublish: formData.consentToPublish,
             targetTitle: formData.title,
           }}
-          onSuccess={handlePaymentSuccess}
+          onSuccess={({ referenceId, paymentId }) => {
+            setConfirmedDocket(referenceId);
+            setConfirmedPaymentId(paymentId);
+            setIsRazorpayOpen(false);
+            setSubmitted(true);
+          }}
         />
       )}
 

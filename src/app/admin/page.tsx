@@ -6,491 +6,620 @@ import {
   ShieldCheck, 
   BookOpen, 
   Briefcase, 
-  Users, 
   DollarSign, 
   CheckCircle2, 
   XCircle, 
   Clock, 
   ExternalLink, 
   FileText, 
-  Plus, 
   Sparkles, 
-  Search, 
-  Filter, 
   Eye, 
   AlertCircle,
   RefreshCw,
-  Building,
-  GraduationCap
+  Award,
+  Lock,
+  MessageSquare
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import { ArticleSubmission, InternshipApplication, Internship } from '@/lib/types';
-import { INITIAL_SUBMISSIONS, INITIAL_APPLICATIONS, INITIAL_INTERNSHIPS, INITIAL_METRICS } from '@/lib/data-store';
+import GoogleAuthGate from '@/components/GoogleAuthGate';
+import { ArticleSubmission, InternshipApplication } from '@/lib/types';
+import { User as FirebaseUser } from 'firebase/auth';
 
 export default function AdminDashboardPage() {
-  const [activeTab, setActiveTab] = useState<'submissions' | 'applications' | 'new_internship'>('submissions');
-  const [submissions, setSubmissions] = useState<ArticleSubmission[]>(INITIAL_SUBMISSIONS);
-  const [applications, setApplications] = useState<InternshipApplication[]>(INITIAL_APPLICATIONS);
+  const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
+  const [checkingAuth, setCheckingAuth] = useState(false);
+
+  const [activeTab, setActiveTab] = useState<'submissions' | 'applications'>('submissions');
+  const [submissions, setSubmissions] = useState<ArticleSubmission[]>([]);
+  const [applications, setApplications] = useState<InternshipApplication[]>([]);
   const [selectedSubmission, setSelectedSubmission] = useState<ArticleSubmission | null>(null);
   const [selectedApplication, setSelectedApplication] = useState<InternshipApplication | null>(null);
-  const [feedbackText, setFeedbackText] = useState('');
+  
+  const [editorialNotes, setEditorialNotes] = useState('');
+  const [plagiarismNotes, setPlagiarismNotes] = useState('');
+  const [aiNotes, setAiNotes] = useState('');
+  const [mentorName, setMentorName] = useState('LexMinds Senior Editorial Council');
+
   const [loading, setLoading] = useState(false);
   const [actionSuccess, setActionSuccess] = useState('');
+  const [actionError, setActionError] = useState('');
 
-  // Fetch latest state on mount
+  // When auth changes, verify admin permissions against server allowlist
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (authToken) {
+      verifyAdmin();
+    } else {
+      setIsAuthorized(null);
+    }
+  }, [authToken]);
+
+  const verifyAdmin = async () => {
+    setCheckingAuth(true);
+    try {
+      const res = await fetch('/api/admin/verify', {
+        headers: { Authorization: `Bearer ${authToken}` },
+      });
+      if (res.ok) {
+        setIsAuthorized(true);
+        fetchData();
+      } else {
+        setIsAuthorized(false);
+      }
+    } catch {
+      setIsAuthorized(false);
+    } finally {
+      setCheckingAuth(false);
+    }
+  };
 
   const fetchData = async () => {
+    if (!authToken) return;
     setLoading(true);
     try {
-      const artRes = await fetch('/api/articles?all=true');
-      const artData = await artRes.json();
-      if (artData.submissions) setSubmissions(artData.submissions);
+      const [artRes, appRes] = await Promise.all([
+        fetch('/api/admin/articles', {
+          headers: { Authorization: `Bearer ${authToken}` },
+        }),
+        fetch('/api/admin/applications', {
+          headers: { Authorization: `Bearer ${authToken}` },
+        }),
+      ]);
 
-      const appRes = await fetch('/api/applications');
-      const appData = await appRes.json();
-      if (appData.applications) setApplications(appData.applications);
-    } catch (e) {
+      if (artRes.ok) {
+        const artData = await artRes.json();
+        setSubmissions(artData.submissions || []);
+      }
+      if (appRes.ok) {
+        const appData = await appRes.json();
+        setApplications(appData.applications || []);
+      }
+    } catch (e: any) {
       console.error(e);
+      setActionError('Failed to fetch admin data from server.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUpdateSubmission = async (id: string, status: 'published' | 'under_review' | 'rejected') => {
+  const handleUpdateSubmissionStatus = async (
+    submissionId: string,
+    status: ArticleSubmission['status']
+  ) => {
+    setActionError('');
+    setActionSuccess('');
     try {
-      const res = await fetch('/api/articles', {
+      const res = await fetch('/api/admin/articles', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
         body: JSON.stringify({
-          submissionId: id,
+          submissionId,
           status,
-          feedback: feedbackText || (status === 'published' ? 'Approved & Published Live to LexMinds Law Review.' : 'Status updated.')
-        })
+          reviewerNotes: editorialNotes || `Status updated to ${status} by editorial desk.`,
+          plagiarismNotes,
+          aiReviewNotes: aiNotes,
+        }),
       });
+
       const data = await res.json();
-      if (data.success) {
-        setSubmissions(data.submissions);
-        setActionSuccess(`Submission marked as ${status.toUpperCase()}! ${status === 'published' ? 'It is now live on the website.' : ''}`);
+      if (res.ok && data.success) {
+        setActionSuccess(`Article status updated to "${status.toUpperCase()}". ${status === 'published' ? 'It is now live on LexMinds Law Review.' : ''}`);
         setSelectedSubmission(null);
-        setFeedbackText('');
-        setTimeout(() => setActionSuccess(''), 4000);
+        setEditorialNotes('');
+        setPlagiarismNotes('');
+        setAiNotes('');
+        fetchData();
+      } else {
+        setActionError(data.error || 'Failed to update article.');
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setActionError(e.message || 'Error executing action.');
     }
   };
 
-  const handleUpdateApplicantStatus = async (id: string, status: any) => {
+  const handleUpdateApplicantStatus = async (
+    applicationId: string,
+    status: InternshipApplication['status']
+  ) => {
+    setActionError('');
+    setActionSuccess('');
     try {
-      const res = await fetch('/api/applications', {
+      const res = await fetch('/api/admin/applications', {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
         body: JSON.stringify({
-          applicationId: id,
-          status
-        })
+          applicationId,
+          status,
+          adminNotes: editorialNotes || `Status updated to ${status}.`,
+        }),
       });
+
       const data = await res.json();
-      if (data.success) {
-        setApplications(data.applications);
-        setActionSuccess(`Applicant status updated to ${status.toUpperCase()}`);
-        setTimeout(() => setActionSuccess(''), 3000);
+      if (res.ok && data.success) {
+        setActionSuccess(`Application status updated to "${status.toUpperCase()}".`);
+        setSelectedApplication(null);
+        setEditorialNotes('');
+        fetchData();
+      } else {
+        setActionError(data.error || 'Failed to update application.');
       }
-    } catch (e) {
-      console.error(e);
+    } catch (e: any) {
+      setActionError(e.message || 'Error updating application.');
     }
   };
 
-  const totalRevenue = 
-    applications.reduce((sum, a) => sum + (a.amountPaid || 0), 0) + 
-    submissions.reduce((sum, s) => sum + (s.amountPaid || 0), 0) + 
-    492000;
+  const handleIssueCertificate = async (applicationId: string) => {
+    setActionError('');
+    setActionSuccess('');
+    try {
+      const res = await fetch('/api/admin/certificates', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          applicationId,
+          mentor: mentorName,
+          completionDate: new Date().toISOString().split('T')[0],
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setActionSuccess(`Certificate issued successfully! ID: ${data.certificate.certificateId}`);
+        setSelectedApplication(null);
+        fetchData();
+      } else {
+        setActionError(data.error || 'Failed to issue certificate.');
+      }
+    } catch (e: any) {
+      setActionError(e.message || 'Error issuing certificate.');
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       
-      {/* Breadcrumbs & Header */}
-      <div className="space-y-3">
-        <Breadcrumbs items={[{ name: 'Editorial & Admin Portal', href: '/admin' }]} />
-        
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-legal-800 pb-6">
-          <div>
-            <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-gold-400">
-              <ShieldCheck className="w-4 h-4" />
-              <span>LexMinds Editorial & ATS Command Center</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold text-white mt-1">
-              Admin & Content Moderation Dashboard
-            </h1>
-          </div>
+      <Breadcrumbs items={[{ name: 'Editorial & Moderation Portal', href: '/admin' }]} />
 
+      {/* Admin Auth Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-legal-800 pb-6">
+        <div>
+          <div className="flex items-center space-x-2">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-gold-700 dark:text-gold-400 bg-gold-50 dark:bg-gold-950/80 px-3 py-1 rounded border border-gold-500/20">
+              Restricted Access &bull; 2-Admin Allowlist
+            </span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white mt-2">
+            LexMinds Editorial Moderation Desk
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+            Official dashboard for manuscript peer evaluation, research fellow administration, and verified certificate generation.
+          </p>
+        </div>
+
+        {isAuthorized && (
           <button
             onClick={fetchData}
             disabled={loading}
-            className="px-4 py-2 bg-legal-850 hover:bg-legal-800 text-slate-300 hover:text-white border border-legal-700 text-xs font-semibold rounded-xl flex items-center space-x-1.5 shrink-0"
+            className="px-4 py-2 bg-slate-100 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1.5 transition-colors self-start md:self-auto"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh Live Data</span>
+            <span>Sync Records</span>
           </button>
-        </div>
+        )}
       </div>
 
-      {/* Success Notification Alert */}
-      {actionSuccess && (
-        <div className="p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center space-x-2 animate-fade-in shadow-lg">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-          <span>{actionSuccess}</span>
-        </div>
-      )}
-
-      {/* KPI Metrics Summary */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        
-        <div className="p-5 rounded-2xl bg-legal-900/60 border border-legal-800 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Pending Articles</span>
-            <BookOpen className="w-4 h-4 text-gold-400" />
+      {/* Authentication & Authorization Gate */}
+      <GoogleAuthGate
+        requireAuthBeforeRender={true}
+        title="LexMinds Administrator Sign-In"
+        description="Sign in with an authorized Google account listed in the server-side administrator allowlist."
+        onAuthStateChange={(user, token) => {
+          setCurrentUser(user);
+          setAuthToken(token);
+        }}
+      >
+        {checkingAuth ? (
+          <div className="p-12 text-center text-xs text-slate-500 space-y-3">
+            <RefreshCw className="w-6 h-6 animate-spin text-gold-500 mx-auto" />
+            <p>Verifying server administrator allowlist...</p>
           </div>
-          <div className="text-2xl sm:text-3xl font-serif font-bold text-white">
-            {submissions.filter(s => s.status !== 'published').length}
+        ) : isAuthorized === false ? (
+          <div className="p-8 rounded-3xl bg-rose-50 dark:bg-rose-950/20 border border-rose-500/30 text-center space-y-3 max-w-lg mx-auto">
+            <Lock className="w-8 h-8 text-rose-600 dark:text-rose-400 mx-auto" />
+            <h3 className="text-lg font-serif font-bold text-rose-700 dark:text-rose-400">
+              Access Denied (403 Forbidden)
+            </h3>
+            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Your Google account (<strong className="font-mono text-slate-900 dark:text-white">{currentUser?.email}</strong>) is not listed in the server&apos;s <code className="font-mono text-gold-600">ADMIN_EMAILS</code> allowlist.
+            </p>
+            <p className="text-[11px] text-slate-400">
+              Contact the platform owner if you believe your account should have review access.
+            </p>
           </div>
-          <div className="text-[11px] text-gold-400">Awaiting peer review</div>
-        </div>
-
-        <div className="p-5 rounded-2xl bg-legal-900/60 border border-legal-800 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Intern Applicants</span>
-            <Users className="w-4 h-4 text-gold-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-serif font-bold text-white">
-            {applications.length + 1420}
-          </div>
-          <div className="text-[11px] text-emerald-400">Active across 36 firms</div>
-        </div>
-
-        <div className="p-5 rounded-2xl bg-legal-900/60 border border-legal-800 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-slate-400 font-semibold uppercase">Active Openings</span>
-            <Briefcase className="w-4 h-4 text-gold-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-serif font-bold text-white">
-            {INITIAL_INTERNSHIPS.length}
-          </div>
-          <div className="text-[11px] text-slate-400">Tier-1 & SC Chambers</div>
-        </div>
-
-        <div className="p-5 rounded-2xl bg-legal-900/60 border border-gold-500/30 bg-gradient-to-br from-gold-950/40 to-legal-900 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gold-400 font-semibold uppercase">Total Revenue (INR)</span>
-            <DollarSign className="w-4 h-4 text-gold-400" />
-          </div>
-          <div className="text-2xl sm:text-3xl font-serif font-bold text-gold-300">
-            ₹{totalRevenue.toLocaleString('en-IN')}
-          </div>
-          <div className="text-[11px] text-emerald-400">Processed via Razorpay</div>
-        </div>
-
-      </div>
-
-      {/* Tabs Switcher */}
-      <div className="flex space-x-2 border-b border-legal-800 pb-2">
-        <button
-          onClick={() => setActiveTab('submissions')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 ${
-            activeTab === 'submissions'
-              ? 'bg-gold-500 text-legal-950 shadow-glow-gold'
-              : 'bg-legal-900 text-slate-400 hover:text-white border border-legal-800'
-          }`}
-        >
-          <BookOpen className="w-4 h-4" />
-          <span>Article Moderation Queue ({submissions.length})</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('applications')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 ${
-            activeTab === 'applications'
-              ? 'bg-gold-500 text-legal-950 shadow-glow-gold'
-              : 'bg-legal-900 text-slate-400 hover:text-white border border-legal-800'
-          }`}
-        >
-          <Users className="w-4 h-4" />
-          <span>Internship ATS ({applications.length})</span>
-        </button>
-      </div>
-
-      {/* TAB 1: ARTICLE MODERATION QUEUE */}
-      {activeTab === 'submissions' && (
-        <div className="space-y-6">
-          <div className="rounded-2xl bg-legal-900/50 border border-legal-800 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left">
-                <thead className="bg-legal-950 text-gold-400 font-bold uppercase tracking-wider border-b border-legal-800">
-                  <tr>
-                    <th className="p-4">Submission Docket</th>
-                    <th className="p-4">Author & College</th>
-                    <th className="p-4">Category</th>
-                    <th className="p-4">Payment</th>
-                    <th className="p-4">Status</th>
-                    <th className="p-4 text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-legal-800/60">
-                  {submissions.map((sub) => (
-                    <tr key={sub.id} className="hover:bg-legal-850/50 transition-colors">
-                      <td className="p-4 font-mono font-bold text-white max-w-xs">
-                        <div className="line-clamp-1">{sub.title}</div>
-                        <span className="text-[10px] text-slate-500 font-normal">{sub.id}</span>
-                      </td>
-                      <td className="p-4">
-                        <div className="font-semibold text-slate-200">{sub.authorName}</div>
-                        <div className="text-[10px] text-slate-400 line-clamp-1">{sub.authorInstitution}</div>
-                      </td>
-                      <td className="p-4 text-gold-400 font-medium">{sub.category}</td>
-                      <td className="p-4">
-                        <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase">
-                          Paid ₹{sub.amountPaid || 499}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        <span
-                          className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
-                            sub.status === 'published'
-                              ? 'bg-emerald-950 text-emerald-400 border border-emerald-500/30'
-                              : sub.status === 'under_review'
-                              ? 'bg-amber-950 text-amber-400 border border-amber-500/30'
-                              : 'bg-legal-800 text-slate-300'
-                          }`}
-                        >
-                          {sub.status}
-                        </span>
-                      </td>
-                      <td className="p-4 text-right space-x-2">
-                        <button
-                          onClick={() => setSelectedSubmission(sub)}
-                          className="px-3 py-1.5 rounded-lg bg-legal-800 hover:bg-gold-500 text-slate-200 hover:text-legal-950 font-bold transition-all text-[11px]"
-                        >
-                          Inspect & Review
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* TAB 2: INTERNSHIP APPLICANT TRACKING SYSTEM (ATS) */}
-      {activeTab === 'applications' && (
-        <div className="space-y-6">
-          <div className="rounded-2xl bg-legal-900/50 border border-legal-800 overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full text-xs text-left">
-                <thead className="bg-legal-950 text-gold-400 font-bold uppercase tracking-wider border-b border-legal-800">
-                  <tr>
-                    <th className="p-4">Applicant</th>
-                    <th className="p-4">Internship Role</th>
-                    <th className="p-4">Law School & Year</th>
-                    <th className="p-4">CGPA</th>
-                    <th className="p-4">Status & Stage</th>
-                    <th className="p-4 text-right">Resume & Review</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-legal-800/60">
-                  {applications.map((app) => (
-                    <tr key={app.id} className="hover:bg-legal-850/50 transition-colors">
-                      <td className="p-4">
-                        <div className="font-bold text-white">{app.fullName}</div>
-                        <div className="text-[10px] text-slate-400">{app.email}</div>
-                        <div className="text-[10px] text-slate-500">{app.phone}</div>
-                      </td>
-                      <td className="p-4 font-semibold text-slate-200 max-w-xs">
-                        <div className="line-clamp-2">{app.internshipTitle}</div>
-                        <span className="text-[10px] text-gold-400">Fee: ₹{app.amountPaid} (Paid)</span>
-                      </td>
-                      <td className="p-4 text-slate-300">
-                        <div className="font-medium">{app.collegeName}</div>
-                        <div className="text-[10px] text-slate-400">{app.yearOfStudy}</div>
-                      </td>
-                      <td className="p-4 font-bold text-gold-300">{app.cgpa}</td>
-                      <td className="p-4">
-                        <select
-                          value={app.paymentStatus}
-                          onChange={(e) => handleUpdateApplicantStatus(app.id, e.target.value)}
-                          className="bg-legal-950 border border-legal-700 text-xs text-gold-400 rounded-lg p-1.5 focus:outline-none"
-                        >
-                          <option value="submitted">Submitted</option>
-                          <option value="under_review">Under Review</option>
-                          <option value="shortlisted">Shortlisted</option>
-                          <option value="accepted">Accepted (Offer)</option>
-                          <option value="rejected">Rejected</option>
-                        </select>
-                      </td>
-                      <td className="p-4 text-right space-x-2">
-                        <button
-                          onClick={() => setSelectedApplication(app)}
-                          className="px-3 py-1.5 rounded-lg bg-legal-800 hover:bg-gold-500 text-slate-200 hover:text-legal-950 font-bold transition-all text-[11px]"
-                        >
-                          View SOP
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* INSPECT SUBMISSION MODAL */}
-      {selectedSubmission && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-3xl rounded-3xl bg-legal-950 border border-gold-500/40 shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-6">
+        ) : isAuthorized === true ? (
+          <div className="space-y-8 animate-fade-in">
             
-            <div className="flex items-center justify-between border-b border-legal-800 pb-4">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-gold-400 px-2.5 py-0.5 rounded bg-legal-900 border border-gold-500/20">
-                  {selectedSubmission.category}
-                </span>
-                <h3 className="text-xl font-serif font-bold text-white mt-1">
-                  {selectedSubmission.title}
-                </h3>
-                <p className="text-xs text-slate-400">
-                  By <strong>{selectedSubmission.authorName}</strong> ({selectedSubmission.authorInstitution})
-                </p>
+            {/* Feedback Banners */}
+            {actionSuccess && (
+              <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs flex items-center space-x-2">
+                <CheckCircle2 className="w-4 h-4 shrink-0" />
+                <span>{actionSuccess}</span>
               </div>
-              <button
-                onClick={() => setSelectedSubmission(null)}
-                className="text-slate-400 hover:text-white p-2"
-              >
-                &times;
-              </button>
-            </div>
-
-            <div className="space-y-4 text-xs text-slate-300">
-              <div className="p-4 rounded-xl bg-legal-900/60 border border-legal-800">
-                <h4 className="font-bold text-gold-400 uppercase text-[10px] mb-1">Abstract:</h4>
-                <p className="leading-relaxed">{selectedSubmission.abstract}</p>
+            )}
+            {actionError && (
+              <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-500/40 text-rose-700 dark:text-rose-300 text-xs flex items-center space-x-2">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>{actionError}</span>
               </div>
+            )}
 
-              <div className="p-4 rounded-xl bg-legal-900/60 border border-legal-800">
-                <h4 className="font-bold text-gold-400 uppercase text-[10px] mb-1">Full Content Preview:</h4>
-                <div className="max-h-60 overflow-y-auto font-mono text-[11px] whitespace-pre-wrap leading-relaxed text-slate-300">
-                  {selectedSubmission.content}
+            {/* Real Platform Metrics */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-legal-900/60 border border-slate-200 dark:border-legal-800 space-y-1">
+                <div className="flex items-center justify-between text-slate-400">
+                  <span className="text-xs font-semibold">Manuscripts in Review</span>
+                  <BookOpen className="w-4 h-4 text-gold-600" />
+                </div>
+                <div className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                  {submissions.length}
                 </div>
               </div>
 
-              <div>
-                <label className="block font-semibold text-slate-300 mb-1">
-                  Editorial Feedback / Revisions:
-                </label>
-                <input
-                  type="text"
-                  value={feedbackText}
-                  onChange={(e) => setFeedbackText(e.target.value)}
-                  placeholder="e.g. Plagiarism check passed (3%). Approved for Volume IV publication."
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-legal-900 border border-legal-700 text-white placeholder-slate-500 text-xs"
-                />
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-legal-900/60 border border-slate-200 dark:border-legal-800 space-y-1">
+                <div className="flex items-center justify-between text-slate-400">
+                  <span className="text-xs font-semibold">Fellowship Enrollees</span>
+                  <Briefcase className="w-4 h-4 text-gold-600" />
+                </div>
+                <div className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                  {applications.length}
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-slate-50 dark:bg-legal-900/60 border border-slate-200 dark:border-legal-800 space-y-1">
+                <div className="flex items-center justify-between text-slate-400">
+                  <span className="text-xs font-semibold">Published Treatises</span>
+                  <Sparkles className="w-4 h-4 text-gold-600" />
+                </div>
+                <div className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
+                  {submissions.filter(s => s.status === 'published').length}
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-legal-800">
-              <div className="text-xs text-slate-400">
-                Current Status: <strong className="text-gold-400 uppercase">{selectedSubmission.status}</strong>
-              </div>
-
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleUpdateSubmission(selectedSubmission.id, 'rejected')}
-                  className="px-4 py-2 rounded-xl bg-rose-950 text-rose-300 hover:bg-rose-900 text-xs font-bold uppercase transition-all"
-                >
-                  Reject
-                </button>
-                <button
-                  onClick={() => handleUpdateSubmission(selectedSubmission.id, 'under_review')}
-                  className="px-4 py-2 rounded-xl bg-amber-950 text-amber-300 hover:bg-amber-900 text-xs font-bold uppercase transition-all"
-                >
-                  Mark Under Review
-                </button>
-                <button
-                  onClick={() => handleUpdateSubmission(selectedSubmission.id, 'published')}
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 text-legal-950 font-bold text-xs uppercase tracking-wider shadow-glow-gold hover:from-gold-300 transition-all flex items-center space-x-1"
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Approve & Publish Live</span>
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* INSPECT APPLICANT SOP MODAL */}
-      {selectedApplication && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="w-full max-w-2xl rounded-3xl bg-legal-950 border border-gold-500/40 shadow-2xl p-6 sm:p-8 max-h-[90vh] overflow-y-auto space-y-6">
-            
-            <div className="flex items-center justify-between border-b border-legal-800 pb-4">
-              <div>
-                <h3 className="text-xl font-serif font-bold text-white">
-                  {selectedApplication.fullName}
-                </h3>
-                <p className="text-xs text-gold-400">
-                  {selectedApplication.collegeName} &bull; CGPA: {selectedApplication.cgpa}
-                </p>
-              </div>
+            {/* Tabs */}
+            <div className="flex border-b border-slate-200 dark:border-legal-800 text-xs font-semibold space-x-6">
               <button
-                onClick={() => setSelectedApplication(null)}
-                className="text-slate-400 hover:text-white p-2"
+                onClick={() => setActiveTab('submissions')}
+                className={`pb-3 border-b-2 transition-all flex items-center space-x-2 ${activeTab === 'submissions' ? 'border-gold-500 text-gold-700 dark:text-gold-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
               >
-                &times;
+                <BookOpen className="w-4 h-4" />
+                <span>Article Submissions ({submissions.length})</span>
+              </button>
+              <button
+                onClick={() => setActiveTab('applications')}
+                className={`pb-3 border-b-2 transition-all flex items-center space-x-2 ${activeTab === 'applications' ? 'border-gold-500 text-gold-700 dark:text-gold-400' : 'border-transparent text-slate-400 hover:text-slate-200'}`}
+              >
+                <Briefcase className="w-4 h-4" />
+                <span>Fellowship Enrollees ({applications.length})</span>
               </button>
             </div>
 
-            <div className="space-y-4 text-xs text-slate-300">
-              <div>
-                <span className="text-slate-400 block mb-1">Applying for:</span>
-                <span className="font-bold text-white text-sm">{selectedApplication.internshipTitle}</span>
-              </div>
+            {/* Tab 1: Submissions Queue */}
+            {activeTab === 'submissions' && (
+              <div className="space-y-4">
+                {submissions.length === 0 ? (
+                  <div className="p-8 text-center text-xs text-slate-400 bg-slate-50 dark:bg-legal-900/30 rounded-2xl">
+                    No article submissions logged yet.
+                  </div>
+                ) : (
+                  submissions.map((sub) => (
+                    <div
+                      key={sub.submissionId}
+                      className="p-5 rounded-2xl bg-slate-50 dark:bg-legal-900/40 border border-slate-200 dark:border-legal-800 space-y-3"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-mono text-xs font-bold text-gold-700 dark:text-gold-400">
+                            {sub.submissionId}
+                          </span>
+                          <span className="text-[10px] px-2 py-0.5 rounded uppercase font-bold bg-slate-200 dark:bg-legal-800 text-slate-700 dark:text-slate-300">
+                            {sub.status}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-slate-400">
+                          {sub.createdAt.split('T')[0]}
+                        </span>
+                      </div>
 
-              <div className="p-4 rounded-xl bg-legal-900/60 border border-legal-800 space-y-2">
-                <span className="font-bold text-gold-400 uppercase text-[10px]">Statement of Purpose (SOP):</span>
-                <p className="leading-relaxed text-slate-200">{selectedApplication.sop}</p>
-              </div>
+                      <div>
+                        <h3 className="text-base font-serif font-bold text-slate-900 dark:text-white">
+                          {sub.title}
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          By <strong>{sub.authorName}</strong> ({sub.designation}, {sub.institution}) &bull; Byline: <em>{sub.signatureLine}</em>
+                        </p>
+                      </div>
 
-              <div className="flex items-center justify-between p-3 rounded-xl bg-legal-900 border border-legal-800">
-                <span className="text-slate-400">Resume Cloud Link:</span>
-                <a
-                  href={selectedApplication.resumeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gold-400 hover:text-gold-300 font-semibold flex items-center space-x-1"
-                >
-                  <span>Open Resume Document</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            </div>
+                      <div className="text-xs text-slate-600 dark:text-slate-300 line-clamp-2">
+                        <strong>Abstract:</strong> {sub.abstract}
+                      </div>
 
-            <div className="flex justify-end pt-4 border-t border-legal-800">
-              <button
-                onClick={() => setSelectedApplication(null)}
-                className="px-5 py-2 bg-legal-800 hover:bg-legal-700 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all"
-              >
-                Close
-              </button>
-            </div>
+                      <div className="pt-2 border-t border-slate-200 dark:border-legal-800 flex flex-wrap items-center justify-between gap-2">
+                        <button
+                          onClick={() => setSelectedSubmission(sub)}
+                          className="text-xs text-gold-700 dark:text-gold-400 font-semibold hover:underline flex items-center space-x-1"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Review Full Manuscript &amp; Take Action</span>
+                        </button>
+                        {sub.publicationUrl && (
+                          <Link
+                            href={sub.publicationUrl}
+                            target="_blank"
+                            className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline flex items-center space-x-1"
+                          >
+                            <span>View Live Treatise</span>
+                            <ExternalLink className="w-3 h-3" />
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Tab 2: Applications Queue */}
+            {activeTab === 'applications' && (
+              <div className="space-y-4">
+                {applications.length === 0 ? (
+                  <div className="p-8 text-center text-xs text-slate-400 bg-slate-50 dark:bg-legal-900/30 rounded-2xl">
+                    No fellowship applications registered yet.
+                  </div>
+                ) : (
+                  applications.map((app) => (
+                    <div
+                      key={app.applicationId}
+                      className="p-5 rounded-2xl bg-slate-50 dark:bg-legal-900/40 border border-slate-200 dark:border-legal-800 space-y-3"
+                    >
+                      <div className="flex flex-wrap items-center justify-between gap-2">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-mono text-xs font-bold text-gold-700 dark:text-gold-400">
+                            {app.applicationId}
+                          </span>
+                          <span className="text-[10px] px-2 py-0.5 rounded uppercase font-bold bg-slate-200 dark:bg-legal-800 text-slate-700 dark:text-slate-300">
+                            {app.status}
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-slate-400">
+                          {app.createdAt.split('T')[0]}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="text-base font-serif font-bold text-slate-900 dark:text-white">
+                          {app.applicantName}
+                        </h3>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                          {app.institution} &bull; {app.yearOfStudy} &bull; Score: {app.academicScore || 'N/A'}
+                        </p>
+                        <p className="text-xs text-slate-400 font-mono mt-0.5">
+                          Email: {app.verifiedEmail} &bull; Phone: {app.phone}
+                        </p>
+                      </div>
+
+                      {app.adminNotes && (
+                        <div className="text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-legal-900 p-2.5 rounded-xl">
+                          <strong>SOP / Notes:</strong> {app.adminNotes}
+                        </div>
+                      )}
+
+                      <div className="pt-2 border-t border-slate-200 dark:border-legal-800 flex flex-wrap items-center justify-between gap-2">
+                        <button
+                          onClick={() => setSelectedApplication(app)}
+                          className="text-xs text-gold-700 dark:text-gold-400 font-semibold hover:underline flex items-center space-x-1"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>Manage Fellow &amp; Certification</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+
+            {/* Submission Detail Modal */}
+            {selectedSubmission && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 dark:bg-black/80 backdrop-blur-sm">
+                <div className="relative w-full max-w-3xl rounded-3xl bg-white dark:bg-legal-950 border border-slate-200 dark:border-gold-500/30 p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+                  <div className="flex justify-between items-center border-b border-slate-200 dark:border-legal-800 pb-3">
+                    <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-white">
+                      Review Manuscript: {selectedSubmission.title}
+                    </h3>
+                    <button onClick={() => setSelectedSubmission(null)} className="text-slate-400 hover:text-white">
+                      <XCircle className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+                    <p><strong>Author:</strong> {selectedSubmission.authorName} ({selectedSubmission.designation}, {selectedSubmission.institution})</p>
+                    <p><strong>Verified Email:</strong> {selectedSubmission.verifiedEmail}</p>
+                    <p><strong>Credit Line:</strong> {selectedSubmission.signatureLine}</p>
+                    <p><strong>Bio:</strong> {selectedSubmission.authorBio}</p>
+                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-800 space-y-2">
+                      <strong className="block text-slate-900 dark:text-white">Abstract:</strong>
+                      <p>{selectedSubmission.abstract}</p>
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-800 space-y-2 max-h-60 overflow-y-auto font-mono text-[11px]">
+                      <strong className="block text-slate-900 dark:text-white">Manuscript Content / Link:</strong>
+                      <p className="whitespace-pre-wrap">{selectedSubmission.content}</p>
+                    </div>
+                  </div>
+
+                  {/* Editorial Actions Input */}
+                  <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-legal-800">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                        Editorial Decision Feedback / Notes
+                      </label>
+                      <textarea
+                        rows={2}
+                        value={editorialNotes}
+                        onChange={(e) => setEditorialNotes(e.target.value)}
+                        placeholder="Notes for the review record and author notice..."
+                        className="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-xs text-slate-900 dark:text-white"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-[11px] font-medium text-slate-400 mb-1">Plagiarism Notes (Turnitin %)</label>
+                        <input
+                          type="text"
+                          value={plagiarismNotes}
+                          onChange={(e) => setPlagiarismNotes(e.target.value)}
+                          placeholder="e.g. 3.2% similarity verified"
+                          className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-xs"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[11px] font-medium text-slate-400 mb-1">AI-Content Screening Notes</label>
+                        <input
+                          type="text"
+                          value={aiNotes}
+                          onChange={(e) => setAiNotes(e.target.value)}
+                          placeholder="e.g. Cleared human scholarship"
+                          className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-xs"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <button
+                        onClick={() => handleUpdateSubmissionStatus(selectedSubmission.submissionId, 'published')}
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md"
+                      >
+                        Approve &amp; Publish Live
+                      </button>
+                      <button
+                        onClick={() => handleUpdateSubmissionStatus(selectedSubmission.submissionId, 'revision_requested')}
+                        className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs rounded-xl"
+                      >
+                        Request Revision
+                      </button>
+                      <button
+                        onClick={() => handleUpdateSubmissionStatus(selectedSubmission.submissionId, 'rejected')}
+                        className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs rounded-xl"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Application Detail Modal */}
+            {selectedApplication && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/75 dark:bg-black/80 backdrop-blur-sm">
+                <div className="relative w-full max-w-2xl rounded-3xl bg-white dark:bg-legal-950 border border-slate-200 dark:border-gold-500/30 p-6 space-y-5 max-h-[90vh] overflow-y-auto">
+                  <div className="flex justify-between items-center border-b border-slate-200 dark:border-legal-800 pb-3">
+                    <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-white">
+                      Manage Fellowship: {selectedApplication.applicantName}
+                    </h3>
+                    <button onClick={() => setSelectedApplication(null)} className="text-slate-400 hover:text-white">
+                      <XCircle className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                    <p><strong>Application Docket:</strong> <span className="font-mono text-gold-600">{selectedApplication.applicationId}</span></p>
+                    <p><strong>Institution:</strong> {selectedApplication.institution} &bull; {selectedApplication.yearOfStudy}</p>
+                    <p><strong>Academic Score:</strong> {selectedApplication.academicScore || 'N/A'}</p>
+                    <p><strong>Phone:</strong> {selectedApplication.phone}</p>
+                    <p><strong>Email:</strong> {selectedApplication.verifiedEmail}</p>
+                    <p><strong>Current Status:</strong> <span className="uppercase font-bold text-emerald-500">{selectedApplication.status}</span></p>
+                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-200 dark:border-legal-800">
+                      <strong>Statement of Purpose:</strong>
+                      <p className="mt-1">{selectedApplication.adminNotes || 'No SOP provided'}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 pt-3 border-t border-slate-200 dark:border-legal-800">
+                    <div>
+                      <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                        Mentor Assigned (for certificate)
+                      </label>
+                      <input
+                        type="text"
+                        value={mentorName}
+                        onChange={(e) => setMentorName(e.target.value)}
+                        className="w-full px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-xs"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap gap-2 pt-2">
+                      <button
+                        onClick={() => handleUpdateApplicantStatus(selectedApplication.applicationId, 'accepted')}
+                        className="px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs rounded-xl"
+                      >
+                        Accept Application
+                      </button>
+                      <button
+                        onClick={() => handleUpdateApplicantStatus(selectedApplication.applicationId, 'completed')}
+                        className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl"
+                      >
+                        Mark Requirements Completed
+                      </button>
+                      <button
+                        onClick={() => handleIssueCertificate(selectedApplication.applicationId)}
+                        disabled={selectedApplication.status !== 'completed'}
+                        className="px-3.5 py-2 bg-gold-500 hover:bg-gold-400 text-slate-950 font-bold text-xs rounded-xl disabled:opacity-40 flex items-center space-x-1"
+                      >
+                        <Award className="w-3.5 h-3.5" />
+                        <span>Issue Verifiable Certificate</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
-        </div>
-      )}
+        ) : null}
+      </GoogleAuthGate>
 
     </div>
   );

@@ -9,6 +9,9 @@ export interface VerifiedAuthUser {
   picture?: string;
 }
 
+/**
+ * Initializes or retrieves singleton Firebase Admin SDK instance.
+ */
 function getFirebaseAdminApp(): App | null {
   const existingApps = getApps();
   if (existingApps.length > 0) {
@@ -41,44 +44,43 @@ function getFirebaseAdminApp(): App | null {
 }
 
 /**
- * Verifies a Firebase Auth ID Token sent by the frontend client.
+ * Verifies a Firebase Auth ID Token sent by the frontend client in Authorization: Bearer <token>.
  * Guarantees that the email belongs to a real, authenticated Google account.
  */
 export async function verifyFirebaseIdToken(idToken: string): Promise<VerifiedAuthUser | null> {
-  if (!idToken) {
+  if (!idToken || typeof idToken !== 'string') {
     return null;
   }
 
-  // Handle Local Dev Mock Tokens when Firebase Admin env vars are not yet populated
-  if (idToken.startsWith('mock_firebase_id_token_')) {
-    console.warn('[Firebase Admin Warning]: Accepting mock ID token in Local Development mode.');
+  // Support explicit test token ONLY in automated test environments
+  if (process.env.APP_ENV === 'test' && idToken.startsWith('test_token_')) {
+    const email = idToken.replace('test_token_', '');
     return {
-      uid: 'demo_scholar_uid_101',
-      email: 'scholar.manav@lexminds.in',
+      uid: `test_uid_${email}`,
+      email,
       emailVerified: true,
-      name: 'Adv. Manav Verma',
-      picture: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      name: 'Automated Test User',
     };
   }
 
   try {
     const app = getFirebaseAdminApp();
     if (!app) {
-      console.warn('[Firebase Admin Warning]: Credentials missing in .env.local. Configure FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, and FIREBASE_PRIVATE_KEY.');
+      console.error('[Firebase Admin]: Missing server credentials (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY).');
       return null;
     }
 
     const auth = getAuth(app);
     const decodedToken = await auth.verifyIdToken(idToken);
-    
-    // Ensure email is verified by Google
+
     if (!decodedToken.email) {
-      throw new Error('Token does not contain an email address');
+      console.warn('[Firebase Admin]: Token missing email claim.');
+      return null;
     }
 
     return {
       uid: decodedToken.uid,
-      email: decodedToken.email,
+      email: decodedToken.email.toLowerCase(),
       emailVerified: Boolean(decodedToken.email_verified),
       name: decodedToken.name,
       picture: decodedToken.picture,
@@ -87,4 +89,60 @@ export async function verifyFirebaseIdToken(idToken: string): Promise<VerifiedAu
     console.error('[Firebase Admin Token Verification Error]:', error.message || error);
     return null;
   }
+}
+
+/**
+ * Extracts the Bearer token from the incoming HTTP Request headers.
+ */
+export function extractBearerToken(req: Request): string | null {
+  const authHeader = req.headers.get('Authorization') || req.headers.get('authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  return authHeader.substring(7).trim();
+}
+
+/**
+ * Verifies that the request comes from an authenticated user.
+ */
+export async function verifyUserAuth(req: Request): Promise<VerifiedAuthUser | null> {
+  const token = extractBearerToken(req);
+  if (!token) return null;
+  return verifyFirebaseIdToken(token);
+}
+
+/**
+ * Returns the allowlist of admin emails configured via ADMIN_EMAILS.
+ */
+export function getAdminEmails(): string[] {
+  const adminEnv = process.env.ADMIN_EMAILS || '';
+  return adminEnv
+    .split(',')
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+}
+
+/**
+ * Verifies that the request comes from an authorized administrator.
+ * Compares the verified token email against the server-side ADMIN_EMAILS allowlist.
+ */
+export async function verifyAdminAuth(req: Request): Promise<VerifiedAuthUser | null> {
+  const user = await verifyUserAuth(req);
+  if (!user || !user.email) {
+    return null;
+  }
+
+  const allowedAdmins = getAdminEmails();
+  if (allowedAdmins.length === 0) {
+    console.warn('[Admin Authorization Warning]: ADMIN_EMAILS environment variable is not configured.');
+    return null;
+  }
+
+  const isAllowed = allowedAdmins.includes(user.email.toLowerCase());
+  if (!isAllowed) {
+    console.warn(`[Admin Security Alert]: Unauthorized admin access attempted by ${user.email}`);
+    return null;
+  }
+
+  return user;
 }
