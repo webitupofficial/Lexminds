@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { verifyUserAuth } from '@/lib/firebase-admin';
 import { reconcilePaymentAndFulfill } from '@/lib/payment-service';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 export async function POST(req: Request) {
   try {
     // 1. Mandatory Firebase Authentication

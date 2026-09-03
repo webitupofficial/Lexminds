@@ -3,6 +3,9 @@ const nextConfig = {
   reactStrictMode: true,
   productionBrowserSourceMaps: false,
   poweredByHeader: false,
+  experimental: {
+    serverComponentsExternalPackages: ['firebase-admin', 'googleapis'],
+  },
   images: {
     domains: ['images.unsplash.com', 'lexminds.in'],
   },
