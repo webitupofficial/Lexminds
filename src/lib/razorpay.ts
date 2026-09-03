@@ -48,8 +48,8 @@ export const loadRazorpayScript = (): Promise<boolean> => {
 
 export const initiateRazorpayPayment = async (
   options: RazorpayOptions,
-  onSuccess: (paymentId: string) => void,
-  onFailure: (err: any) => void
+  onSuccess: (paymentIdOrResponse: string | RazorpayPaymentResponse) => void,
+  onFailure?: (err: any) => void
 ) => {
   const isLoaded = await loadRazorpayScript();
   const apiKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_LexMindsDemoKey';
@@ -60,7 +60,7 @@ export const initiateRazorpayPayment = async (
         ...options,
         key: apiKey,
         handler: (response: RazorpayPaymentResponse) => {
-          onSuccess(response.razorpay_payment_id);
+          onSuccess(response);
         }
       });
       rzp.open();
@@ -69,15 +69,24 @@ export const initiateRazorpayPayment = async (
       simulateCheckout(options, onSuccess);
     }
   } else {
-    // Elegant simulated sandbox modal for test/review environment
+    // Simulated sandbox modal for test/review environment
     simulateCheckout(options, onSuccess);
   }
 };
 
-function simulateCheckout(options: RazorpayOptions, onSuccess: (paymentId: string) => void) {
-  const simulatedId = `pay_sim_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
-  // Prompt or instant mock resolution
+function simulateCheckout(
+  options: RazorpayOptions, 
+  onSuccess: (response: RazorpayPaymentResponse) => void
+) {
+  const simulatedPaymentId = `pay_sim_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+  const simulatedOrderId = options.order_id || `order_sim_${Date.now()}`;
+  const simulatedSig = 'simulated_sig_verified';
+
   setTimeout(() => {
-    onSuccess(simulatedId);
+    onSuccess({
+      razorpay_payment_id: simulatedPaymentId,
+      razorpay_order_id: simulatedOrderId,
+      razorpay_signature: simulatedSig
+    });
   }, 900);
 }

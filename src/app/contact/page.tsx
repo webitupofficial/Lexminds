@@ -6,25 +6,18 @@ import {
   MapPin, 
   Phone, 
   Shield, 
-  Send, 
-  CheckCircle2, 
-  HelpCircle, 
   ChevronDown, 
   ChevronUp,
   Sparkles,
-  Building
+  Building,
+  Loader2,
+  ExternalLink
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: 'Internship Placement Query',
-    message: '',
-  });
-  const [submitted, setSubmitted] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [iframeLoading, setIframeLoading] = useState<boolean>(true);
 
   const faqs = [
     {
@@ -45,11 +38,6 @@ export default function ContactPage() {
     }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-10 sm:space-y-12">
       
@@ -65,99 +53,52 @@ export default function ContactPage() {
           Contact LexMinds &amp; Grievance Redressal
         </h1>
         <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
-          Reach our editorial desk, placement coordination team, or statutory grievance officer.
+          Reach our editorial desk, placement coordination team, or statutory grievance redressal officer. Inquiries submitted below are automatically captured in our official registry.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
         
-        {/* Left Form (7 Cols) */}
-        <div className="lg:col-span-7 neumorph-card rounded-3xl p-6 sm:p-8 space-y-6">
+        {/* Left: Embedded Google Form (7 Cols) */}
+        <div className="lg:col-span-7 neumorph-card rounded-3xl p-4 sm:p-6 space-y-4">
           
-          <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-            <Mail className="w-5 h-5 text-gold-700 dark:text-gold-400" />
-            <span>Send Us an Inquiry</span>
-          </h2>
+          <div className="flex items-center justify-between px-2 pt-1 border-b border-slate-200 dark:border-legal-800 pb-3">
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-slate-900 dark:text-white flex items-center space-x-2">
+              <Mail className="w-5 h-5 text-gold-700 dark:text-gold-400" />
+              <span>Official Inquiry Registry</span>
+            </h2>
+            <a 
+              href="https://docs.google.com/forms/d/e/1FAIpQLScTtf9fSfKdgnXOwDvx-8SN96FrYMvnuI_SmKNYmclkKMrorw/viewform"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[11px] text-slate-500 hover:text-gold-600 dark:text-slate-400 dark:hover:text-gold-400 flex items-center space-x-1"
+            >
+              <span>Open in new tab</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </div>
 
-          {!submitted ? (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Your Name <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="Adv. / Student Name"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Email Address <span className="text-rose-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    placeholder="name@college.edu.in"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                  />
-                </div>
+          {/* Embedded Google Form Container */}
+          <div className="relative w-full rounded-2xl overflow-hidden border border-slate-200 dark:border-legal-800 bg-white shadow-sm min-h-[950px]">
+            {iframeLoading && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50 dark:bg-legal-950 text-slate-500 text-xs space-y-2 z-10">
+                <Loader2 className="w-6 h-6 animate-spin text-gold-500" />
+                <span>Loading Official LexMinds Inquiry Form...</span>
               </div>
-
-              <div>
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Query Nature / Category
-                </label>
-                <select
-                  value={formData.subject}
-                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500 neumorph-inset"
-                >
-                  <option value="Internship Placement Query">Internship Placement &amp; Chamber Query</option>
-                  <option value="Editorial & Journal Query">Editorial &amp; Journal Publication Query</option>
-                  <option value="Campus Ambassador Program">Campus Ambassador / Law Society Partnership</option>
-                  <option value="Grievance Redressal">Statutory Grievance Redressal</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Message / Details <span className="text-rose-500">*</span>
-                </label>
-                <textarea
-                  rows={4}
-                  required
-                  value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  placeholder="Detail your query or institutional request..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-gold-500 neumorph-inset resize-none"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3.5 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl shadow-sm dark:shadow-glow-gold transition-all flex items-center justify-center space-x-2"
-              >
-                <Send className="w-4 h-4" />
-                <span>Submit Inquiry</span>
-              </button>
-            </form>
-          ) : (
-            <div className="text-center py-8 space-y-3 neumorph-card rounded-2xl p-6 border border-emerald-500/30">
-              <CheckCircle2 className="w-10 h-10 text-emerald-600 dark:text-emerald-400 mx-auto" />
-              <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-white">Inquiry Transmitted</h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
-                Our support desk has received your request. A designated desk associate will respond to <strong>{formData.email}</strong> within 24 business hours.
-              </p>
-            </div>
-          )}
+            )}
+            <iframe
+              src="https://docs.google.com/forms/d/e/1FAIpQLScTtf9fSfKdgnXOwDvx-8SN96FrYMvnuI_SmKNYmclkKMrorw/viewform?embedded=true"
+              width="100%"
+              height="1183"
+              frameBorder="0"
+              marginHeight={0}
+              marginWidth={0}
+              className="w-full min-h-[1100px] border-0"
+              onLoad={() => setIframeLoading(false)}
+            >
+              Loading…
+            </iframe>
+          </div>
 
         </div>
 
@@ -214,6 +155,17 @@ export default function ContactPage() {
               <div className="text-slate-500 dark:text-slate-400">Designated Grievance &amp; Compliance Officer</div>
               <div className="text-slate-500 dark:text-slate-400 font-mono">Email: grievance@lexminds.in</div>
             </div>
+          </div>
+
+          {/* Security / Response Guarantee Box */}
+          <div className="p-5 rounded-2xl bg-gold-500/5 border border-gold-500/20 text-xs space-y-2">
+            <div className="flex items-center space-x-2 text-gold-700 dark:text-gold-400 font-bold">
+              <Sparkles className="w-4 h-4" />
+              <span>Direct Registry Logging</span>
+            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+              Inquiries submitted through this official desk are delivered directly to the LexMinds administration database. A case associate will respond to your specified email within 24 business hours.
+            </p>
           </div>
 
         </div>

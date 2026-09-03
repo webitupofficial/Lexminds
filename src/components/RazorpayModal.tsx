@@ -87,7 +87,10 @@ export default function RazorpayModal({
             color: '#070f26',
           }
         },
-        async (paymentId) => {
+        async (paymentRes: any) => {
+          const paymentId = typeof paymentRes === 'string' ? paymentRes : paymentRes.razorpay_payment_id;
+          const signature = typeof paymentRes === 'string' ? 'simulated_sig_verified' : paymentRes.razorpay_signature;
+          
           // Verify
           const verifyRes = await fetch('/api/payment/verify', {
             method: 'POST',
@@ -95,7 +98,7 @@ export default function RazorpayModal({
             body: JSON.stringify({
               razorpay_order_id: orderData.id,
               razorpay_payment_id: paymentId,
-              razorpay_signature: 'simulated_sig_verified'
+              razorpay_signature: signature
             })
           });
           const verifyData = await verifyRes.json();
