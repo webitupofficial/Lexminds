@@ -49,10 +49,15 @@ export async function GET(req: Request) {
     const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
     const hasKey = Boolean(process.env.FIREBASE_PRIVATE_KEY);
 
+    const rawKey = process.env.FIREBASE_PRIVATE_KEY || '';
     diagnostics.checks.firebaseAdmin = {
       projectId: projId || 'missing',
       clientEmailConfigured: Boolean(clientEmail),
       privateKeyConfigured: hasKey,
+      keyLength: rawKey.length,
+      keyHasBegin: rawKey.includes('BEGIN PRIVATE KEY'),
+      keyHasEscapedN: rawKey.includes('\\n'),
+      keyHasLiteralN: rawKey.includes('\n'),
     };
 
     if (testToken) {

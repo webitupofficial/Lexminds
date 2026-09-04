@@ -18,7 +18,17 @@ function formatPrivateKey(rawKey: string | undefined): string | null {
   if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
     key = key.slice(1, -1).trim();
   }
-  key = key.replace(/\\n/g, '\n').replace(/\r\n/g, '\n');
+  if (!key.includes('BEGIN PRIVATE KEY') && !key.includes('BEGIN RSA PRIVATE KEY')) {
+    try {
+      const decoded = Buffer.from(key, 'base64').toString('utf8');
+      if (decoded.includes('BEGIN PRIVATE KEY') || decoded.includes('BEGIN RSA PRIVATE KEY')) {
+        key = decoded.trim();
+      }
+    } catch {
+      // not base64
+    }
+  }
+  key = key.replace(/\\n/g, '\n').replace(/\\r\\n/g, '\n').replace(/\r\n/g, '\n');
   return key;
 }
 
@@ -87,8 +97,10 @@ export async function verifyFirebaseIdToken(idToken: string): Promise<VerifiedAu
   try {
     const app = getFirebaseAdminApp();
     if (!app) {
-      lastVerificationError = 'Missing server credentials (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY).';
-      console.error('[Firebase Admin]: Missing server credentials.');
+      if (!lastVerificationError) {
+        lastVerificationError = 'getFirebaseAdminApp returned null without error message.';
+      }
+      console.error('[Firebase Admin]:', lastVerificationError);
       return null;
     }
 
