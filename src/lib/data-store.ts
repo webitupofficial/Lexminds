@@ -19,10 +19,10 @@ export const INITIAL_INTERNSHIPS: Internship[] = [
     seats: 5,
     deadline: '2026-10-15',
     featured: true,
-    description: 'A selective research fellowship designed for motivated law students to work on cutting-edge statutory analyses, case digests, and double-blind peer-reviewed journal editing.',
+    description: 'A selective research fellowship designed for motivated law students to work on cutting-edge statutory analyses, case digests, and student-led law journal editing.',
     responsibilities: [
       'Conduct analytical legal research on contemporary landmark judgments and legislative amendments.',
-      'Assist the editorial board in manuscript screening, citations review (Bluebook/OSCOLA), and preliminary peer evaluations.',
+      'Assist the editorial board in manuscript screening, citations review (Bluebook/OSCOLA), and preliminary manuscript evaluations.',
       'Author high-impact legal commentary and case briefs for publication in the LexMinds Law Review.',
       'Participate in weekly research roundtables on emerging jurisprudence in corporate, tech, and constitutional law.',
     ],
@@ -33,8 +33,8 @@ export const INITIAL_INTERNSHIPS: Internship[] = [
       'Commitment of 10-12 hours per week for 8 weeks.',
     ],
     learningOutcomes: [
-      'Direct editorial mentorship from experienced legal academics and practitioners.',
-      'Guaranteed fast-track peer-review and publication opportunity for top-rated research papers.',
+      'Direct editorial mentorship from experienced senior student editors and academic advisors.',
+      'Priority editorial consideration and publication pathway for top-rated research papers.',
       'Official Certificate of Completion with verifiable credentials.',
       'Networking with student researchers and legal scholars across top institutions.',
     ],

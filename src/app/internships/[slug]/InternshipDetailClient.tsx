@@ -13,10 +13,7 @@ import {
   Share2, 
   Scale, 
   Award, 
-  Sparkles, 
-  Users, 
   Briefcase, 
-  Copy, 
   Check 
 } from 'lucide-react';
 import { Internship } from '@/lib/types';
@@ -50,85 +47,84 @@ export default function InternshipDetailClient({ internship }: Props) {
         {/* Main Content Column (8 Cols) */}
         <div className="lg:col-span-8 space-y-8">
           
-          {/* Header Card */}
-          <div className="neumorph-card rounded-3xl p-6 sm:p-8 space-y-6">
+          {/* Header Dossier Card */}
+          <div className="editorial-card rounded-sm p-6 sm:p-8 space-y-6 bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800">
             
-            {/* Badges */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            {/* Badges & Share */}
+            <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
               <div className="flex items-center space-x-2">
-                <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-md bg-gold-50 dark:bg-gold-950/80 text-gold-700 dark:text-gold-400 border border-gold-500/30">
+                <span className="px-2.5 py-0.5 rounded-sm bg-ivory-200 dark:bg-ink-800 text-oxblood-700 dark:text-oxblood-400 font-semibold uppercase tracking-wider text-[10px]">
                   {internship.practiceArea}
                 </span>
-                <span className="text-xs font-medium px-2.5 py-1 rounded-md bg-slate-100 dark:bg-legal-800 text-slate-700 dark:text-slate-300">
+                <span className="text-ink-400">&bull;</span>
+                <span className="text-ink-600 dark:text-ink-300">
                   {internship.orgType}
                 </span>
               </div>
 
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handleShare}
-                  className="p-2 rounded-xl bg-slate-100 dark:bg-legal-850 hover:bg-slate-200 dark:hover:bg-legal-800 text-slate-700 dark:text-slate-300 hover:text-gold-600 dark:hover:text-gold-400 border border-slate-200 dark:border-legal-700 transition-colors flex items-center space-x-1.5 text-xs font-medium"
-                >
-                  {copiedLink ? <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" /> : <Share2 className="w-4 h-4" />}
-                  <span>{copiedLink ? 'Link Copied' : 'Share Role'}</span>
-                </button>
-              </div>
+              <button
+                onClick={handleShare}
+                className="p-1.5 px-2.5 rounded-sm bg-ivory-100 dark:bg-ink-800 hover:bg-ivory-200 dark:hover:bg-ink-700 text-ink-700 dark:text-ink-300 border border-ink-200 dark:border-ink-700 transition-colors flex items-center space-x-1.5 text-xs font-mono"
+              >
+                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+                <span>{copiedLink ? 'Copied' : 'Share'}</span>
+              </button>
             </div>
 
-            {/* Single Page H1 */}
+            {/* Title */}
             <div>
-              <h1 className="text-2xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white tracking-tight leading-tight">
+              <h1 className="text-2xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-white tracking-tight leading-tight">
                 {internship.title}
               </h1>
-              <p className="text-sm sm:text-base text-gold-700 dark:text-gold-300 font-semibold mt-2 flex items-center space-x-2">
-                <Building className="w-4 h-4 text-gold-600 dark:text-gold-400 shrink-0" />
+              <p className="text-xs sm:text-sm text-oxblood-700 dark:text-oxblood-400 font-mono uppercase tracking-wider mt-2 flex items-center space-x-2">
+                <Building className="w-4 h-4 shrink-0" />
                 <span>{internship.organization}</span>
               </p>
             </div>
 
-            {/* Key Quick Facts Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-100 dark:border-legal-800 text-xs">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-legal-950/60 border border-slate-200 dark:border-legal-800">
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Location &amp; Mode</span>
-                <span className="font-semibold text-slate-900 dark:text-white mt-0.5 block">{internship.location} ({internship.mode})</span>
+            {/* Quick Facts Ledger Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-ink-100 dark:border-ink-800 text-xs font-mono">
+              <div className="p-3 rounded-sm bg-ivory-50 dark:bg-ink-900 border border-ink-200 dark:border-ink-800">
+                <span className="text-ink-400 block text-[10px] uppercase">Location</span>
+                <span className="font-semibold text-ink-900 dark:text-white mt-0.5 block">{internship.location}</span>
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-legal-950/60 border border-slate-200 dark:border-legal-800">
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Monthly Stipend</span>
-                <span className="font-bold text-emerald-600 dark:text-emerald-400 mt-0.5 block">{internship.stipend}</span>
+              <div className="p-3 rounded-sm bg-ivory-50 dark:bg-ink-900 border border-ink-200 dark:border-ink-800">
+                <span className="text-ink-400 block text-[10px] uppercase">Stipend</span>
+                <span className="font-bold text-oxblood-700 dark:text-oxblood-400 mt-0.5 block">{internship.stipend}</span>
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-legal-950/60 border border-slate-200 dark:border-legal-800">
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Duration</span>
-                <span className="font-semibold text-slate-900 dark:text-white mt-0.5 block">{internship.duration}</span>
+              <div className="p-3 rounded-sm bg-ivory-50 dark:bg-ink-900 border border-ink-200 dark:border-ink-800">
+                <span className="text-ink-400 block text-[10px] uppercase">Term</span>
+                <span className="font-semibold text-ink-900 dark:text-white mt-0.5 block">{internship.duration}</span>
               </div>
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-legal-950/60 border border-slate-200 dark:border-legal-800">
-                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase">Deadline</span>
-                <span className="font-bold text-rose-600 dark:text-rose-400 mt-0.5 block">{internship.deadline}</span>
+              <div className="p-3 rounded-sm bg-ivory-50 dark:bg-ink-900 border border-ink-200 dark:border-ink-800">
+                <span className="text-ink-400 block text-[10px] uppercase">Deadline</span>
+                <span className="font-bold text-rose-700 dark:text-rose-400 mt-0.5 block">{internship.deadline}</span>
               </div>
             </div>
 
           </div>
 
-          {/* Section: Role Overview */}
-          <div className="neumorph-card rounded-3xl p-6 sm:p-8 space-y-4">
-            <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-              <Scale className="w-5 h-5 text-gold-700 dark:text-gold-400" />
+          {/* Role Overview */}
+          <div className="editorial-card rounded-sm p-6 sm:p-8 space-y-3 bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800">
+            <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
+              <Scale className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
               <span>Chamber &amp; Role Overview</span>
             </h2>
-            <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed">
+            <p className="text-ink-600 dark:text-ink-300 text-xs sm:text-sm leading-relaxed font-normal">
               {internship.description}
             </p>
           </div>
 
-          {/* Section: Key Responsibilities */}
-          <div className="neumorph-card rounded-3xl p-6 sm:p-8 space-y-4">
-            <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-              <Briefcase className="w-5 h-5 text-gold-700 dark:text-gold-400" />
+          {/* Responsibilities */}
+          <div className="editorial-card rounded-sm p-6 sm:p-8 space-y-4 bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800">
+            <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
+              <Briefcase className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
               <span>Core Responsibilities</span>
             </h2>
-            <ul className="space-y-2.5 text-sm text-slate-700 dark:text-slate-300">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-ink-700 dark:text-ink-300">
               {internship.responsibilities.map((resp, i) => (
                 <li key={i} className="flex items-start space-x-3">
-                  <span className="w-5 h-5 rounded-full bg-gold-100 dark:bg-gold-950 border border-gold-500/30 flex items-center justify-center text-[10px] font-bold text-gold-700 dark:text-gold-400 shrink-0 mt-0.5">
+                  <span className="w-5 h-5 rounded-sm bg-ivory-200 dark:bg-ink-800 border border-ink-300 dark:border-ink-700 flex items-center justify-center text-[10px] font-mono font-bold text-oxblood-700 dark:text-oxblood-400 shrink-0 mt-0.5">
                     {i + 1}
                   </span>
                   <span className="leading-relaxed">{resp}</span>
@@ -137,47 +133,47 @@ export default function InternshipDetailClient({ internship }: Props) {
             </ul>
           </div>
 
-          {/* Section: Eligibility Requirements */}
-          <div className="neumorph-card rounded-3xl p-6 sm:p-8 space-y-4">
-            <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-              <GraduationCap className="w-5 h-5 text-gold-700 dark:text-gold-400" />
+          {/* Eligibility */}
+          <div className="editorial-card rounded-sm p-6 sm:p-8 space-y-4 bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800">
+            <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
+              <GraduationCap className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
               <span>Eligibility &amp; Academic Criteria</span>
             </h2>
-            <ul className="space-y-2.5 text-sm text-slate-700 dark:text-slate-300">
+            <ul className="space-y-2 text-xs sm:text-sm text-ink-700 dark:text-ink-300">
               {internship.eligibility.map((el, i) => (
-                <li key={i} className="flex items-start space-x-3">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                <li key={i} className="flex items-start space-x-2.5">
+                  <CheckCircle2 className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400 shrink-0 mt-0.5" />
                   <span className="leading-relaxed">{el}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Section: Learning Outcomes */}
-          <div className="neumorph-card rounded-3xl p-6 sm:p-8 space-y-4">
-            <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-              <Award className="w-5 h-5 text-gold-700 dark:text-gold-400" />
-              <span>Learning Outcomes &amp; Career Advantages</span>
+          {/* Learning Outcomes */}
+          <div className="editorial-card rounded-sm p-6 sm:p-8 space-y-4 bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800">
+            <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
+              <Award className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
+              <span>Learning Outcomes &amp; Academic Advantages</span>
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {internship.learningOutcomes.map((out, i) => (
-                <div key={i} className="p-4 rounded-xl bg-slate-50 dark:bg-legal-950/70 border border-slate-200 dark:border-legal-800 text-xs text-slate-600 dark:text-slate-300 leading-relaxed flex items-start space-x-2">
-                  <Sparkles className="w-4 h-4 text-gold-600 dark:text-gold-400 shrink-0 mt-0.5" />
+                <div key={i} className="p-3.5 rounded-sm bg-ivory-50 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 text-xs text-ink-600 dark:text-ink-300 leading-relaxed flex items-start space-x-2">
+                  <span className="font-mono text-oxblood-700 dark:text-oxblood-400 font-bold">&bull;</span>
                   <span>{out}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Section: Selection Process */}
-          <div className="neumorph-card rounded-3xl p-6 sm:p-8 space-y-4">
-            <h2 className="text-xl font-serif font-bold text-slate-900 dark:text-white flex items-center space-x-2">
-              <ShieldCheck className="w-5 h-5 text-gold-700 dark:text-gold-400" />
+          {/* Selection Stages */}
+          <div className="editorial-card rounded-sm p-6 sm:p-8 space-y-3 bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800">
+            <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
+              <ShieldCheck className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
               <span>Evaluation &amp; Selection Stages</span>
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-2 font-mono text-xs">
               {internship.selectionProcess.map((proc, i) => (
-                <div key={i} className="p-3.5 rounded-xl bg-slate-50 dark:bg-legal-950/60 border border-slate-200 dark:border-legal-800 text-xs text-slate-700 dark:text-slate-300 font-medium">
+                <div key={i} className="p-3 rounded-sm bg-ivory-50 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 text-ink-700 dark:text-ink-300">
                   {proc}
                 </div>
               ))}
@@ -187,81 +183,64 @@ export default function InternshipDetailClient({ internship }: Props) {
         </div>
 
         {/* Sidebar Sticky Apply Box (4 Cols) */}
-        <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
+        <div className="lg:col-span-4 lg:sticky lg:top-20 space-y-6">
           
-          <div className="neumorph-card rounded-3xl p-6 space-y-6 border border-slate-200 dark:border-gold-500/40">
+          <div className="editorial-card rounded-sm p-6 space-y-5 bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800">
             
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Application Fee</span>
-                <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950 px-2 py-0.5 rounded border border-emerald-500/30">
-                  GST Included
+            <div className="space-y-1">
+              <div className="flex items-center justify-between font-mono text-xs">
+                <span className="uppercase text-ink-400">Evaluation Fee</span>
+                <span className="text-[10px] text-oxblood-700 dark:text-oxblood-400 font-semibold">
+                  Inclusive of All Taxes
                 </span>
               </div>
-              <div className="text-3xl font-serif font-bold text-gold-700 dark:text-gold-400">
+              <div className="text-3xl font-serif font-bold text-ink-950 dark:text-white">
                 ₹{internship.applicationFee}.00
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-normal">
-                Direct submission to the hiring partner committee with automated status tracking.
+              <p className="text-[11px] text-ink-500 font-mono">
+                Standard student evaluation fee for review of writing sample and statement of purpose.
               </p>
             </div>
 
-            {/* Quick Stats in Box */}
-            <div className="space-y-2.5 pt-4 border-t border-slate-200 dark:border-legal-800 text-xs text-slate-700 dark:text-slate-300">
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">Available Seats:</span>
-                <span className="font-bold text-gold-700 dark:text-gold-300">{internship.seats} Selected Candidates</span>
+            <div className="border-t border-ink-200 dark:border-ink-800 pt-4 space-y-2 text-xs font-mono">
+              <div className="flex justify-between items-center text-ink-600 dark:text-ink-300">
+                <span>Available Seats:</span>
+                <strong className="text-ink-950 dark:text-white">{internship.seats} Fellows</strong>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">Application Closes:</span>
-                <span className="font-bold text-rose-600 dark:text-rose-400">{internship.deadline}</span>
+              <div className="flex justify-between items-center text-ink-600 dark:text-ink-300">
+                <span>Mode:</span>
+                <strong className="text-ink-950 dark:text-white">{internship.mode}</strong>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500 dark:text-slate-400">Payment Gateway:</span>
-                <span className="font-bold text-slate-900 dark:text-slate-200">Razorpay (Cards/UPI/Netbanking)</span>
+              <div className="flex justify-between items-center text-ink-600 dark:text-ink-300">
+                <span>Deadline:</span>
+                <strong className="text-rose-700 dark:text-rose-400">{internship.deadline}</strong>
               </div>
             </div>
 
-            {/* Apply Button */}
+            {/* Single Primary CTA */}
             <button
               onClick={() => setIsApplyModalOpen(true)}
-              className="w-full py-4 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 hover:from-gold-300 hover:to-gold-500 text-slate-950 font-bold text-sm uppercase tracking-wider rounded-xl shadow-sm dark:shadow-glow-gold transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
+              className="w-full py-3.5 px-4 rounded-sm bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif text-xs font-semibold uppercase tracking-widest text-center block transition-all shadow-sm"
             >
-              <Briefcase className="w-4 h-4" />
-              <span>Apply Now (₹{internship.applicationFee})</span>
-              <ArrowRight className="w-4 h-4" />
+              Submit Application
             </button>
 
-            {/* Security Note */}
-            <div className="p-3 rounded-xl bg-slate-50 dark:bg-legal-950/70 border border-slate-200 dark:border-legal-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-start space-x-2">
-              <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-              <span>
-                Standardized LexMinds guarantee: All candidates receive verified receipt and formal review feedback within 72 hours.
-              </span>
+            <div className="pt-2 text-center text-[10px] font-mono text-ink-400">
+              Verified Google Authentication required at submission.
             </div>
 
-          </div>
-
-          {/* Assistance Box */}
-          <div className="neumorph-card rounded-2xl p-5 text-xs text-slate-600 dark:text-slate-400 space-y-2">
-            <h4 className="font-semibold text-slate-900 dark:text-white">Need Application Support?</h4>
-            <p className="text-[11px] leading-relaxed">
-              If you have queries regarding eligibility or chamber accommodation, reach out to our placement desk at <strong className="text-gold-700 dark:text-gold-400">internships@lexminds.in</strong>.
-            </p>
           </div>
 
         </div>
 
       </div>
 
-      {/* Application Multi-step Modal */}
-      {isApplyModalOpen && (
-        <ApplicationModal
-          internship={internship}
-          isOpen={isApplyModalOpen}
-          onClose={() => setIsApplyModalOpen(false)}
-        />
-      )}
+      {/* Application Modal Popup */}
+      <ApplicationModal
+        internship={internship}
+        isOpen={isApplyModalOpen}
+        onClose={() => setIsApplyModalOpen(false)}
+      />
     </>
   );
 }

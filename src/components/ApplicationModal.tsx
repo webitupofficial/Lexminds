@@ -124,30 +124,30 @@ export default function ApplicationModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-slate-950/75 dark:bg-black/85 backdrop-blur-md animate-fade-in">
-        <div className="relative w-full max-w-2xl rounded-3xl bg-white dark:bg-legal-950 border border-slate-200 dark:border-gold-500/30 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors">
+      <div className="fixed inset-0 z-40 flex items-center justify-center p-4 bg-ink-950/75 backdrop-blur-sm animate-fade-in">
+        <div className="relative w-full max-w-2xl rounded-sm bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors">
           
           {/* Header */}
-          <div className="bg-slate-100 dark:bg-legal-900/80 px-6 py-4 border-b border-slate-200 dark:border-legal-800 flex items-center justify-between shrink-0">
+          <div className="bg-ivory-100 dark:bg-ink-900 px-6 py-4 border-b border-ink-200 dark:border-ink-800 flex items-center justify-between shrink-0">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-xl bg-gold-100 dark:bg-gold-950/80 border border-gold-500/40 flex items-center justify-center text-gold-700 dark:text-gold-400">
-                <Briefcase className="w-5 h-5" />
+              <div className="w-9 h-9 rounded-sm bg-white dark:bg-ink-850 border border-ink-300 dark:border-ink-700 flex items-center justify-center text-oxblood-700 dark:text-oxblood-400">
+                <Briefcase className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-serif font-bold text-slate-900 dark:text-white line-clamp-1">
+                <h3 className="text-base sm:text-lg font-serif font-bold text-ink-950 dark:text-white line-clamp-1">
                   {internship.title}
                 </h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
-                  <Building2 className="w-3.5 h-3.5 text-gold-600 dark:text-gold-400" />
+                <p className="text-xs text-ink-500 dark:text-ink-400 flex items-center space-x-1.5 font-mono">
+                  <Building2 className="w-3.5 h-3.5 text-oxblood-700 dark:text-oxblood-400" />
                   <span>{internship.organization}</span>
                   <span>&bull;</span>
-                  <span className="text-gold-700 dark:text-gold-300 font-semibold">Fee: ₹{internship.applicationFee}</span>
+                  <span className="text-oxblood-700 dark:text-oxblood-400 font-semibold">Fee: ₹{internship.applicationFee}</span>
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-legal-800 transition-colors"
+              className="p-1.5 rounded-sm text-ink-400 hover:text-ink-900 dark:hover:text-white hover:bg-ivory-200 dark:hover:bg-ink-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -157,13 +157,13 @@ export default function ApplicationModal({
           <div className="p-6 overflow-y-auto space-y-6 flex-1">
             {isDeadlinePassed ? (
               <div className="p-6 text-center space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto">
+                <div className="w-12 h-12 rounded-sm bg-rose-50 dark:bg-rose-950/30 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center justify-center mx-auto">
                   <AlertCircle className="w-6 h-6" />
                 </div>
-                <h4 className="text-lg font-serif font-bold text-slate-900 dark:text-white">
+                <h4 className="text-lg font-serif font-bold text-ink-950 dark:text-white">
                   Applications Closed
                 </h4>
-                <p className="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+                <p className="text-xs text-ink-600 dark:text-ink-400 max-w-md mx-auto">
                   The application deadline for this research fellowship closed on {internship.deadline}. Please explore our other upcoming cohorts.
                 </p>
               </div>
@@ -181,17 +181,17 @@ export default function ApplicationModal({
                 }}
               >
                 {/* Step Indicators */}
-                <div className="grid grid-cols-3 gap-2 border-b border-slate-200 dark:border-legal-800 pb-4 text-xs font-semibold">
-                  <div className={`flex items-center space-x-2 ${step >= 1 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-gold-500 text-slate-950 font-bold' : 'bg-slate-200 dark:bg-legal-800'}`}>1</span>
+                <div className="grid grid-cols-3 gap-2 border-b border-ink-200 dark:border-ink-800 pb-4 text-xs font-mono font-semibold">
+                  <div className={`flex items-center space-x-2 ${step >= 1 ? 'text-oxblood-700 dark:text-oxblood-400' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 rounded-sm flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-oxblood-700 text-white font-bold' : 'bg-ivory-200 dark:bg-ink-800'}`}>1</span>
                     <span>Applicant</span>
                   </div>
-                  <div className={`flex items-center space-x-2 ${step >= 2 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-gold-500 text-slate-950 font-bold' : 'bg-slate-200 dark:bg-legal-800'}`}>2</span>
+                  <div className={`flex items-center space-x-2 ${step >= 2 ? 'text-oxblood-700 dark:text-oxblood-400' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 rounded-sm flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-oxblood-700 text-white font-bold' : 'bg-ivory-200 dark:bg-ink-800'}`}>2</span>
                     <span>Academics</span>
                   </div>
-                  <div className={`flex items-center space-x-2 ${step >= 3 ? 'text-gold-700 dark:text-gold-400' : 'text-slate-400'}`}>
-                    <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-gold-500 text-slate-950 font-bold' : 'bg-slate-200 dark:bg-legal-800'}`}>3</span>
+                  <div className={`flex items-center space-x-2 ${step >= 3 ? 'text-oxblood-700 dark:text-oxblood-400' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 rounded-sm flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-oxblood-700 text-white font-bold' : 'bg-ivory-200 dark:bg-ink-800'}`}>3</span>
                     <span>Rationale &amp; Pay</span>
                   </div>
                 </div>
@@ -340,13 +340,13 @@ export default function ApplicationModal({
                 )}
 
                 {/* Navigation Buttons */}
-                <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-legal-800">
+                <div className="flex items-center justify-between pt-4 border-t border-ink-200 dark:border-ink-800">
                   {step > 1 ? (
                     <button
                       type="button"
                       onClick={() => setStep(step - 1)}
                       disabled={submitting}
-                      className="px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1 disabled:opacity-50"
+                      className="px-4 py-2 text-xs font-mono text-ink-600 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white flex items-center space-x-1 disabled:opacity-50"
                     >
                       <ChevronLeft className="w-4 h-4" />
                       <span>Back</span>
@@ -362,7 +362,7 @@ export default function ApplicationModal({
                       (step === 2 && !validateStep2()) ||
                       (step === 3 && !validateStep3())
                     }
-                    className="px-6 py-2.5 bg-slate-900 dark:bg-gold-500 hover:bg-slate-800 dark:hover:bg-gold-400 text-white dark:text-slate-950 text-xs font-bold uppercase tracking-wider rounded-xl transition-all disabled:opacity-50 flex items-center space-x-1.5 shadow-md"
+                    className="px-6 py-2.5 bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white text-xs font-serif font-bold uppercase tracking-wider rounded-sm transition-all disabled:opacity-50 flex items-center space-x-1.5 shadow-sm"
                   >
                     {submitting ? (
                       <>

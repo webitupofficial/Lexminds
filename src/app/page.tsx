@@ -3,288 +3,418 @@ import Link from 'next/link';
 import { 
   Scale, 
   BookOpen, 
-  Briefcase, 
   ArrowRight, 
-  ShieldCheck, 
-  CheckCircle2, 
   Clock, 
   ChevronRight,
-  Sparkles,
-  Award,
-  Layers,
   FileText,
-  Compass,
-  GraduationCap
+  Calendar,
+  Layers,
+  CheckCircle2
 } from 'lucide-react';
 import { INITIAL_INTERNSHIPS, INITIAL_ARTICLES } from '@/lib/data-store';
 
 export const metadata = {
-  title: 'LexMinds | Modern Legal Scholarship & Research Fellowship',
-  description: 'LexMinds is a legal research and scholarship initiative connecting aspiring law students with peer-reviewed publications and selective research fellowships.',
+  title: 'LexMinds | Legal Scholarship & Research Fellowship',
+  description: 'LexMinds is an independent student-led legal scholarship initiative publishing analytical treatises, student research, and merit-based research fellowship dossiers.',
 };
 
 export default function HomePage() {
   const flagshipInternship = INITIAL_INTERNSHIPS[0];
-  const featuredArticles = INITIAL_ARTICLES.slice(0, 3);
+  const leadArticle = INITIAL_ARTICLES[0];
+  const recentArticles = INITIAL_ARTICLES.slice(1, 4);
 
   return (
-    <div className="space-y-24 sm:space-y-36 pb-24 relative overflow-hidden">
+    <div className="space-y-16 sm:space-y-24 pb-20">
       
-      {/* Abstract Ethereal Ambient Orbs */}
-      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] sm:w-[900px] h-[400px] sm:h-[550px] bg-gradient-to-b from-amber-500/10 via-gold-500/5 to-transparent rounded-full blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-1/3 -left-48 w-[400px] h-[400px] bg-blue-600/5 dark:bg-blue-900/10 rounded-full blur-3xl pointer-events-none -z-10" />
-      <div className="absolute top-2/3 -right-48 w-[400px] h-[400px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none -z-10" />
-
-      {/* 1. HERO SECTION (SPACIOUS, EDITORIAL, MINIMAL) */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-24 text-center space-y-8">
-        
-        {/* Clean Static Badge (No Blinking) */}
-        <div className="inline-flex items-center space-x-2.5 px-4 py-1.5 rounded-full bg-slate-100/80 dark:bg-slate-900/70 border border-slate-200/80 dark:border-gold-500/30 text-slate-700 dark:text-gold-300 text-xs font-semibold tracking-wide backdrop-blur-md shadow-sm">
-          <Scale className="w-3.5 h-3.5 text-gold-600 dark:text-gold-400" />
-          <span>Independent Legal Scholarship &amp; Research Initiative</span>
+      {/* 1. MASTHEAD DATELINE BAR */}
+      <div className="border-b border-ink-200 dark:border-ink-800 bg-ivory-100/60 dark:bg-ink-900/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono uppercase tracking-widest text-ink-500 dark:text-ink-400 gap-1 sm:gap-4">
+          <div className="flex items-center space-x-2">
+            <span>Vol. II &bull; Issue IV</span>
+            <span>&bull;</span>
+            <span>September 2026</span>
+          </div>
+          <div className="flex items-center space-x-3">
+            <span>ISSN Docket Pending</span>
+            <span className="hidden sm:inline">&bull;</span>
+            <span className="hidden sm:inline">Student-Led Legal Review</span>
+          </div>
         </div>
+      </div>
 
-        {/* Hero Main Headline */}
-        <div className="space-y-6 max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-serif font-bold tracking-tight text-slate-900 dark:text-white leading-[1.12]">
-            Where Rigorous Legal Mind Meets <span className="gold-gradient-text">Scholarly Depth</span>
-          </h1>
-          <p className="text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto font-normal">
-            A focused platform dedicated to advancing critical legal research, peer-reviewed articles, and merit-based research fellowships for emerging law scholars.
-          </p>
+      {/* 2. ASYMMETRICAL EDITORIAL MASTHEAD HERO */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          
+          {/* Left: Headline & Manifesto (7 cols) */}
+          <div className="lg:col-span-7 space-y-6 sm:space-y-8">
+            <div className="space-y-2">
+              <span className="inline-block text-[11px] font-mono font-semibold uppercase tracking-[0.25em] text-oxblood-700 dark:text-oxblood-400">
+                Forum for Indian Jurisprudence &amp; Law
+              </span>
+              <h1 className="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal tracking-tight text-ink-950 dark:text-white leading-[1.12]">
+                Where Analytical Rigor Meets Legal Scholarship
+              </h1>
+            </div>
+
+            <p className="text-sm sm:text-base text-ink-600 dark:text-ink-300 leading-relaxed max-w-xl font-normal">
+              An independent, student-led legal research review dedicated to publishing incisive statutory treatises, landmark case commentaries, and curating selective academic research fellowships.
+            </p>
+
+            {/* Editorial Dual CTAs */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
+              <Link
+                href="/internships"
+                className="px-6 py-3.5 bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif text-xs font-semibold uppercase tracking-widest rounded-sm text-center transition-all shadow-sm flex items-center justify-center space-x-2"
+              >
+                <span>Examine Fellowship Dossier</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+              <Link
+                href="/articles"
+                className="px-6 py-3.5 bg-white dark:bg-ink-850 hover:bg-ivory-200 dark:hover:bg-ink-800 text-ink-900 dark:text-ink-100 border border-ink-300 dark:border-ink-700 font-serif text-xs font-semibold uppercase tracking-widest rounded-sm text-center transition-all shadow-sm flex items-center justify-center space-x-2"
+              >
+                <BookOpen className="w-3.5 h-3.5 text-oxblood-700 dark:text-oxblood-400" />
+                <span>Read Legal Treatises</span>
+              </Link>
+            </div>
+
+            {/* Micro Editorial Byline */}
+            <div className="pt-2 border-t border-ink-200 dark:border-ink-800 flex items-center space-x-4 text-[11px] font-mono text-ink-500 dark:text-ink-400">
+              <span>National Law University Alumni &amp; Scholars</span>
+              <span>&bull;</span>
+              <span>Peer Scholarly Forum</span>
+            </div>
+          </div>
+
+          {/* Right: Flagship Editorial Dispatch Panel (5 cols) */}
+          <div className="lg:col-span-5">
+            <div className="editorial-dossier p-6 sm:p-7 rounded-sm bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800 space-y-5">
+              
+              <div className="flex items-center justify-between border-b border-ink-200 dark:border-ink-800 pb-3">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-oxblood-700 dark:text-oxblood-400">
+                  Editorial Dispatch &bull; Volume IV
+                </span>
+                <span className="text-[10px] font-mono text-ink-400">Call for Submissions</span>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-serif text-xl font-bold text-ink-950 dark:text-white leading-snug">
+                  Current Jurisprudential Inquiries
+                </h3>
+                <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed">
+                  The Editorial Council invites scholarly manuscripts exploring three pressing regulatory transitions in India:
+                </p>
+              </div>
+
+              {/* Ruled Topic Index */}
+              <div className="space-y-2.5 border-t border-b border-ink-100 dark:border-ink-800 py-3 text-xs">
+                <div className="flex items-start space-x-2 text-ink-700 dark:text-ink-300">
+                  <span className="font-mono text-oxblood-700 dark:text-oxblood-400 font-bold shrink-0">01.</span>
+                  <span><strong>DPDP Act 2023:</strong> Compliance obligations for Significant Data Fiduciaries.</span>
+                </div>
+                <div className="flex items-start space-x-2 text-ink-700 dark:text-ink-300">
+                  <span className="font-mono text-oxblood-700 dark:text-oxblood-400 font-bold shrink-0">02.</span>
+                  <span><strong>Bharatiya Nyaya Sanhita:</strong> Procedural transitions in criminal jurisprudence.</span>
+                </div>
+                <div className="flex items-start space-x-2 text-ink-700 dark:text-ink-300">
+                  <span className="font-mono text-oxblood-700 dark:text-oxblood-400 font-bold shrink-0">03.</span>
+                  <span><strong>Competition Law:</strong> CCI regulatory posture on digital market cartels.</span>
+                </div>
+              </div>
+
+              <div className="pt-1 flex items-center justify-between">
+                <Link
+                  href="/publish"
+                  className="text-xs font-serif font-bold uppercase tracking-wider text-oxblood-700 dark:text-oxblood-400 hover:underline flex items-center space-x-1"
+                >
+                  <span>Author Guidelines &amp; Submission</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+                <span className="text-[10px] font-mono text-ink-400">Standard: Bluebook 21st</span>
+              </div>
+
+            </div>
+          </div>
+
         </div>
-
-        {/* Hero Actions (Generous Claymorphic / Glass Buttons) */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-          <Link
-            href="/internships"
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-950 dark:bg-gradient-to-r dark:from-gold-400 dark:via-gold-500 dark:to-gold-400 text-white dark:text-slate-950 font-bold text-xs uppercase tracking-widest hover:opacity-90 shadow-[0_10px_25px_rgba(0,0,0,0.15)] dark:shadow-[0_10px_30px_rgba(212,175,55,0.3)] transition-all transform hover:-translate-y-0.5 flex items-center justify-center space-x-2"
-          >
-            <span>View Fellowship Opening</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-          <Link
-            href="/articles"
-            className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/80 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800/80 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-white/10 font-semibold text-xs uppercase tracking-widest backdrop-blur-xl shadow-sm transition-all flex items-center justify-center space-x-2"
-          >
-            <BookOpen className="w-4 h-4 text-gold-600 dark:text-gold-400" />
-            <span>Read Law Articles</span>
-          </Link>
-        </div>
-
       </section>
 
-      {/* 2. SINGLE FLAGSHIP INTERNSHIP SPOTLIGHT */}
+      {/* 3. DOSSIER-STYLE FEATURED FELLOWSHIP PANEL */}
       {flagshipInternship && (
-        <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="space-y-6">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="space-y-4">
             
-            {/* Section Header */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-4">
-              <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400">
-                  Current Opening
-                </span>
-                <h2 className="text-2xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white mt-1">
-                  Active Research Fellowship
-                </h2>
+            {/* Dossier Header Label */}
+            <div className="flex items-center justify-between border-b border-ink-300 dark:border-ink-700 pb-2.5">
+              <div className="flex items-center space-x-2 text-xs font-mono font-bold uppercase tracking-widest text-oxblood-700 dark:text-oxblood-400">
+                <Scale className="w-3.5 h-3.5" />
+                <span>Scholarship Dossier &bull; Term Opening</span>
               </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400">
-                1 Selective Opportunity Active
+              <span className="text-xs font-mono text-ink-500 dark:text-ink-400">
+                Docket No. LM-2026-F01
               </span>
             </div>
 
-            {/* Claymorphic Spotlight Card */}
-            <div className="clay-card rounded-3xl p-6 sm:p-10 border border-slate-200/80 dark:border-gold-500/30 relative overflow-hidden">
+            {/* Dossier Body Card */}
+            <div className="editorial-card rounded-sm p-6 sm:p-10 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 space-y-8">
+              
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 
-                {/* Details (8 Cols) */}
-                <div className="lg:col-span-8 space-y-6">
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-lg bg-gold-50 dark:bg-gold-950/80 text-gold-700 dark:text-gold-400 border border-gold-500/30">
+                {/* Fellowship Description & Scope (8 cols) */}
+                <div className="lg:col-span-8 space-y-5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-mono uppercase tracking-wider px-2.5 py-0.5 rounded-sm bg-ivory-200 dark:bg-ink-800 text-oxblood-700 dark:text-oxblood-400 border border-ink-200 dark:border-ink-700 font-semibold">
                       {flagshipInternship.practiceArea}
                     </span>
-                    <span className="text-xs font-medium px-3 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-sm bg-ivory-100 dark:bg-ink-800 text-ink-600 dark:text-ink-300 border border-ink-200 dark:border-ink-700">
                       {flagshipInternship.mode} &bull; {flagshipInternship.duration}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
+                    <h2 className="text-2xl sm:text-3xl font-serif font-bold text-ink-950 dark:text-white leading-tight">
                       {flagshipInternship.title}
-                    </h3>
-                    <p className="text-sm font-semibold text-gold-700 dark:text-gold-400 mt-1">
+                    </h2>
+                    <p className="text-xs font-mono text-oxblood-700 dark:text-oxblood-400 mt-1 uppercase tracking-wider">
                       {flagshipInternship.organization} &bull; {flagshipInternship.location}
                     </p>
                   </div>
 
-                  <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
                     {flagshipInternship.description}
                   </p>
 
-                  {/* Highlights Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                    {flagshipInternship.responsibilities.slice(0, 2).map((item, idx) => (
-                      <div key={idx} className="flex items-start space-x-2.5 text-xs text-slate-600 dark:text-slate-300">
-                        <CheckCircle2 className="w-4 h-4 text-gold-600 dark:text-gold-400 shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
+                  {/* Syllabus / Responsibilities */}
+                  <div className="pt-2 space-y-2">
+                    <h4 className="text-[11px] font-mono font-bold uppercase tracking-wider text-ink-900 dark:text-white">
+                      Core Research Responsibilities:
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-ink-600 dark:text-ink-300">
+                      {flagshipInternship.responsibilities.slice(0, 4).map((resp, idx) => (
+                        <div key={idx} className="flex items-start space-x-2">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-oxblood-700 dark:text-oxblood-400 shrink-0 mt-0.5" />
+                          <span className="leading-snug">{resp}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Card Action / Summary Box (4 Cols) */}
-                <div className="lg:col-span-4 rounded-2xl bg-slate-50 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 p-6 space-y-5 text-xs">
+                {/* Dossier Metadata & Single Primary CTA (4 cols) */}
+                <div className="lg:col-span-4 p-6 rounded-sm bg-ivory-100/70 dark:bg-ink-900/60 border border-ink-200 dark:border-ink-800 space-y-5">
+                  
                   <div className="space-y-1">
-                    <span className="text-slate-400 uppercase text-[10px] font-semibold tracking-wider">Evaluation Fee</span>
-                    <div className="text-2xl font-serif font-bold text-slate-900 dark:text-gold-400">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-ink-500 dark:text-ink-400 block">
+                      Application &amp; Evaluation Fee
+                    </span>
+                    <div className="text-2xl font-serif font-bold text-ink-950 dark:text-white">
                       ₹{flagshipInternship.applicationFee}.00
                     </div>
+                    <span className="text-[10px] font-mono text-ink-400 block">Inclusive of editorial triage</span>
                   </div>
 
-                  <div className="space-y-2 border-t border-slate-200 dark:border-white/10 pt-3 text-slate-600 dark:text-slate-400">
-                    <div className="flex justify-between">
-                      <span>Available Seats:</span>
-                      <span className="font-semibold text-slate-900 dark:text-white">{flagshipInternship.seats} Fellows</span>
+                  <div className="border-t border-ink-200 dark:border-ink-800 pt-3 space-y-2.5 text-xs font-mono">
+                    <div className="flex justify-between items-center text-ink-600 dark:text-ink-300">
+                      <span>Term Duration:</span>
+                      <strong className="text-ink-900 dark:text-white font-medium">{flagshipInternship.duration}</strong>
                     </div>
-                    <div className="flex justify-between">
-                      <span>Application Deadline:</span>
-                      <span className="font-semibold text-rose-600 dark:text-rose-400">{flagshipInternship.deadline}</span>
+                    <div className="flex justify-between items-center text-ink-600 dark:text-ink-300">
+                      <span>Cohort Size:</span>
+                      <strong className="text-ink-900 dark:text-white font-medium">{flagshipInternship.seats} Selected Fellows</strong>
+                    </div>
+                    <div className="flex justify-between items-center text-ink-600 dark:text-ink-300">
+                      <span>Submission Deadline:</span>
+                      <strong className="text-rose-700 dark:text-rose-400 font-semibold">{flagshipInternship.deadline}</strong>
                     </div>
                   </div>
 
-                  <Link
-                    href={`/internships/${flagshipInternship.slug}`}
-                    className="w-full py-3.5 rounded-xl bg-slate-900 dark:bg-gold-400 text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider text-center block shadow-md transition-all hover:opacity-90"
-                  >
-                    View Role &amp; Apply
-                  </Link>
+                  {/* One Single Primary CTA */}
+                  <div className="pt-2">
+                    <Link
+                      href={`/internships/${flagshipInternship.slug}`}
+                      className="w-full py-3.5 px-4 rounded-sm bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif text-xs font-semibold uppercase tracking-widest text-center block transition-all shadow-sm"
+                    >
+                      Examine Dossier &amp; Apply
+                    </Link>
+                  </div>
+
                 </div>
 
               </div>
+
             </div>
 
           </div>
         </section>
       )}
 
-      {/* 3. PEER-REVIEWED ARTICLES (EDITORIAL MINIMALISM) */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      {/* 4. ARTICLES: 1 FLAGSHIP TREATISE + CLEAN RECENT PUBLICATIONS LEDGER */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200 dark:border-white/10 pb-4">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-ink-300 dark:border-ink-700 pb-3">
           <div>
-            <span className="text-xs font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400">
-              Publications &amp; Case Notes
+            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-oxblood-700 dark:text-oxblood-400">
+              LexMinds Law Review
             </span>
-            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white mt-1">
-              Recent Law Treatises
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-ink-950 dark:text-white mt-0.5">
+              Recent Treatises &amp; Commentaries
             </h2>
           </div>
 
           <Link
             href="/articles"
-            className="inline-flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400 hover:text-gold-600 dark:hover:text-gold-300 transition-colors"
+            className="text-xs font-serif font-bold uppercase tracking-wider text-oxblood-700 dark:text-oxblood-400 hover:underline flex items-center space-x-1"
           >
-            <span>All Articles</span>
-            <ArrowRight className="w-4 h-4" />
+            <span>View All Treatises</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredArticles.map((article) => (
-            <div
-              key={article.id}
-              className="clay-card rounded-3xl p-6 sm:p-7 flex flex-col justify-between space-y-6"
-            >
-              <div className="space-y-3.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-900 text-gold-700 dark:text-gold-400 border border-slate-200 dark:border-white/10">
-                    {article.category}
-                  </span>
-                  <span className="text-[11px] text-slate-400 flex items-center space-x-1">
-                    <Clock className="w-3 h-3" />
-                    <span>{article.readTime}</span>
-                  </span>
-                </div>
-
-                <h3 className="text-lg font-serif font-bold text-slate-900 dark:text-white line-clamp-2 leading-snug">
-                  {article.title}
-                </h3>
-
-                <p className="text-xs text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed">
-                  {article.abstract}
-                </p>
-
-                <div className="pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                  <span className="font-semibold text-slate-800 dark:text-slate-200">{article.author.name}</span>
-                  <span>{article.publishedAt}</span>
-                </div>
+        {/* 1 Flagship + Clean Ruled List */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Flagship Lead Treatise (7 cols) */}
+          {leadArticle && (
+            <div className="lg:col-span-7 editorial-card rounded-sm p-6 sm:p-8 bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800 space-y-4">
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="px-2 py-0.5 rounded-sm bg-ivory-200 dark:bg-ink-800 text-oxblood-700 dark:text-oxblood-400 font-semibold uppercase tracking-wider text-[10px]">
+                  Featured Treatise &bull; {leadArticle.category}
+                </span>
+                <span className="text-ink-400 flex items-center space-x-1 text-[11px]">
+                  <Clock className="w-3 h-3" />
+                  <span>{leadArticle.readTime}</span>
+                </span>
               </div>
 
+              <h3 className="text-xl sm:text-2xl font-serif font-bold text-ink-950 dark:text-white leading-snug">
+                <Link href={`/articles/${leadArticle.slug}`} className="hover:text-oxblood-700 dark:hover:text-oxblood-400 transition-colors">
+                  {leadArticle.title}
+                </Link>
+              </h3>
+
+              <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 leading-relaxed line-clamp-4">
+                {leadArticle.abstract}
+              </p>
+
+              <div className="pt-3 border-t border-ink-100 dark:border-ink-800 flex items-center justify-between text-xs">
+                <div>
+                  <span className="font-semibold text-ink-900 dark:text-white block">{leadArticle.author.name}</span>
+                  <span className="text-[11px] text-ink-400 font-mono block">{leadArticle.author.institution}</span>
+                </div>
+                <Link
+                  href={`/articles/${leadArticle.slug}`}
+                  className="px-4 py-2 rounded-sm bg-ivory-100 dark:bg-ink-800 hover:bg-oxblood-700 hover:text-white text-ink-800 dark:text-ink-200 font-serif text-xs font-semibold uppercase tracking-wider border border-ink-200 dark:border-ink-700 transition-all flex items-center space-x-1"
+                >
+                  <span>Read Treatise</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Clean Recent Publications List (5 cols) */}
+          <div className="lg:col-span-5 space-y-4">
+            <h4 className="text-[11px] font-mono font-bold uppercase tracking-widest text-ink-500 dark:text-ink-400 border-b border-ink-200 dark:border-ink-800 pb-1.5">
+              Recent Archival Additions
+            </h4>
+
+            <div className="divide-y divide-ink-200 dark:divide-ink-800">
+              {recentArticles.map((article, idx) => (
+                <article key={article.id} className="py-3.5 space-y-1.5 first:pt-0 group">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-ink-400">
+                    <span className="text-oxblood-700 dark:text-oxblood-400 font-semibold uppercase">
+                      {article.category}
+                    </span>
+                    <span>{article.publishedAt}</span>
+                  </div>
+
+                  <h4 className="font-serif text-base font-bold text-ink-950 dark:text-white group-hover:text-oxblood-700 dark:group-hover:text-oxblood-400 transition-colors leading-snug">
+                    <Link href={`/articles/${article.slug}`}>
+                      {article.title}
+                    </Link>
+                  </h4>
+
+                  <div className="flex items-center justify-between text-[11px] text-ink-500 dark:text-ink-400 pt-1 font-mono">
+                    <span>By {article.author.name}</span>
+                    <span>{article.readTime}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="pt-2">
               <Link
-                href={`/articles/${article.slug}`}
-                className="w-full py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-slate-900/80 hover:bg-gold-500 hover:text-slate-950 dark:hover:bg-gold-400 dark:hover:text-slate-950 text-slate-700 dark:text-slate-200 font-semibold text-xs uppercase tracking-wider border border-slate-200/80 dark:border-white/10 transition-all flex items-center justify-center space-x-1.5 group/btn"
+                href="/publish"
+                className="w-full py-2.5 px-4 text-center block rounded-sm bg-ivory-100 dark:bg-ink-800 hover:bg-ivory-200 dark:hover:bg-ink-700 text-ink-800 dark:text-ink-200 border border-ink-200 dark:border-ink-700 font-serif text-xs font-semibold uppercase tracking-wider transition-all"
               >
-                <span>Read Full Treatise</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+                Submit Manuscript to Law Review &rarr;
               </Link>
             </div>
-          ))}
+          </div>
+
         </div>
 
       </section>
 
-      {/* 4. FOUNDATIONAL PILLARS (ETHICAL & ACADEMIC) */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="clay-card rounded-3xl p-8 sm:p-14 border border-slate-200/80 dark:border-white/10 space-y-10">
+      {/* 5. THREE-STEP EDITORIAL PROCESS (SUBMIT, REVIEW, PUBLISH) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="editorial-card rounded-sm p-8 sm:p-12 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 space-y-8">
           
-          <div className="max-w-2xl mx-auto text-center space-y-3">
-            <span className="text-xs font-bold uppercase tracking-widest text-gold-600 dark:text-gold-400">
-              Our Academic Commitments
+          <div className="max-w-2xl mx-auto text-center space-y-2">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-oxblood-700 dark:text-oxblood-400">
+              Editorial Rigor &amp; Workflow
             </span>
-            <h2 className="text-2xl sm:text-4xl font-serif font-bold text-slate-900 dark:text-white">
-              Built on Integrity, Rigor &amp; Merit
+            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-ink-950 dark:text-white">
+              The Three-Step Publication Pathway
             </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-              We are building a scholarly foundation that prioritizes quality research, accessible legal mentorship, and unbiased evaluation.
+            <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+              A transparent, structured editorial evaluation ensuring academic integrity, uniform citation formatting, and verified authorship.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4">
             
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/70 dark:border-white/5 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-gold-100 dark:bg-slate-800 border border-gold-500/30 flex items-center justify-center text-gold-700 dark:text-gold-400 font-serif font-bold">
-                01
+            {/* Step 01: Submit */}
+            <div className="p-6 rounded-sm bg-ivory-50 dark:bg-ink-900/60 border border-ink-200 dark:border-ink-800 space-y-3">
+              <div className="font-mono text-sm font-bold text-oxblood-700 dark:text-oxblood-400 pb-1 border-b border-ink-200 dark:border-ink-800 flex items-center justify-between">
+                <span>01. SUBMIT</span>
+                <span className="text-[10px] text-ink-400 uppercase">Manuscript Intake</span>
               </div>
-              <h3 className="text-base font-serif font-bold text-slate-900 dark:text-white">
-                Double-Blind Peer Review
+              <h3 className="font-serif text-base font-bold text-ink-950 dark:text-white">
+                Structured Manuscript Intake
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                All submitted manuscripts are scrubbed of author identities and evaluated objectively by independent legal reviewers.
+              <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+                Authors submit papers with abstracts, keywords, and institutional affiliations. Manuscripts must adhere to Bluebook (21st) or OSCOLA citation standards.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/70 dark:border-white/5 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-gold-100 dark:bg-slate-800 border border-gold-500/30 flex items-center justify-center text-gold-700 dark:text-gold-400 font-serif font-bold">
-                02
+            {/* Step 02: Review */}
+            <div className="p-6 rounded-sm bg-ivory-50 dark:bg-ink-900/60 border border-ink-200 dark:border-ink-800 space-y-3">
+              <div className="font-mono text-sm font-bold text-oxblood-700 dark:text-oxblood-400 pb-1 border-b border-ink-200 dark:border-ink-800 flex items-center justify-between">
+                <span>02. REVIEW</span>
+                <span className="text-[10px] text-ink-400 uppercase">Editorial Triage</span>
               </div>
-              <h3 className="text-base font-serif font-bold text-slate-900 dark:text-white">
-                Merit-Based Fellowships
+              <h3 className="font-serif text-base font-bold text-ink-950 dark:text-white">
+                Editorial Board Evaluation
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Every applicant receives equal consideration regardless of institution tier, assessed strictly on analytical drafting and rationale.
+              <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+                Senior student editors and academic reviewers evaluate analytical depth, novelty of rationale, and academic integrity. Revisions are communicated clearly to authors.
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200/70 dark:border-white/5 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-gold-100 dark:bg-slate-800 border border-gold-500/30 flex items-center justify-center text-gold-700 dark:text-gold-400 font-serif font-bold">
-                03
+            {/* Step 03: Publish */}
+            <div className="p-6 rounded-sm bg-ivory-50 dark:bg-ink-900/60 border border-ink-200 dark:border-ink-800 space-y-3">
+              <div className="font-mono text-sm font-bold text-oxblood-700 dark:text-oxblood-400 pb-1 border-b border-ink-200 dark:border-ink-800 flex items-center justify-between">
+                <span>03. PUBLISH</span>
+                <span className="text-[10px] text-ink-400 uppercase">Archival Docket</span>
               </div>
-              <h3 className="text-base font-serif font-bold text-slate-900 dark:text-white">
-                Standardized Citations
+              <h3 className="font-serif text-base font-bold text-ink-950 dark:text-white">
+                Archival Docket &amp; Indexing
               </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Treatises and notes are indexed with uniform Bluebook (21st) and OSCOLA citation formats for academic utility.
+              <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+                Accepted treatises are assigned formal volume and publication markers, published in open-access format, and indexed for legal academic citation.
               </p>
             </div>
 
@@ -293,19 +423,22 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. INQUIRY / CONTACT CTA */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-b from-slate-100 to-slate-200/70 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-white/10 space-y-4">
-          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
-            Have Questions or Want to Collaborate?
+      {/* 6. ACADEMIC CORRESPONDENCE DESK INQUIRY */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="p-8 sm:p-12 rounded-sm bg-ivory-100 dark:bg-ink-900/80 border border-ink-200 dark:border-ink-800 space-y-3">
+          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-oxblood-700 dark:text-oxblood-400">
+            Editorial &amp; Fellowship Secretariat
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-ink-950 dark:text-white">
+            Have Inquiries Regarding Fellowships or Treatises?
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto">
-            Reach out to our academic desk for research inquiries, fellowship details, or editorial submissions.
+          <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 max-w-lg mx-auto font-normal">
+            Reach out to our student editorial desk for submission questions, fellowship details, or institutional collaborations.
           </p>
           <div className="pt-2">
             <Link
               href="/contact"
-              className="inline-flex items-center space-x-2 px-7 py-3 rounded-full bg-slate-900 dark:bg-gold-400 text-white dark:text-slate-950 text-xs font-bold uppercase tracking-wider hover:opacity-90 transition-all shadow-md"
+              className="inline-flex items-center space-x-2 px-6 py-3 rounded-sm bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif text-xs font-semibold uppercase tracking-wider transition-all shadow-sm"
             >
               <span>Contact Academic Desk</span>
               <ArrowRight className="w-3.5 h-3.5" />

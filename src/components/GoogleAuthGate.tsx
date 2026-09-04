@@ -99,30 +99,30 @@ export default function GoogleAuthGate({
   if (currentUser) {
     return (
       <div className="space-y-4">
-        <div className="p-3.5 sm:p-4 rounded-2xl bg-emerald-50/60 dark:bg-emerald-950/20 border border-emerald-500/30 flex flex-wrap items-center justify-between gap-3 transition-all">
+        <div className="p-3.5 sm:p-4 rounded-sm bg-ivory-100 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 flex flex-wrap items-center justify-between gap-3 transition-all">
           <div className="flex items-center space-x-3">
             {currentUser.photoURL ? (
               <img 
                 src={currentUser.photoURL} 
                 alt={currentUser.displayName || 'Google User'} 
-                className="w-10 h-10 rounded-full border-2 border-emerald-500/40 object-cover shadow-sm"
+                className="w-9 h-9 rounded-sm border border-ink-300 dark:border-ink-700 object-cover shadow-sm"
               />
             ) : (
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-slate-950 font-bold flex items-center justify-center text-sm shadow-sm">
+              <div className="w-9 h-9 rounded-sm bg-oxblood-700 text-white font-serif font-bold flex items-center justify-center text-sm shadow-sm">
                 {(currentUser.displayName || currentUser.email || 'U')[0].toUpperCase()}
               </div>
             )}
             <div>
               <div className="flex items-center space-x-1.5">
-                <span className="text-xs font-bold text-slate-900 dark:text-white">
+                <span className="text-xs font-bold text-ink-950 dark:text-white">
                   {currentUser.displayName || 'Verified Scholar'}
                 </span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span className="text-[10px] font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/80 px-1.5 py-0.5 rounded border border-emerald-500/30">
+                <CheckCircle2 className="w-3.5 h-3.5 text-oxblood-700 dark:text-oxblood-400" />
+                <span className="text-[10px] font-mono font-semibold uppercase tracking-wider text-oxblood-700 dark:text-oxblood-400 bg-ivory-200 dark:bg-ink-800 px-1.5 py-0.2 rounded-sm border border-ink-200 dark:border-ink-700">
                   Google Verified
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+              <p className="text-[11px] text-ink-500 dark:text-ink-400 font-mono">
                 {currentUser.email}
               </p>
             </div>
@@ -131,7 +131,7 @@ export default function GoogleAuthGate({
           <button
             type="button"
             onClick={handleSignOut}
-            className="text-[11px] font-medium text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 flex items-center space-x-1 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-legal-700 hover:border-rose-300 transition-colors"
+            className="text-[11px] font-mono text-ink-500 dark:text-ink-400 hover:text-rose-700 dark:hover:text-rose-400 flex items-center space-x-1 px-3 py-1.5 rounded-sm border border-ink-200 dark:border-ink-700 hover:border-rose-300 transition-colors"
           >
             <LogOut className="w-3 h-3" />
             <span>Switch Account</span>
@@ -144,25 +144,24 @@ export default function GoogleAuthGate({
   }
 
   // 2. User is NOT Authenticated:
-  // If requireAuthBeforeRender is true, block form entirely until sign in.
   if (requireAuthBeforeRender) {
     return (
-      <div className="p-6 sm:p-8 rounded-3xl neumorph-card border border-gold-500/30 text-center space-y-4">
-        <div className="w-12 h-12 rounded-2xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center mx-auto text-gold-600 dark:text-gold-400">
-          <ShieldCheck className="w-6 h-6" />
+      <div className="p-6 sm:p-8 rounded-sm editorial-card border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 text-center space-y-4">
+        <div className="w-10 h-10 rounded-sm bg-ivory-100 dark:bg-ink-900 border border-ink-300 dark:border-ink-700 flex items-center justify-center mx-auto text-oxblood-700 dark:text-oxblood-400">
+          <ShieldCheck className="w-5 h-5" />
         </div>
 
         <div className="space-y-1.5 max-w-md mx-auto">
-          <h3 className="text-base font-serif font-bold text-slate-900 dark:text-white">
+          <h3 className="text-base font-serif font-bold text-ink-950 dark:text-white">
             {title}
           </h3>
-          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+          <p className="text-xs text-ink-600 dark:text-ink-400 leading-relaxed">
             {description}
           </p>
         </div>
 
         {authError && (
-          <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs flex items-center space-x-2 max-w-md mx-auto text-left">
+          <div className="p-3 rounded-sm bg-rose-50 dark:bg-rose-950/30 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs flex items-center space-x-2 max-w-md mx-auto text-left">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{authError}</span>
           </div>
@@ -172,10 +171,10 @@ export default function GoogleAuthGate({
           type="button"
           onClick={handleSignIn}
           disabled={signingIn}
-          className="w-full max-w-sm mx-auto py-3 px-4 bg-white dark:bg-legal-900 hover:bg-slate-50 dark:hover:bg-legal-850 text-slate-800 dark:text-white font-medium text-xs rounded-xl border border-slate-300 dark:border-legal-700 shadow-sm transition-all flex items-center justify-center space-x-3 neumorph-btn"
+          className="w-full max-w-sm mx-auto py-2.5 px-4 bg-white dark:bg-ink-900 hover:bg-ivory-50 dark:hover:bg-ink-800 text-ink-900 dark:text-white font-serif text-xs font-semibold rounded-sm border border-ink-300 dark:border-ink-700 shadow-sm transition-all flex items-center justify-center space-x-2.5"
         >
           {signingIn ? (
-            <Loader2 className="w-4 h-4 animate-spin text-gold-500" />
+            <Loader2 className="w-4 h-4 animate-spin text-oxblood-700" />
           ) : (
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -199,9 +198,9 @@ export default function GoogleAuthGate({
           <span>{signingIn ? 'Connecting to Google...' : 'Sign in with Google'}</span>
         </button>
 
-        <div className="flex items-center justify-center space-x-4 text-[11px] text-slate-400">
+        <div className="flex items-center justify-center space-x-3 text-[10px] font-mono text-ink-400">
           <span className="flex items-center space-x-1">
-            <Lock className="w-3 h-3 text-gold-500" />
+            <Lock className="w-3 h-3 text-oxblood-700 dark:text-oxblood-400" />
             <span>Encrypted Firebase Auth</span>
           </span>
           <span>&bull;</span>
@@ -211,19 +210,19 @@ export default function GoogleAuthGate({
     );
   }
 
-  // If requireAuthBeforeRender is false, show banner with quick sign in and still render children (disabled until sign in)
+  // If requireAuthBeforeRender is false:
   return (
     <div className="space-y-4">
-      <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-wrap items-center justify-between gap-3">
+      <div className="p-4 rounded-sm bg-ivory-100 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-sm bg-white dark:bg-ink-850 border border-ink-300 dark:border-ink-700 text-oxblood-700 dark:text-oxblood-400 flex items-center justify-center shrink-0">
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+            <h4 className="text-xs font-bold text-ink-950 dark:text-white font-serif">
               Google Account Sign-In Recommended
             </h4>
-            <p className="text-[11px] text-slate-600 dark:text-slate-400">
+            <p className="text-[11px] text-ink-600 dark:text-ink-400">
               Sign in with Google to auto-verify your submission and enable submission tracking.
             </p>
           </div>
@@ -233,10 +232,10 @@ export default function GoogleAuthGate({
           type="button"
           onClick={handleSignIn}
           disabled={signingIn}
-          className="py-2 px-3 bg-white dark:bg-legal-900 hover:bg-slate-50 dark:hover:bg-legal-850 text-slate-800 dark:text-white font-medium text-xs rounded-xl border border-slate-300 dark:border-legal-700 shadow-sm flex items-center space-x-2 transition-all"
+          className="py-2 px-3 bg-white dark:bg-ink-850 hover:bg-ivory-50 dark:hover:bg-ink-800 text-ink-900 dark:text-white font-serif text-xs font-semibold rounded-sm border border-ink-300 dark:border-ink-700 shadow-sm flex items-center space-x-2 transition-all"
         >
           {signingIn ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-gold-500" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-oxblood-700" />
           ) : (
             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>

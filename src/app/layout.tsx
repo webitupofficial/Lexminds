@@ -18,26 +18,26 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://lexminds.in'),
   title: {
-    default: 'LexMinds | Bridging Legal Education & Industry Practice',
-    template: '%s | LexMinds India',
+    default: 'LexMinds | Legal Scholarship & Research Fellowship',
+    template: '%s | LexMinds Law Journal',
   },
   description:
-    'LexMinds connects law students and advocates to verified Tier-1 internships, Supreme Court clerkships, and a peer-reviewed academic article publishing platform.',
+    'LexMinds is an independent student-led legal scholarship initiative publishing analytical treatises, student case notes, and merit-evaluated research fellowship dossiers.',
   keywords: [
-    'Legal Internships India',
-    'Law Student Internships',
-    'Tier 1 Law Firms',
-    'Supreme Court Clerkship',
+    'Legal Research India',
+    'Student Law Review',
+    'Law Student Fellowship',
+    'Supreme Court Case Notes',
     'Legal Research Articles',
     'Publish Legal Paper',
     'LexMinds',
     'DPDP Act 2023',
     'Bharatiya Nyaya Sanhita',
-    'Corporate Law Internships'
+    'Constitutional Law Analysis'
   ],
   authors: [{ name: 'LexMinds Editorial Board', url: 'https://lexminds.in' }],
-  creator: 'LexMinds India',
-  publisher: 'LexMinds India',
+  creator: 'LexMinds Editorial Secretariat',
+  publisher: 'LexMinds Law Review',
   robots: {
     index: true,
     follow: true,
@@ -56,9 +56,9 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     url: 'https://lexminds.in',
-    title: 'LexMinds | Bridging Legal Education & Industry Practice',
+    title: 'LexMinds | Legal Scholarship & Research Fellowship',
     description:
-      'Verified legal internships, Supreme Court clerkships, and peer-reviewed legal journal publishing for ambitious law students.',
+      'An independent student-led legal scholarship initiative publishing analytical treatises and selective research fellowships.',
     siteName: 'LexMinds',
     images: [
       {
@@ -71,9 +71,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LexMinds | Bridging Legal Education & Industry Practice',
+    title: 'LexMinds | Legal Scholarship & Research Fellowship',
     description:
-      'Verified legal internships, Supreme Court clerkships, and peer-reviewed legal journal publishing.',
+      'An independent student-led legal scholarship initiative publishing analytical treatises and selective research fellowships.',
     site: '@LexMindsIn',
     creator: '@LexMindsIn',
     images: ['/icon.svg'],
@@ -95,42 +95,21 @@ const orgSchema = {
     {
       '@type': 'Organization',
       '@id': 'https://lexminds.in/#organization',
-      name: 'LexMinds India',
+      name: 'LexMinds',
       url: 'https://lexminds.in',
       logo: 'https://lexminds.in/icon.svg',
-      description: 'Ecosystem platform connecting law students with verified legal internships and peer-reviewed academic article publishing.',
+      description: 'An independent student-led legal scholarship initiative and academic research publication platform.',
       sameAs: [
         'https://linkedin.com/company/lexminds-in',
         'https://twitter.com/LexMindsIn'
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        telephone: '+91-11-4982-1000',
-        contactType: 'editorial & internships desk',
+        contactType: 'Editorial & Academic Secretariat',
+        email: 'editorial@lexminds.in',
         areaServed: 'IN',
         availableLanguage: ['en', 'hi']
       }
-    },
-    {
-      '@type': 'LocalBusiness',
-      '@id': 'https://lexminds.in/#localbusiness',
-      name: 'LexMinds Legal Hub',
-      image: 'https://lexminds.in/icon.svg',
-      priceRange: '₹199 - ₹499',
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: 'Barakhamba Road, Connaught Place',
-        addressLocality: 'New Delhi',
-        addressRegion: 'Delhi',
-        postalCode: '110001',
-        addressCountry: 'IN'
-      },
-      geo: {
-        '@type': 'GeoCoordinates',
-        latitude: '28.6289',
-        longitude: '77.2289'
-      },
-      url: 'https://lexminds.in'
     },
     {
       '@type': 'WebSite',
@@ -159,7 +138,7 @@ export default function RootLayout({
       <head>
         <JsonLd data={orgSchema} />
       </head>
-      <body className="min-h-screen flex flex-col bg-slate-50 dark:bg-legal-950 text-slate-900 dark:text-slate-100 antialiased selection:bg-gold-500 selection:text-legal-950 transition-colors duration-300">
+      <body className="min-h-screen flex flex-col bg-[#fbf9f5] dark:bg-[#0d1117] text-ink-900 dark:text-ink-100 antialiased selection:bg-oxblood-700 selection:text-white transition-colors duration-200">
         <ThemeProvider>
           <Header />
           <main className="flex-1">{children}</main>

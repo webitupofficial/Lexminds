@@ -217,62 +217,62 @@ export default function PaymentClient() {
     const isInternship = session.productKey === 'internship_enrollment';
 
     return (
-      <div className="max-w-2xl mx-auto my-8 p-6 sm:p-10 neumorph-card rounded-3xl border border-gold-500/40 shadow-2xl space-y-8 animate-fade-in">
+      <div className="max-w-2xl mx-auto my-8 p-6 sm:p-10 editorial-card rounded-sm border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 shadow-sm space-y-8 animate-fade-in">
         <div className="text-center space-y-3">
-          <div className="w-16 h-16 rounded-3xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-inner">
-            <CheckCircle2 className="w-8 h-8" />
+          <div className="w-12 h-12 rounded-sm bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-6 h-6" />
           </div>
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold uppercase tracking-wider border border-emerald-500/30">
+          <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded-sm bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[10px] font-mono font-bold uppercase tracking-wider border border-emerald-500/30">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Payment Verified &bull; Record Active</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-ink-950 dark:text-white">
             {isInternship ? 'Enrollment Record Confirmed' : 'Manuscript Submitted For Review'}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-lg mx-auto">
-            Your transaction has been cryptographically reconciled with our central database.
+          <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 max-w-lg mx-auto font-normal">
+            Your transaction has been securely reconciled with our central database.
           </p>
         </div>
 
         {/* Docket Details Card */}
-        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-legal-900/90 border border-slate-200 dark:border-legal-800 space-y-3 text-xs">
-          <div className="flex justify-between items-center pb-2.5 border-b border-slate-200 dark:border-legal-800/80">
-            <span className="text-slate-500 dark:text-slate-400">Official Docket Reference:</span>
-            <span className="font-mono font-bold text-gold-600 dark:text-gold-400 text-sm">
+        <div className="p-5 rounded-sm bg-ivory-50 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 space-y-3 text-xs font-mono">
+          <div className="flex justify-between items-center pb-2 border-b border-ink-200 dark:border-ink-800">
+            <span className="text-ink-500 dark:text-ink-400">Docket Reference:</span>
+            <span className="font-bold text-oxblood-700 dark:text-oxblood-400 text-sm">
               {successData.referenceId}
             </span>
           </div>
-          <div className="flex justify-between items-center pb-2.5 border-b border-slate-200 dark:border-legal-800/80">
-            <span className="text-slate-500 dark:text-slate-400">Razorpay Payment ID:</span>
-            <span className="font-mono font-medium text-slate-900 dark:text-white">
+          <div className="flex justify-between items-center pb-2 border-b border-ink-200 dark:border-ink-800">
+            <span className="text-ink-500 dark:text-ink-400">Payment ID:</span>
+            <span className="font-medium text-ink-950 dark:text-white">
               {successData.paymentId}
             </span>
           </div>
-          <div className="flex justify-between items-center pb-2.5 border-b border-slate-200 dark:border-legal-800/80">
-            <span className="text-slate-500 dark:text-slate-400">Associated Google Account:</span>
-            <span className="font-medium text-slate-900 dark:text-white">{session.email}</span>
+          <div className="flex justify-between items-center pb-2 border-b border-ink-200 dark:border-ink-800">
+            <span className="text-ink-500 dark:text-ink-400">Google Account:</span>
+            <span className="font-medium text-ink-950 dark:text-white">{session.email}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-slate-500 dark:text-slate-400">Amount Paid:</span>
-            <span className="font-bold text-emerald-600 dark:text-emerald-400">
+            <span className="text-ink-500 dark:text-ink-400">Amount Paid:</span>
+            <span className="font-bold text-oxblood-700 dark:text-oxblood-400">
               ₹{(session.amountPaise / 100).toFixed(2)} {session.currency}
             </span>
           </div>
         </div>
 
         {/* Next Steps Guidance */}
-        <div className="p-4 rounded-xl bg-gold-50/60 dark:bg-gold-950/20 border border-gold-500/20 text-xs space-y-1.5 text-slate-700 dark:text-slate-300">
-          <p className="font-bold text-gold-700 dark:text-gold-400">Next Steps & Editorial Timelines:</p>
-          <ul className="list-disc list-inside space-y-1 text-[11px] text-slate-600 dark:text-slate-400">
+        <div className="p-4 rounded-sm bg-ivory-100 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 text-xs space-y-1.5 text-ink-700 dark:text-ink-300">
+          <p className="font-serif font-bold text-ink-950 dark:text-white">Next Steps &amp; Editorial Timelines:</p>
+          <ul className="list-disc list-inside space-y-1 text-[11px] text-ink-600 dark:text-ink-400 font-normal">
             {isInternship ? (
               <>
-                <li>Your application has been placed in the candidate evaluation pool.</li>
-                <li>Shortlisted scholars will receive interview call intimations directly on {session.email}.</li>
+                <li>Your application has been placed in the fellowship candidate evaluation pool.</li>
+                <li>Shortlisted candidates will receive communication directly at {session.email}.</li>
                 <li>Please preserve your docket number <strong>{successData.referenceId}</strong> for all correspondence.</li>
               </>
             ) : (
               <>
-                <li>Your treatise has entered our double-blind peer-review workflow.</li>
+                <li>Your treatise has entered our editorial evaluation workflow.</li>
                 <li>Reviewer notes and editorial disposition will be communicated within 7-10 business days.</li>
                 <li>Your docket reference <strong>{successData.referenceId}</strong> is linked to your manuscript.</li>
               </>
@@ -283,7 +283,7 @@ export default function PaymentClient() {
         <div className="pt-2 text-center">
           <Link
             href="/"
-            className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-gold-500 dark:hover:bg-gold-400 dark:text-slate-950 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-lg"
+            className="inline-flex items-center space-x-2 px-6 py-3 rounded-sm bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif text-xs font-semibold uppercase tracking-wider transition-colors shadow-sm"
           >
             <span>Return to Central Platform</span>
             <ArrowRight className="w-4 h-4" />
@@ -305,89 +305,89 @@ export default function PaymentClient() {
         ]}
       />
 
-      <div className="neumorph-card rounded-3xl p-6 sm:p-10 border border-slate-200 dark:border-gold-500/30 shadow-2xl space-y-8">
+      <div className="editorial-card rounded-sm p-6 sm:p-10 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 shadow-sm space-y-8">
         
         {/* Header */}
-        <div className="space-y-3 pb-6 border-b border-slate-200 dark:border-legal-800/80">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-gold-50 dark:bg-gold-950/80 border border-gold-500/30 text-gold-700 dark:text-gold-400 text-xs font-bold uppercase tracking-wider">
-            <Lock className="w-3.5 h-3.5" />
-            <span>Secure 256-Bit SSL Checkout</span>
+        <div className="space-y-3 pb-6 border-b border-ink-200 dark:border-ink-800">
+          <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded-sm bg-ivory-200 dark:bg-ink-800 border border-ink-300 dark:border-ink-700 text-oxblood-700 dark:text-oxblood-400 text-[10px] font-mono font-bold uppercase tracking-wider">
+            <Lock className="w-3 h-3" />
+            <span>Secure SSL Payment Checkout</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
-            Complete Submission Payment
+          <h1 className="text-2xl sm:text-3xl font-serif font-bold text-ink-950 dark:text-white">
+            Complete Submission Fee
           </h1>
 
-          <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-            Your application record has been recorded in our system with <span className="font-semibold text-amber-600 dark:text-amber-400">payment pending</span> status. Please complete the statutory processing fee to finalize and lock your docket.
+          <p className="text-xs text-ink-600 dark:text-ink-400 leading-relaxed font-normal">
+            Your application record has been recorded with <span className="font-mono font-semibold text-oxblood-700 dark:text-oxblood-400">payment pending</span> status. Please complete the statutory processing fee to finalize and lock your docket.
           </p>
         </div>
 
         {/* Order Details Breakdown */}
-        <div className="p-5 rounded-2xl bg-slate-50 dark:bg-legal-900/70 border border-slate-200 dark:border-legal-800 space-y-4">
+        <div className="p-5 rounded-sm bg-ivory-50 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 space-y-4">
           <div className="flex justify-between items-start">
             <div className="space-y-0.5">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">Designated Item</span>
-              <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+              <span className="text-xs text-ink-500 font-mono uppercase">Designated Item</span>
+              <h3 className="text-sm sm:text-base font-serif font-bold text-ink-950 dark:text-white">
                 {session.productName}
               </h3>
             </div>
-            <span className="text-lg sm:text-xl font-bold font-serif text-gold-600 dark:text-gold-400">
+            <span className="text-xl sm:text-2xl font-serif font-bold text-oxblood-700 dark:text-oxblood-400">
               ₹{feeRupees}
             </span>
           </div>
 
-          <div className="pt-3 border-t border-slate-200 dark:border-legal-800/80 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div className="pt-3 border-t border-ink-200 dark:border-ink-800 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
             <div>
-              <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Docket Reference:</span>
-              <span className="font-mono font-semibold text-slate-900 dark:text-white text-xs">
+              <span className="text-ink-400 block text-[10px] uppercase">Docket Reference:</span>
+              <span className="font-semibold text-ink-950 dark:text-white text-xs">
                 {session.referenceId}
               </span>
             </div>
 
             <div>
-              <span className="text-slate-500 dark:text-slate-400 block text-[11px]">Verified Identity:</span>
-              <span className="font-medium text-slate-900 dark:text-white text-xs truncate block">
+              <span className="text-ink-400 block text-[10px] uppercase">Verified Identity:</span>
+              <span className="font-medium text-ink-950 dark:text-white text-xs truncate block">
                 {session.email}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Security & Regulatory Guarantees */}
-        <div className="space-y-2 text-xs text-slate-500 dark:text-slate-400">
+        {/* Security Guarantees */}
+        <div className="space-y-2 text-xs text-ink-500 font-mono">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-4 h-4 text-gold-600 dark:text-gold-400 shrink-0" />
-            <span>Card and UPI credentials are processed directly via Razorpay and never stored on LexMinds servers.</span>
+            <ShieldCheck className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400 shrink-0" />
+            <span>Credentials are processed directly via Razorpay and never stored on LexMinds servers.</span>
           </div>
           <div className="flex items-center space-x-2">
-            <Lock className="w-4 h-4 text-gold-600 dark:text-gold-400 shrink-0" />
+            <Lock className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400 shrink-0" />
             <span>This payment link is valid for 30 minutes from form submission.</span>
           </div>
         </div>
 
         {/* Action Button */}
-        <div className="pt-4 space-y-3">
+        <div className="pt-2 space-y-3">
           <button
             onClick={handleLaunchPayment}
             disabled={paying}
-            className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-gold-500 via-gold-600 to-gold-700 hover:from-gold-400 hover:to-gold-600 text-slate-950 font-bold text-sm uppercase tracking-wider transition-all duration-300 shadow-xl hover:shadow-gold-500/25 flex items-center justify-center space-x-3 disabled:opacity-50"
+            className="w-full py-3.5 px-6 rounded-sm bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif font-bold text-xs uppercase tracking-widest transition-all shadow-sm flex items-center justify-center space-x-2 disabled:opacity-50"
           >
             {paying ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
                 <span>Processing Payment...</span>
               </>
             ) : (
               <>
-                <CreditCard className="w-5 h-5" />
+                <CreditCard className="w-4 h-4" />
                 <span>Pay ₹{feeRupees} via Razorpay</span>
               </>
             )}
           </button>
 
-          <p className="text-[11px] text-center text-slate-500 dark:text-slate-400">
-            By clicking Pay, you authorize LexMinds to submit your application with authoritative docket {session.referenceId}.
+          <p className="text-[10px] font-mono text-center text-ink-400">
+            Authorizes submission with authoritative docket {session.referenceId}.
           </p>
         </div>
 

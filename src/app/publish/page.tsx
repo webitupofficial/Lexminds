@@ -134,19 +134,19 @@ export default function PublishPage() {
       <Breadcrumbs items={[{ name: 'Publish With Us', href: '/publish' }]} />
 
       {/* Header Banner */}
-      <div className="neumorph-card rounded-3xl p-6 sm:p-10 relative overflow-hidden border border-slate-200 dark:border-gold-500/30">
+      <div className="editorial-card rounded-sm p-6 sm:p-10 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850">
         <div className="max-w-3xl space-y-3">
-          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-gold-50 dark:bg-gold-950/80 border border-gold-500/30 text-gold-700 dark:text-gold-400 text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
+          <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded-sm bg-ivory-200 dark:bg-ink-800 border border-ink-300 dark:border-ink-700 text-oxblood-700 dark:text-oxblood-400 text-[10px] font-mono font-bold uppercase tracking-wider">
+            <Sparkles className="w-3 h-3" />
             <span>Call For Papers &bull; Volume IV</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-serif font-bold text-slate-900 dark:text-white tracking-tight">
-            Publish Your Legal Research With <span className="gold-gradient-text">LexMinds</span>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-white tracking-tight">
+            Publish Your Legal Research With <span className="text-oxblood-700 dark:text-oxblood-400">LexMinds</span>
           </h1>
 
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
-            Submit your research paper, case commentary, or legislative analysis to our peer-reviewed journal. Receive double-blind reviewer feedback and a formal publication docket upon acceptance.
+          <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 leading-relaxed max-w-2xl font-normal">
+            Submit your research paper, case commentary, or legislative analysis to the LexMinds Law Review. Receive structured editorial evaluation, citation checks, and an archival publication docket upon acceptance.
           </p>
         </div>
       </div>
@@ -155,7 +155,7 @@ export default function PublishPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
           
           {/* Main Submission Form (8 Cols) */}
-          <div className="lg:col-span-8 neumorph-card rounded-3xl p-6 sm:p-8 space-y-8 border border-slate-200 dark:border-gold-500/30">
+          <div className="lg:col-span-8 editorial-card rounded-sm p-6 sm:p-8 space-y-8 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850">
             
             {/* Google Authentication Gate First */}
             <div>
@@ -175,7 +175,7 @@ export default function PublishPage() {
                   }
                 }}
               >
-                <form onSubmit={handleSubmitClick} className="space-y-6 pt-4 border-t border-slate-200 dark:border-legal-800">
+                <form onSubmit={handleSubmitClick} className="space-y-6 pt-4 border-t border-ink-200 dark:border-ink-800">
 
               
               {/* Author Information */}
@@ -389,16 +389,16 @@ export default function PublishPage() {
                     name="consentToPublish"
                     checked={formData.consentToPublish}
                     onChange={handleChange}
-                    className="mt-0.5 rounded border-slate-300 text-gold-500 focus:ring-gold-500"
+                    className="mt-0.5 rounded-sm border-ink-300 text-oxblood-700 focus:ring-oxblood-700"
                   />
-                  <span className="text-slate-600 dark:text-slate-300">
-                    <strong>Publication Terms:</strong> I understand that paying the ₹499 fee initiates the double-blind review process. Articles are published only after reviewer approval.
+                  <span className="text-ink-600 dark:text-ink-300 text-xs">
+                    <strong>Publication Terms:</strong> I understand that paying the ₹499 fee initiates editorial evaluation. Articles are published only after editorial council approval.
                   </span>
                 </label>
               </div>
 
               {submitError && (
-                <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-xs text-rose-600 dark:text-rose-400 flex items-center space-x-2">
+                <div className="p-3 rounded-sm bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-xs text-rose-600 dark:text-rose-400 flex items-center space-x-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{submitError}</span>
                 </div>
@@ -408,7 +408,7 @@ export default function PublishPage() {
               <button
                 type="submit"
                 disabled={submitting || !isFormValid()}
-                className="w-full py-4 px-6 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 hover:from-gold-300 hover:to-gold-500 text-slate-950 font-bold text-xs uppercase tracking-widest rounded-2xl shadow-md transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="w-full py-3.5 px-6 bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif font-bold text-xs uppercase tracking-widest rounded-sm shadow-sm transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 {submitting ? (
                   <>
@@ -429,37 +429,37 @@ export default function PublishPage() {
 
       {/* Right Sidebar: Policy & Fee Information (4 Cols) */}
       <div className="lg:col-span-4 space-y-6">
-        <div className="neumorph-card rounded-3xl p-6 border border-slate-200 dark:border-gold-500/30 space-y-4">
-          <div className="flex items-center space-x-3 text-gold-700 dark:text-gold-400">
-            <Scale className="w-5 h-5" />
-            <h3 className="font-serif font-bold text-slate-900 dark:text-white text-base">Editorial Policy</h3>
+        <div className="editorial-card rounded-sm p-6 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 space-y-4">
+          <div className="flex items-center space-x-2.5 text-oxblood-700 dark:text-oxblood-400">
+            <Scale className="w-4 h-4" />
+            <h3 className="font-serif font-bold text-ink-950 dark:text-white text-base">Editorial Policy</h3>
           </div>
 
-          <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+          <div className="space-y-3 text-xs text-ink-600 dark:text-ink-300">
             <p>
-              <strong>Desk Screening:</strong> Manuscripts undergo double-blind plagiarism triage within 48 hours.
+              <strong>Desk Screening:</strong> Manuscripts undergo editorial evaluation and academic originality triage upon queue intake.
             </p>
             <p>
-              <strong>Strict Standards:</strong> Only approved manuscripts that meet originality thresholds are published live.
+              <strong>Strict Standards:</strong> Only approved manuscripts that meet originality thresholds are published live in the journal.
             </p>
             <p>
               <strong>Author Credit:</strong> Published articles prominently display author byline, institution, bio, and standardized Bluebook / OSCOLA citations.
             </p>
           </div>
 
-          <div className="pt-3 border-t border-slate-200 dark:border-legal-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+          <div className="pt-3 border-t border-ink-200 dark:border-ink-800 text-[11px] font-mono text-ink-500 dark:text-ink-400 flex items-center justify-between">
             <span>Article Processing Fee:</span>
-            <span className="font-bold text-slate-900 dark:text-white">₹499.00 INR</span>
+            <span className="font-bold text-ink-950 dark:text-white">₹499.00 INR</span>
           </div>
         </div>
 
-        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-legal-900/40 border border-slate-200 dark:border-legal-800 text-xs text-slate-500 space-y-2">
-          <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400">
-            <Lock className="w-4 h-4" />
-            <span className="font-semibold">Author Security</span>
+        <div className="p-4 rounded-sm bg-ivory-100 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 text-xs text-ink-500 space-y-2">
+          <div className="flex items-center space-x-2 text-oxblood-700 dark:text-oxblood-400 font-serif font-bold">
+            <Lock className="w-3.5 h-3.5" />
+            <span>Author Security &amp; Records</span>
           </div>
-          <p>
-            All submissions are securely logged in our private registry. Authors do not need account dashboards; official decision notices and reviewer notes are sent directly to your registered email.
+          <p className="text-[11px] leading-relaxed">
+            All submissions are logged in our editorial registry. Authors do not need account dashboards; official decision notices and reviewer notes are sent directly to your registered email.
           </p>
         </div>
       </div>
