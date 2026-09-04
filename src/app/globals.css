@@ -3,35 +3,39 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #fbf9f4;
-  --bg-secondary: #f4f0e8;
-  --bg-card: #ffffff;
-  --text-primary: #11161d;
-  --text-secondary: #2d3748;
-  --text-muted: #64748b;
-  --border-subtle: #e5e0d8;
-  --border-strong: #11161d;
-  --border-faded-blue: #cbd8e8;
-  --accent-vermilion: #d9381e;
-  --accent-vermilion-hover: #b92812;
-  --accent-faded-blue: #2c3e50;
-  --shadow-brutal-color: #11161d;
+  --bg-primary: #F7F3EC;
+  --bg-secondary: #EFEAE0;
+  --bg-surface: #FFFDF8;
+  --bg-card: #FFFDF8;
+  --text-primary: #111218;
+  --text-secondary: #323647;
+  --text-muted: #5E606A;
+  --accent-primary: #5B3DF5;
+  --accent-primary-hover: #482CE0;
+  --accent-secondary: #FF5A5F;
+  --accent-secondary-hover: #E83E44;
+  --border-color: #17181D;
+  --border-subtle: #E3DCce;
+  --border-strong: #17181D;
+  --shadow-brutal-color: #17181D;
 }
 
 .dark {
-  --bg-primary: #0d1117;
-  --bg-secondary: #141a22;
-  --bg-card: #18202c;
-  --text-primary: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --border-subtle: #242f3d;
-  --border-strong: #f1f5f9;
-  --border-faded-blue: #2d4257;
-  --accent-vermilion: #e11d48;
-  --accent-vermilion-hover: #f43f5e;
-  --accent-faded-blue: #86aadb;
-  --shadow-brutal-color: #f1f5f9;
+  --bg-primary: #101116;
+  --bg-secondary: #181A23;
+  --bg-surface: #181A23;
+  --bg-card: #181A23;
+  --text-primary: #F8F4EA;
+  --text-secondary: #DAD7E2;
+  --text-muted: #B8B5C2;
+  --accent-primary: #8B7CFF;
+  --accent-primary-hover: #AA94FF;
+  --accent-secondary: #FF6B6B;
+  --accent-secondary-hover: #FF7D83;
+  --border-color: #2A2D3D;
+  --border-subtle: #242836;
+  --border-strong: #E7E1D5;
+  --shadow-brutal-color: #0C0D12;
 }
 
 @layer base {
@@ -45,13 +49,13 @@
     color: var(--text-primary);
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
-    transition: background-color 0.2s ease,
-                color 0.2s ease,
-                border-color 0.2s ease;
+    transition: background-color 0.25s ease,
+                color 0.25s ease,
+                border-color 0.25s ease;
   }
 
   ::selection {
-    background-color: var(--accent-vermilion);
+    background-color: var(--accent-primary);
     color: #ffffff;
   }
 }
@@ -97,42 +101,67 @@
 }
 
 /* Neo-Brutalist Interactive Buttons */
-.btn-neo-primary {
-  background-color: var(--accent-vermilion);
+.btn-neo-primary,
+.btn-brand-primary {
+  background-color: var(--accent-primary);
   color: #ffffff;
   font-weight: 600;
   border: 1.5px solid var(--border-strong);
-  box-shadow: 2px 2px 0px var(--shadow-brutal-color);
+  box-shadow: 2.5px 2.5px 0px var(--shadow-brutal-color);
   transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-neo-primary:hover {
+.btn-neo-primary:hover,
+.btn-brand-primary:hover {
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px var(--shadow-brutal-color);
+  box-shadow: 1.5px 1.5px 0px var(--shadow-brutal-color);
 }
 
-.btn-neo-primary:active {
-  transform: translate(2px, 2px);
+.btn-neo-primary:active,
+.btn-brand-primary:active {
+  transform: translate(2.5px, 2.5px);
   box-shadow: 0px 0px 0px var(--shadow-brutal-color);
 }
 
-.btn-neo-secondary {
-  background-color: transparent;
+.btn-brand-coral {
+  background-color: var(--accent-secondary);
+  color: #ffffff;
+  font-weight: 600;
+  border: 1.5px solid var(--border-strong);
+  box-shadow: 2.5px 2.5px 0px var(--shadow-brutal-color);
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-brand-coral:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1.5px 1.5px 0px var(--shadow-brutal-color);
+}
+
+.btn-brand-coral:active {
+  transform: translate(2.5px, 2.5px);
+  box-shadow: 0px 0px 0px var(--shadow-brutal-color);
+}
+
+.btn-neo-secondary,
+.btn-brand-secondary {
+  background-color: var(--bg-surface);
   color: var(--text-primary);
   font-weight: 600;
   border: 1.5px solid var(--border-strong);
-  box-shadow: 2px 2px 0px var(--shadow-brutal-color);
+  box-shadow: 2.5px 2.5px 0px var(--shadow-brutal-color);
   transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
 }
 
-.btn-neo-secondary:hover {
+.btn-neo-secondary:hover,
+.btn-brand-secondary:hover {
   background-color: var(--bg-secondary);
   transform: translate(1px, 1px);
-  box-shadow: 1px 1px 0px var(--shadow-brutal-color);
+  box-shadow: 1.5px 1.5px 0px var(--shadow-brutal-color);
 }
 
-.btn-neo-secondary:active {
-  transform: translate(2px, 2px);
+.btn-neo-secondary:active,
+.btn-brand-secondary:active {
+  transform: translate(2.5px, 2.5px);
   box-shadow: 0px 0px 0px var(--shadow-brutal-color);
 }
 
@@ -150,9 +179,9 @@
 
 .tactile-control:focus-within,
 .tactile-control:focus {
-  border-color: var(--accent-vermilion);
+  border-color: var(--accent-primary);
   outline: none;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--accent-vermilion);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08), 0 0 0 1.5px var(--accent-primary);
 }
 
 .tactile-segmented {
@@ -165,15 +194,15 @@
 
 /* Liquid Glass Feature Panel & Masthead */
 .liquid-glass-nav {
-  background-color: rgba(251, 249, 244, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-strong);
+  background-color: rgba(247, 243, 236, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .dark .liquid-glass-nav {
-  background-color: rgba(13, 17, 23, 0.9);
-  border-bottom: 1px solid var(--border-strong);
+  background-color: rgba(16, 17, 22, 0.88);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .liquid-glass-dossier {
@@ -191,13 +220,13 @@
   left: 0;
   right: 0;
   height: 38%;
-  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.6) 0%, transparent 75%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(91, 61, 245, 0.08) 0%, transparent 75%);
   pointer-events: none;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .dark .liquid-glass-dossier::before {
-  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 75%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(139, 124, 255, 0.12) 0%, transparent 75%);
   opacity: 0.9;
 }
 
@@ -214,7 +243,7 @@
 .editorial-dossier {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-left: 3px solid var(--accent-vermilion);
+  border-left: 3px solid var(--accent-primary);
 }
 
 .editorial-card {
@@ -263,7 +292,7 @@
 }
 
 .legal-prose blockquote {
-  border-left: 3px solid var(--accent-vermilion);
+  border-left: 3px solid var(--accent-primary);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
   font-style: italic;

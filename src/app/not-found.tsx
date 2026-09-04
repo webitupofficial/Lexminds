@@ -27,21 +27,21 @@ export default function NotFound() {
 
         {/* Badge & Icon */}
         <div className="space-y-4">
-          <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded-sm bg-ivory-200 dark:bg-ink-800 border border-ink-300 dark:border-ink-700 text-oxblood-700 dark:text-oxblood-400 text-[10px] font-mono font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-sm bg-royal-50 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 text-royal-700 dark:text-royal-300 text-[11px] font-mono font-bold uppercase tracking-wider">
             <Scale className="w-3.5 h-3.5" />
             <span>Archival Notice &bull; Status 404</span>
           </div>
 
-          <div className="w-16 h-16 mx-auto rounded-sm bg-ivory-100 dark:bg-ink-850 border border-ink-300 dark:border-ink-700 flex items-center justify-center text-oxblood-700 dark:text-oxblood-400 shadow-sm">
+          <div className="w-16 h-16 mx-auto rounded-sm bg-surface border border-ink/10 dark:border-white/10 flex items-center justify-center text-royal-600 dark:text-royal-400 shadow-sm">
             <FileQuestion className="w-8 h-8" />
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-white tracking-tight">
-            Archival Docket <span className="text-oxblood-700 dark:text-oxblood-400">Not Found</span>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink tracking-tight">
+            Archival Docket <span className="text-royal-600 dark:text-royal-400">Not Found</span>
           </h1>
 
-          <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-400 max-w-lg mx-auto leading-relaxed font-normal">
-            The treatise, commentary, or fellowship docket you are seeking may have concluded, been re-indexed, or moved to another volume in the LexMinds archive.
+          <p className="text-xs sm:text-sm text-ink/70 max-w-lg mx-auto leading-relaxed font-normal">
+            The commentary, syllabus, or fellowship docket you are seeking may have concluded, been re-indexed, or moved to another section in the LexMinds archive.
           </p>
         </div>
 
@@ -49,50 +49,50 @@ export default function NotFound() {
         <form 
           action="/articles" 
           method="GET"
-          className="max-w-md mx-auto flex items-center rounded-sm bg-white dark:bg-ink-850 border border-ink-300 dark:border-ink-700 p-1.5 focus-within:border-oxblood-700 transition-colors shadow-sm"
+          className="max-w-md mx-auto flex items-center rounded-sm bg-surface border border-ink/15 dark:border-white/15 p-1.5 focus-within:border-royal-500 transition-colors shadow-sm"
         >
-          <Search className="w-4 h-4 text-ink-400 ml-2.5 shrink-0" />
+          <Search className="w-4 h-4 text-ink/40 ml-2.5 shrink-0" />
           <input
             type="text"
             name="q"
             placeholder="Search statutes, case analyses, or topics..."
-            className="w-full bg-transparent px-3 py-1.5 text-xs text-ink-950 dark:text-white placeholder-ink-400 focus:outline-none font-mono"
+            className="w-full bg-transparent px-3 py-1.5 text-xs text-ink placeholder-ink/40 focus:outline-none font-mono"
           />
           <button
             type="submit"
-            className="px-4 py-2 bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif font-bold text-xs uppercase tracking-wider rounded-sm transition-all shrink-0"
+            className="btn-brand-primary !py-1.5 !px-3.5 !text-xs shrink-0"
           >
             Search
           </button>
         </form>
 
         {/* Direct Action Hub */}
-        <div className="pt-4 border-t border-ink-200 dark:border-ink-800 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-mono">
+        <div className="pt-4 border-t border-ink/10 dark:border-white/10 grid grid-cols-1 sm:grid-cols-3 gap-3 text-left font-mono">
           <Link
             href="/"
-            className="p-3.5 rounded-sm editorial-card border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 transition-all group"
+            className="p-4 rounded-sm border border-ink/10 dark:border-white/10 bg-surface hover:border-royal-500/50 transition-all group"
           >
-            <Home className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400 mb-1.5 group-hover:scale-105 transition-transform" />
-            <h4 className="text-xs font-bold text-ink-950 dark:text-white group-hover:text-oxblood-700 dark:group-hover:text-oxblood-400 font-serif">Front Page</h4>
-            <p className="text-[11px] text-ink-500 mt-0.5">Return to central publication</p>
+            <Home className="w-4 h-4 text-royal-600 dark:text-royal-400 mb-2 group-hover:scale-110 transition-transform" />
+            <h4 className="text-xs font-bold text-ink group-hover:text-royal-600 dark:group-hover:text-royal-400 font-serif">Front Page</h4>
+            <p className="text-[11px] text-ink/60 mt-0.5">Return to central publication</p>
           </Link>
 
           <Link
             href="/internships"
-            className="p-3.5 rounded-sm editorial-card border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 transition-all group"
+            className="p-4 rounded-sm border border-ink/10 dark:border-white/10 bg-surface hover:border-royal-500/50 transition-all group"
           >
-            <Briefcase className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400 mb-1.5 group-hover:scale-105 transition-transform" />
-            <h4 className="text-xs font-bold text-ink-950 dark:text-white group-hover:text-oxblood-700 dark:group-hover:text-oxblood-400 font-serif">Fellowships</h4>
-            <p className="text-[11px] text-ink-500 mt-0.5">Explore active research cohorts</p>
+            <Briefcase className="w-4 h-4 text-royal-600 dark:text-royal-400 mb-2 group-hover:scale-110 transition-transform" />
+            <h4 className="text-xs font-bold text-ink group-hover:text-royal-600 dark:group-hover:text-royal-400 font-serif">Opportunities</h4>
+            <p className="text-[11px] text-ink/60 mt-0.5">Explore active research cohorts</p>
           </Link>
 
           <Link
             href="/articles"
-            className="p-3.5 rounded-sm editorial-card border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 transition-all group"
+            className="p-4 rounded-sm border border-ink/10 dark:border-white/10 bg-surface hover:border-royal-500/50 transition-all group"
           >
-            <BookOpen className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400 mb-1.5 group-hover:scale-105 transition-transform" />
-            <h4 className="text-xs font-bold text-ink-950 dark:text-white group-hover:text-oxblood-700 dark:group-hover:text-oxblood-400 font-serif">Legal Treatises</h4>
-            <p className="text-[11px] text-ink-500 mt-0.5">Read law review commentaries</p>
+            <BookOpen className="w-4 h-4 text-royal-600 dark:text-royal-400 mb-2 group-hover:scale-110 transition-transform" />
+            <h4 className="text-xs font-bold text-ink group-hover:text-royal-600 dark:group-hover:text-royal-400 font-serif">Journal Index</h4>
+            <p className="text-[11px] text-ink/60 mt-0.5">Read law review commentaries</p>
           </Link>
         </div>
 

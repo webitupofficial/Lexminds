@@ -2,57 +2,60 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Scale, Mail } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-paper-200 dark:bg-ink-950 border-t border-ink-900/15 dark:border-ink-700 text-ink-600 dark:text-ink-400 text-xs transition-colors duration-200">
+    <footer className="bg-paper dark:bg-ink-950 border-t border-ink-900/15 dark:border-ink-800 text-ink-600 dark:text-ink-400 text-xs transition-colors duration-200">
       
       {/* Main Colophon Container */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-14">
           
           {/* Brand & Editorial Colophon (6 cols) */}
           <div className="lg:col-span-6 space-y-4">
-            <Link href="/" className="flex items-center space-x-3 group">
-              <div className="w-8 h-8 bg-paper-100 dark:bg-ink-850 border border-ink-900 dark:border-ink-200 flex items-center justify-center text-vermilion shadow-tactile">
-                <Scale className="w-4 h-4" />
+            <Link href="/" className="flex items-center space-x-2.5 group">
+              <div className="w-8 h-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 flex items-center justify-center text-royal-500 dark:text-royal-400 font-serif font-bold text-base shadow-brutal-sm">
+                L
               </div>
-              <span className="font-serif text-xl font-bold tracking-tight text-ink-900 dark:text-white">
-                Lex<span className="text-vermilion">Minds</span>
-              </span>
+              <div className="flex items-baseline space-x-1.5">
+                <span className="font-serif text-xl font-bold tracking-tight text-ink-950 dark:text-ink-50">
+                  LexMinds
+                </span>
+                <span className="w-2 h-2 rounded-full bg-royal-500 dark:bg-royal-400 inline-block" />
+              </div>
             </Link>
             
-            <p className="text-ink-700 dark:text-ink-300 text-xs leading-relaxed max-w-md font-normal">
+            <p className="text-ink-600 dark:text-ink-300 text-xs leading-relaxed max-w-md font-normal">
               An independent, student-led legal scholarship initiative publishing peer-informed research, statutory commentaries, and selective research fellowship dossiers for emerging law students across India.
             </p>
 
-            <div className="pt-1 text-xs text-ink-500 dark:text-ink-400 flex items-center space-x-2">
-              <Mail className="w-3.5 h-3.5 text-vermilion shrink-0" />
+            <div className="pt-2 text-xs text-ink-500 dark:text-ink-400 flex items-center space-x-2 font-mono">
+              <Mail className="w-3.5 h-3.5 text-royal-500 shrink-0" />
               <span>Editorial Inquiries: editorial@lexminds.in</span>
             </div>
           </div>
 
-          {/* Publications & Volumes (3 cols) */}
+          {/* Opportunities & Publishing (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-[11px] font-bold uppercase tracking-wider text-ink-900 dark:text-white font-mono">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-ink-950 dark:text-ink-100 font-mono">
               Indexes &amp; Calls
             </h4>
-            <ul className="space-y-2 text-xs text-ink-600 dark:text-ink-400">
+            <ul className="space-y-2.5 text-xs text-ink-600 dark:text-ink-400">
               <li>
-                <Link href="/internships" className="hover:text-vermilion transition-colors">
+                <Link href="/internships" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
                   Fellowship Open Calls
                 </Link>
               </li>
               <li>
-                <Link href="/articles" className="hover:text-vermilion transition-colors">
-                  Treatises &amp; Index
+                <Link href="/articles" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
+                  Treatises &amp; Journal Index
                 </Link>
               </li>
               <li>
-                <Link href="/publish" className="hover:text-vermilion transition-colors">
+                <Link href="/publish" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
                   Submit Manuscript
                 </Link>
               </li>
@@ -61,28 +64,28 @@ export default function Footer() {
 
           {/* Academic Governance (3 cols) */}
           <div className="lg:col-span-3 space-y-3">
-            <h4 className="text-[11px] font-bold uppercase tracking-wider text-ink-900 dark:text-white font-mono">
-              Governance
+            <h4 className="text-xs font-bold uppercase tracking-wider text-ink-950 dark:text-ink-100 font-mono">
+              Governance &amp; Terms
             </h4>
-            <ul className="space-y-2 text-xs text-ink-600 dark:text-ink-400">
+            <ul className="space-y-2.5 text-xs text-ink-600 dark:text-ink-400">
               <li>
-                <Link href="/editorial-policy" className="hover:text-vermilion transition-colors">
+                <Link href="/editorial-policy" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
                   Editorial Standards
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-vermilion transition-colors">
+                <Link href="/privacy" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:text-vermilion transition-colors">
+                <Link href="/terms" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
                   Terms of Publication
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-vermilion transition-colors">
-                  Academic Desk
+                <Link href="/contact" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
+                  Contact &amp; Inquiries
                 </Link>
               </li>
             </ul>
@@ -91,18 +94,18 @@ export default function Footer() {
         </div>
 
         {/* Bottom Colophon & Academic Notice */}
-        <div className="mt-12 pt-6 border-t border-ink-900/10 dark:border-ink-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-ink-500 dark:text-ink-400 gap-3">
+        <div className="mt-14 pt-8 border-t border-ink-900/10 dark:border-ink-800 flex flex-col sm:flex-row items-center justify-between text-xs text-ink-500 dark:text-ink-400 gap-4">
           <div>
-            &copy; {currentYear} LexMinds Law Journal. Published strictly for academic discourse and legal scholarship. Non-solicitation under BCI standards.
+            &copy; {currentYear} LexMinds Law Journal. Student-led legal scholarship platform. Non-solicitation under BCI standards.
           </div>
-          <div className="flex items-center space-x-5">
-            <Link href="/privacy" className="hover:text-vermilion transition-colors">
+          <div className="flex items-center space-x-6">
+            <Link href="/privacy" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
               Privacy
             </Link>
-            <Link href="/terms" className="hover:text-vermilion transition-colors">
+            <Link href="/terms" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
               Terms
             </Link>
-            <Link href="/contact" className="hover:text-vermilion transition-colors">
+            <Link href="/contact" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
               Contact
             </Link>
           </div>

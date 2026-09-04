@@ -128,26 +128,26 @@ export default function ApplicationModal({
         <div className="relative w-full max-w-2xl rounded-sm bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800 shadow-2xl overflow-hidden max-h-[90vh] flex flex-col transition-colors">
           
           {/* Header */}
-          <div className="bg-ivory-100 dark:bg-ink-900 px-6 py-4 border-b border-ink-200 dark:border-ink-800 flex items-center justify-between shrink-0">
+          <div className="bg-paper dark:bg-ink-900 px-6 py-5 border-b border-ink-900/15 dark:border-ink-800 flex items-center justify-between shrink-0">
             <div className="flex items-center space-x-3">
-              <div className="w-9 h-9 rounded-sm bg-white dark:bg-ink-850 border border-ink-300 dark:border-ink-700 flex items-center justify-center text-oxblood-700 dark:text-oxblood-400">
+              <div className="w-9 h-9 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 flex items-center justify-center text-royal-600 dark:text-royal-400 shadow-brutal-sm">
                 <Briefcase className="w-4 h-4" />
               </div>
               <div>
-                <h3 className="text-base sm:text-lg font-serif font-bold text-ink-950 dark:text-white line-clamp-1">
+                <h3 className="text-base sm:text-lg font-serif font-bold text-ink-950 dark:text-ink-50 line-clamp-1">
                   {internship.title}
                 </h3>
                 <p className="text-xs text-ink-500 dark:text-ink-400 flex items-center space-x-1.5 font-mono">
-                  <Building2 className="w-3.5 h-3.5 text-oxblood-700 dark:text-oxblood-400" />
+                  <Building2 className="w-3.5 h-3.5 text-royal-500" />
                   <span>{internship.organization}</span>
                   <span>&bull;</span>
-                  <span className="text-oxblood-700 dark:text-oxblood-400 font-semibold">Fee: ₹{internship.applicationFee}</span>
+                  <span className="text-coral font-semibold">Fee: ₹{internship.applicationFee}.00</span>
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 rounded-sm text-ink-400 hover:text-ink-900 dark:hover:text-white hover:bg-ivory-200 dark:hover:bg-ink-800 transition-colors"
+              className="p-1.5 rounded-sm text-ink-400 hover:text-ink-900 dark:hover:text-white hover:bg-paper dark:hover:bg-ink-800 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -182,16 +182,16 @@ export default function ApplicationModal({
               >
                 {/* Step Indicators */}
                 <div className="grid grid-cols-3 gap-2 border-b border-ink-900/15 dark:border-ink-700 pb-4 text-xs font-mono font-semibold">
-                  <div className={`flex items-center space-x-2 ${step >= 1 ? 'text-vermilion font-bold' : 'text-ink-400'}`}>
-                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-vermilion text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>1</span>
+                  <div className={`flex items-center space-x-2 ${step >= 1 ? 'text-royal-600 dark:text-royal-400 font-bold' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-royal-500 text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>1</span>
                     <span>Applicant</span>
                   </div>
-                  <div className={`flex items-center space-x-2 ${step >= 2 ? 'text-vermilion font-bold' : 'text-ink-400'}`}>
-                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-vermilion text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>2</span>
+                  <div className={`flex items-center space-x-2 ${step >= 2 ? 'text-royal-600 dark:text-royal-400 font-bold' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-royal-500 text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>2</span>
                     <span>Academics</span>
                   </div>
-                  <div className={`flex items-center space-x-2 ${step >= 3 ? 'text-vermilion font-bold' : 'text-ink-400'}`}>
-                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-vermilion text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>3</span>
+                  <div className={`flex items-center space-x-2 ${step >= 3 ? 'text-royal-600 dark:text-royal-400 font-bold' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-royal-500 text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>3</span>
                     <span>Declaration &amp; Pay</span>
                   </div>
                 </div>
@@ -213,7 +213,7 @@ export default function ApplicationModal({
 
                     <div>
                       <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                        Full Legal Name <span className="text-vermilion">*</span>
+                        Full Legal Name <span className="text-coral-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -227,7 +227,7 @@ export default function ApplicationModal({
 
                     <div>
                       <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                        Phone Number (WhatsApp for updates) <span className="text-vermilion">*</span>
+                        Phone Number (WhatsApp for updates) <span className="text-coral-500">*</span>
                       </label>
                       <input
                         type="tel"
@@ -246,7 +246,7 @@ export default function ApplicationModal({
                   <div className="space-y-4 animate-editorial-reveal">
                     <div>
                       <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                        Law College / University <span className="text-vermilion">*</span>
+                        Law College / University <span className="text-coral-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -261,7 +261,7 @@ export default function ApplicationModal({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                          Current Year of Study <span className="text-vermilion">*</span>
+                          Current Year of Study <span className="text-coral-500">*</span>
                         </label>
                         <select
                           name="yearOfStudy"
@@ -280,7 +280,7 @@ export default function ApplicationModal({
 
                       <div>
                         <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                          Academic Score / CGPA / Grade <span className="text-vermilion">*</span>
+                          Academic Score / CGPA / Grade <span className="text-coral-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -300,7 +300,7 @@ export default function ApplicationModal({
                   <div className="space-y-4 animate-editorial-reveal">
                     <div>
                       <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                        Statement of Purpose &amp; Research Focus (Min 30 chars) <span className="text-vermilion">*</span>
+                        Statement of Purpose &amp; Research Focus (Min 30 chars) <span className="text-coral-500">*</span>
                       </label>
                       <textarea
                         name="sop"
@@ -322,7 +322,7 @@ export default function ApplicationModal({
                           name="declaration"
                           checked={formData.declaration}
                           onChange={handleChange}
-                          className="mt-0.5 text-vermilion focus:ring-vermilion rounded-none"
+                          className="mt-0.5 text-coral-500 focus:ring-vermilion rounded-none"
                         />
                         <span className="text-[11px] text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
                           I confirm that all details provided are accurate. I understand that completion credentials are issued strictly upon verified completion of assigned research milestones, and this administrative fee covers evaluation and editorial coordination.
@@ -362,7 +362,7 @@ export default function ApplicationModal({
                       (step === 2 && !validateStep2()) ||
                       (step === 3 && !validateStep3())
                     }
-                    className="px-6 py-2.5 btn-neo-primary text-xs uppercase tracking-wider disabled:opacity-50 flex items-center space-x-1.5"
+                    className="px-6 py-3 btn-brand-primary text-xs uppercase tracking-wider disabled:opacity-50 flex items-center space-x-1.5"
                   >
                     {submitting ? (
                       <>

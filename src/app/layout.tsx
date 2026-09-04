@@ -7,8 +7,8 @@ import { ThemeProvider } from '@/components/ThemeProvider';
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: dark)', color: '#040814' },
-    { media: '(prefers-color-scheme: light)', color: '#f8fafc' },
+    { media: '(prefers-color-scheme: dark)', color: '#101116' },
+    { media: '(prefers-color-scheme: light)', color: '#F7F3EC' },
   ],
   width: 'device-width',
   initialScale: 1,
@@ -137,8 +137,25 @@ export default function RootLayout({
     <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
       <head>
         <JsonLd data={orgSchema} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function() {
+              try {
+                var stored = localStorage.getItem('lexminds-theme');
+                var isDark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                  document.documentElement.classList.remove('light');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.classList.add('light');
+                }
+              } catch (e) {}
+            })();`,
+          }}
+        />
       </head>
-      <body className="min-h-screen flex flex-col bg-[#fbf9f5] dark:bg-[#0d1117] text-ink-900 dark:text-ink-100 antialiased selection:bg-oxblood-700 selection:text-white transition-colors duration-200">
+      <body className="min-h-screen flex flex-col bg-paper dark:bg-ink-950 text-ink dark:text-ink-50 antialiased selection:bg-royal selection:text-white transition-colors duration-250">
         <ThemeProvider>
           <Header />
           <main className="flex-1">{children}</main>

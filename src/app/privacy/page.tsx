@@ -9,14 +9,14 @@ export const metadata = {
 
 export default function PrivacyPage() {
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-10">
       <Breadcrumbs items={[{ name: 'Privacy Policy' }]} />
 
-      <div className="space-y-2 border-b border-ink-300 dark:border-ink-700 pb-6">
-        <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-oxblood-700 dark:text-oxblood-400">
+      <div className="space-y-3 border-b border-ink-900/15 dark:border-ink-700 pb-8">
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-royal-500 dark:text-royal-400">
           Transparency &amp; Governance
         </span>
-        <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-white">
+        <h1 className="text-4xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50">
           Privacy Policy
         </h1>
         <p className="text-xs sm:text-sm text-ink-500 dark:text-ink-400 font-mono">
@@ -24,16 +24,16 @@ export default function PrivacyPage() {
         </p>
       </div>
 
-      <div className="editorial-card rounded-sm p-6 sm:p-10 space-y-8 text-xs sm:text-sm text-ink-700 dark:text-ink-300 leading-relaxed bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800">
+      <div className="p-8 sm:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-8 text-sm text-ink-700 dark:text-ink-300 leading-relaxed shadow-brutal">
         <section className="space-y-3">
-          <h2 className="text-lg font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
-            <Eye className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
+          <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+            <Eye className="w-5 h-5 text-royal-500 dark:text-royal-400" />
             <span>1. Information We Collect</span>
           </h2>
           <p>
             When you interact with LexMinds, we may collect basic information required to process fellowship applications, research manuscript submissions, or general inquiries:
           </p>
-          <ul className="list-disc list-inside space-y-1.5 text-ink-600 dark:text-ink-400 pl-2">
+          <ul className="list-disc list-inside space-y-2 text-ink-600 dark:text-ink-400 pl-2">
             <li><strong>Contact Details:</strong> Full name, verified institutional email address, phone number, and affiliated academic institution.</li>
             <li><strong>Application Data:</strong> Statement of Purpose (SOP), academic standing / year of study, research interests, and manuscript drafts. <em>(Note: The current portal does not collect, store, or require CVs or resumes.)</em></li>
             <li><strong>Transaction Identifiers:</strong> Razorpay payment reference IDs and order tokens (we do not store credit card, debit card, or UPI credentials).</li>
@@ -41,8 +41,8 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-lg font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
-            <Lock className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
+          <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+            <Lock className="w-5 h-5 text-royal-500 dark:text-royal-400" />
             <span>2. Purpose &amp; Use of Information</span>
           </h2>
           <p>
@@ -51,8 +51,8 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-lg font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
-            <ShieldCheck className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
+          <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+            <ShieldCheck className="w-5 h-5 text-royal-500 dark:text-royal-400" />
             <span>3. Data Security &amp; Retention</span>
           </h2>
           <p>
@@ -61,12 +61,12 @@ export default function PrivacyPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-lg font-serif font-bold text-ink-950 dark:text-white flex items-center space-x-2">
-            <FileText className="w-4 h-4 text-oxblood-700 dark:text-oxblood-400" />
+          <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+            <FileText className="w-5 h-5 text-royal-500 dark:text-royal-400" />
             <span>4. Contact Regarding Privacy</span>
           </h2>
           <p>
-            For any queries, data removal requests, or clarifications regarding this privacy policy, please contact the secretariat at <strong className="text-oxblood-700 dark:text-oxblood-400 font-mono">editorial@lexminds.in</strong>.
+            For any queries, data removal requests, or clarifications regarding this privacy policy, please contact the secretariat at <strong className="text-royal-600 dark:text-royal-400 font-mono">editorial@lexminds.in</strong>.
           </p>
         </section>
       </div>

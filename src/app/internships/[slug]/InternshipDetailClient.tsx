@@ -3,18 +3,14 @@
 import React, { useState } from 'react';
 import { 
   Building, 
-  MapPin, 
-  Clock, 
-  Calendar, 
-  GraduationCap, 
   CheckCircle2, 
   ShieldCheck, 
-  ArrowUpRight, 
   Share2, 
   Scale, 
   Award, 
   Briefcase, 
-  Check 
+  Check,
+  GraduationCap 
 } from 'lucide-react';
 import { Internship } from '@/lib/types';
 import ApplicationModal from '@/components/ApplicationModal';
@@ -48,12 +44,12 @@ export default function InternshipDetailClient({ internship }: Props) {
         <div className="lg:col-span-8 space-y-8">
           
           {/* Header Dossier Card */}
-          <div className="neo-card p-6 sm:p-8 space-y-6 bg-white dark:bg-ink-900">
+          <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-6 shadow-brutal">
             
             {/* Badges & Share */}
             <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
               <div className="flex items-center space-x-2">
-                <span className="px-2.5 py-0.5 bg-paper-200 dark:bg-ink-800 text-vermilion font-semibold uppercase tracking-wider text-[10px] border border-ink-900/15 dark:border-ink-700">
+                <span className="px-3 py-1 bg-royal-50 dark:bg-royal-950/40 text-royal-600 dark:text-royal-400 font-bold uppercase tracking-wider text-[11px] border border-royal-200 dark:border-royal-800">
                   {internship.practiceArea}
                 </span>
                 <span className="text-ink-400">&bull;</span>
@@ -64,67 +60,67 @@ export default function InternshipDetailClient({ internship }: Props) {
 
               <button
                 onClick={handleShare}
-                className="tactile-control p-1.5 px-2.5 text-ink-700 dark:text-ink-300 hover:text-vermilion flex items-center space-x-1.5 text-xs font-mono"
+                className="tactile-control p-2 px-3 text-ink-700 dark:text-ink-300 hover:text-royal-500 flex items-center space-x-1.5 text-xs font-mono rounded-sm"
               >
                 {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
-                <span>{copiedLink ? 'Copied' : 'Share'}</span>
+                <span>{copiedLink ? 'Link Copied' : 'Share'}</span>
               </button>
             </div>
 
             {/* Title */}
-            <div>
-              <h1 className="text-2xl sm:text-4xl font-serif font-bold text-ink-900 dark:text-ink-100 tracking-tight leading-tight">
+            <div className="space-y-2">
+              <h1 className="text-3xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-tight">
                 {internship.title}
               </h1>
-              <p className="text-xs sm:text-sm text-vermilion font-mono uppercase tracking-wider mt-2 flex items-center space-x-2 font-semibold">
+              <p className="text-sm text-coral font-mono uppercase tracking-wider flex items-center space-x-2 font-semibold">
                 <Building className="w-4 h-4 shrink-0" />
-                <span>{internship.organization}</span>
+                <span>{internship.organization} &bull; {internship.location}</span>
               </p>
             </div>
 
             {/* Quick Facts Ledger Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-ink-900/10 dark:border-ink-800 text-xs font-mono">
-              <div className="p-3 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-ink-900/10 dark:border-ink-800 text-xs font-mono">
+              <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
                 <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Location</span>
-                <span className="font-semibold text-ink-900 dark:text-ink-100 mt-0.5 block">{internship.location}</span>
+                <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">{internship.location}</span>
               </div>
-              <div className="p-3 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700">
+              <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
                 <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Honorarium</span>
-                <span className="font-bold text-vermilion mt-0.5 block">{internship.stipend}</span>
+                <span className="font-bold text-royal-600 dark:text-royal-400 mt-1 block">{internship.stipend}</span>
               </div>
-              <div className="p-3 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700">
+              <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
                 <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Term</span>
-                <span className="font-semibold text-ink-900 dark:text-ink-100 mt-0.5 block">{internship.duration}</span>
+                <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">{internship.duration}</span>
               </div>
-              <div className="p-3 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700">
+              <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
                 <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Deadline</span>
-                <span className="font-bold text-vermilion mt-0.5 block">{internship.deadline}</span>
+                <span className="font-bold text-coral mt-1 block">{internship.deadline}</span>
               </div>
             </div>
 
           </div>
 
           {/* Role Overview */}
-          <div className="neo-card p-6 sm:p-8 space-y-3 bg-white dark:bg-ink-900">
-            <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100 flex items-center space-x-2">
-              <Scale className="w-4 h-4 text-vermilion" />
+          <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-4 shadow-brutal">
+            <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+              <Scale className="w-5 h-5 text-royal-500 dark:text-royal-400" />
               <span>Chamber &amp; Role Overview</span>
             </h2>
-            <p className="text-ink-700 dark:text-ink-300 text-xs sm:text-sm leading-relaxed font-normal">
+            <p className="text-ink-600 dark:text-ink-300 text-sm leading-relaxed font-normal">
               {internship.description}
             </p>
           </div>
 
           {/* Responsibilities */}
-          <div className="neo-card p-6 sm:p-8 space-y-4 bg-white dark:bg-ink-900">
-            <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100 flex items-center space-x-2">
-              <Briefcase className="w-4 h-4 text-vermilion" />
+          <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-5 shadow-brutal">
+            <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+              <Briefcase className="w-5 h-5 text-royal-500 dark:text-royal-400" />
               <span>Core Research Responsibilities</span>
             </h2>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-ink-700 dark:text-ink-300">
+            <ul className="space-y-3 text-sm text-ink-700 dark:text-ink-300">
               {internship.responsibilities.map((resp, i) => (
-                <li key={i} className="flex items-start space-x-3">
-                  <span className="w-5 h-5 bg-paper-200 dark:bg-ink-800 border border-ink-900/20 dark:border-ink-700 flex items-center justify-center text-[10px] font-mono font-bold text-vermilion shrink-0 mt-0.5">
+                <li key={i} className="flex items-start space-x-3.5">
+                  <span className="w-6 h-6 bg-paper dark:bg-ink-800 border border-ink-900/20 dark:border-ink-700 flex items-center justify-center text-xs font-mono font-bold text-royal-600 dark:text-royal-400 shrink-0 mt-0.5">
                     {i + 1}
                   </span>
                   <span className="leading-relaxed">{resp}</span>
@@ -134,15 +130,15 @@ export default function InternshipDetailClient({ internship }: Props) {
           </div>
 
           {/* Eligibility */}
-          <div className="neo-card p-6 sm:p-8 space-y-4 bg-white dark:bg-ink-900">
-            <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100 flex items-center space-x-2">
-              <GraduationCap className="w-4 h-4 text-vermilion" />
+          <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-5 shadow-brutal">
+            <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+              <GraduationCap className="w-5 h-5 text-royal-500 dark:text-royal-400" />
               <span>Eligibility &amp; Academic Criteria</span>
             </h2>
-            <ul className="space-y-2 text-xs sm:text-sm text-ink-700 dark:text-ink-300">
+            <ul className="space-y-3 text-sm text-ink-700 dark:text-ink-300">
               {internship.eligibility.map((el, i) => (
-                <li key={i} className="flex items-start space-x-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-vermilion shrink-0 mt-0.5" />
+                <li key={i} className="flex items-start space-x-3">
+                  <CheckCircle2 className="w-5 h-5 text-royal-500 dark:text-royal-400 shrink-0 mt-0.5" />
                   <span className="leading-relaxed">{el}</span>
                 </li>
               ))}
@@ -150,15 +146,15 @@ export default function InternshipDetailClient({ internship }: Props) {
           </div>
 
           {/* Learning Outcomes */}
-          <div className="neo-card p-6 sm:p-8 space-y-4 bg-white dark:bg-ink-900">
-            <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100 flex items-center space-x-2">
-              <Award className="w-4 h-4 text-vermilion" />
-              <span>Learning Outcomes &amp; Academic Advantages</span>
+          <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-5 shadow-brutal">
+            <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+              <Award className="w-5 h-5 text-royal-500 dark:text-royal-400" />
+              <span>Learning Outcomes &amp; Academic Output</span>
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {internship.learningOutcomes.map((out, i) => (
-                <div key={i} className="p-3.5 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 text-xs text-ink-700 dark:text-ink-300 leading-relaxed flex items-start space-x-2">
-                  <span className="font-mono text-vermilion font-bold">&bull;</span>
+                <div key={i} className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 text-xs text-ink-700 dark:text-ink-300 leading-relaxed flex items-start space-x-2.5">
+                  <span className="font-mono text-royal-500 font-bold">&bull;</span>
                   <span>{out}</span>
                 </div>
               ))}
@@ -166,14 +162,14 @@ export default function InternshipDetailClient({ internship }: Props) {
           </div>
 
           {/* Selection Stages */}
-          <div className="neo-card p-6 sm:p-8 space-y-3 bg-white dark:bg-ink-900">
-            <h2 className="text-xl font-serif font-bold text-ink-900 dark:text-ink-100 flex items-center space-x-2">
-              <ShieldCheck className="w-4 h-4 text-vermilion" />
-              <span>Evaluation &amp; Selection Stages</span>
+          <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-4 shadow-brutal">
+            <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
+              <ShieldCheck className="w-5 h-5 text-royal-500 dark:text-royal-400" />
+              <span>Evaluation &amp; Selection Process</span>
             </h2>
-            <div className="space-y-2 font-mono text-xs">
+            <div className="space-y-3 font-mono text-xs">
               {internship.selectionProcess.map((proc, i) => (
-                <div key={i} className="p-3 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 text-ink-800 dark:text-ink-200">
+                <div key={i} className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 text-ink-800 dark:text-ink-200">
                   {proc}
                 </div>
               ))}
@@ -183,49 +179,49 @@ export default function InternshipDetailClient({ internship }: Props) {
         </div>
 
         {/* Sidebar Sticky Apply Box (4 Cols) */}
-        <div className="lg:col-span-4 lg:sticky lg:top-20 space-y-6">
+        <div className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
           
-          <div className="neo-card p-6 space-y-5 bg-white dark:bg-ink-900">
+          <div className="p-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-6 shadow-brutal">
             
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between font-mono text-xs">
                 <span className="uppercase text-ink-500 dark:text-ink-400">Evaluation Fee</span>
-                <span className="text-[10px] text-vermilion font-semibold">
+                <span className="text-[11px] text-royal-600 dark:text-royal-400 font-semibold">
                   Inclusive of All Taxes
                 </span>
               </div>
-              <div className="text-3xl font-serif font-bold text-ink-900 dark:text-ink-100">
+              <div className="text-4xl font-serif font-bold text-ink-950 dark:text-ink-50">
                 ₹{internship.applicationFee}.00
               </div>
-              <p className="text-[11px] text-ink-500 dark:text-ink-400 font-mono">
+              <p className="text-xs text-ink-500 dark:text-ink-400 font-mono">
                 Standard student evaluation fee for review of writing sample and statement of purpose.
               </p>
             </div>
 
-            <div className="border-t border-ink-900/10 dark:border-ink-800 pt-4 space-y-2 text-xs font-mono">
+            <div className="border-t border-ink-900/10 dark:border-ink-800 pt-4 space-y-3 text-xs font-mono">
               <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
                 <span>Available Seats:</span>
-                <strong className="text-ink-900 dark:text-ink-100 font-semibold">{internship.seats} Fellows</strong>
+                <strong className="text-ink-950 dark:text-ink-50 font-semibold">{internship.seats} Fellows</strong>
               </div>
               <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
                 <span>Mode:</span>
-                <strong className="text-ink-900 dark:text-ink-100 font-semibold">{internship.mode}</strong>
+                <strong className="text-ink-950 dark:text-ink-50 font-semibold">{internship.mode}</strong>
               </div>
               <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
                 <span>Deadline:</span>
-                <strong className="text-vermilion font-bold">{internship.deadline}</strong>
+                <strong className="text-coral font-bold">{internship.deadline}</strong>
               </div>
             </div>
 
             {/* Single Primary CTA */}
             <button
               onClick={() => setIsApplyModalOpen(true)}
-              className="w-full py-3.5 px-4 btn-neo-primary text-xs uppercase tracking-wider text-center block"
+              className="w-full py-4 px-4 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center block"
             >
               Submit Application
             </button>
 
-            <div className="pt-2 text-center text-[10px] font-mono text-ink-500 dark:text-ink-400">
+            <div className="text-center text-[11px] font-mono text-ink-500 dark:text-ink-400">
               Verified Google Authentication required at submission.
             </div>
 

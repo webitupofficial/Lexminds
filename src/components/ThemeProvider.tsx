@@ -33,7 +33,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
           document.documentElement.classList.add('light');
         }
       } else {
-        document.documentElement.classList.add('dark');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const initial = prefersDark ? 'dark' : 'light';
+        setThemeState(initial);
+        if (initial === 'dark') {
+          document.documentElement.classList.add('dark');
+          document.documentElement.classList.remove('light');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.add('light');
+        }
       }
     } catch {
       document.documentElement.classList.add('dark');
