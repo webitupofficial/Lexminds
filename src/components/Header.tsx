@@ -26,11 +26,10 @@ export default function Header() {
   }, []);
 
   const navLinks = [
-    { name: 'Programmes', href: '/internships' },
+    { name: 'Internships', href: '/internships' },
     { name: 'Publications', href: '/articles' },
-    { name: 'Submit', href: '/publish' },
     { name: 'About', href: '/about' },
-    { name: 'Contact', href: '/contact' },
+    { name: 'Contact Us', href: '/contact' },
   ];
 
   return (
@@ -44,25 +43,27 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           
-          {/* Left Group: Brand Wordmark + Left-Aligned Navigation Links */}
-          <div className="flex items-center space-x-8 lg:space-x-12">
-            <Link href="/" className="flex items-center space-x-2.5 group focus:outline-none shrink-0">
-              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-200 flex items-center justify-center text-royal-500 dark:text-royal-400 transition-transform duration-200 group-hover:scale-105 shadow-brutal-sm">
-                <span className="font-serif font-black text-base sm:text-lg">L</span>
-              </div>
-              
-              <div className="flex items-baseline space-x-1.5">
-                <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-ink-900 dark:text-ink-50">
-                  LexMinds
-                </span>
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-royal-600 dark:text-royal-400 hidden sm:inline">
-                  India
-                </span>
-                <span className="w-2 h-2 rounded-full bg-royal-500 dark:bg-royal-400 inline-block" />
-              </div>
-            </Link>
+          {/* Left: Brand Wordmark */}
+          <Link href="/" className="flex items-center space-x-2.5 group focus:outline-none shrink-0">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-200 flex items-center justify-center text-royal-500 dark:text-royal-400 transition-transform duration-200 group-hover:scale-105 shadow-brutal-sm">
+              <span className="font-serif font-black text-base sm:text-lg">L</span>
+            </div>
+            
+            <div className="flex items-baseline space-x-1.5">
+              <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-ink-900 dark:text-ink-50">
+                LexMinds
+              </span>
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-royal-600 dark:text-royal-400 hidden sm:inline">
+                India
+              </span>
+              <span className="w-2 h-2 rounded-full bg-royal-500 dark:bg-royal-400 inline-block" />
+            </div>
+          </Link>
 
-            {/* Left-Aligned Nav Links */}
+          {/* Right Group: Right-Aligned Navigation Links + Tactile Theme Toggle + Mobile Hamburger */}
+          <div className="flex items-center space-x-5 md:space-x-8">
+            
+            {/* Right-Aligned Desktop Navigation Links */}
             <nav className="hidden md:flex items-center space-x-6 lg:space-x-8" aria-label="Main Navigation">
               {navLinks.map((link) => {
                 const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
@@ -86,11 +87,10 @@ export default function Header() {
                 );
               })}
             </nav>
-          </div>
 
-          {/* Right Section: Tactile Theme Toggle & Mobile Hamburger */}
-          <div className="flex items-center space-x-3">
-            
+            {/* Separator between links and theme toggle on desktop */}
+            <div className="hidden md:block w-px h-5 bg-paper-300 dark:bg-ink-800" aria-hidden="true" />
+
             {/* Tactile Theme Switcher */}
             <button
               onClick={toggleTheme}

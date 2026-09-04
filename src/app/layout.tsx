@@ -157,6 +157,8 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col bg-paper dark:bg-ink-950 text-ink dark:text-ink-50 antialiased selection:bg-royal selection:text-white transition-colors duration-250 relative overflow-x-hidden">
         {/* Controlled Atmospheric Royal Violet Glow */}
         <div className="atmospheric-glow" aria-hidden="true" />
+        {/* Authentic Wrinkled Paper Background Texture */}
+        <div className="paper-texture-overlay" aria-hidden="true" />
         <ThemeProvider>
           <div className="relative z-10 flex flex-col min-h-screen">
             <Header />

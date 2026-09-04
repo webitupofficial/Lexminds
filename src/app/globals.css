@@ -56,6 +56,31 @@
   background: radial-gradient(ellipse 80% 65% at 50% -10%, rgba(139, 124, 255, 0.16), rgba(91, 61, 245, 0.05) 45%, transparent 75%);
 }
 
+/* Authentic Wrinkled Paper Background Texture */
+.paper-texture-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/textures/wrinkled-paper.jpg');
+  background-repeat: repeat;
+  background-size: 600px 600px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.15;
+  mix-blend-mode: multiply;
+  transition: opacity 0.25s ease;
+}
+
+.dark .paper-texture-overlay {
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  filter: contrast(140%) brightness(80%);
+}
+
 @layer base {
   html {
     color-scheme: dark light;
