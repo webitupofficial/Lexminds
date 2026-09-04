@@ -1,11 +1,15 @@
 import { NextResponse } from 'next/server';
 import { getTabRows } from '@/lib/google-sheets';
 import { validateRazorpayCredentials } from '@/lib/payment-service';
+import { verifyFirebaseIdToken, lastVerificationError } from '@/lib/firebase-admin';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const testToken = searchParams.get('testToken');
+
   const diagnostics: Record<string, any> = {
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -50,6 +54,13 @@ export async function GET() {
       clientEmailConfigured: Boolean(clientEmail),
       privateKeyConfigured: hasKey,
     };
+
+    if (testToken) {
+      const user = await verifyFirebaseIdToken(testToken);
+      diagnostics.checks.firebaseAdmin.tokenTest = user
+        ? { verified: true, email: user.email }
+        : { verified: false, error: lastVerificationError };
+    }
   } catch (err: any) {
     diagnostics.status = 'degraded';
     diagnostics.checks.firebaseAdmin = {

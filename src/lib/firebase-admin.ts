@@ -54,8 +54,12 @@ function getFirebaseAdminApp(): App | null {
  * Verifies a Firebase Auth ID Token sent by the frontend client in Authorization: Bearer <token>.
  * Guarantees that the email belongs to a real, authenticated Google account.
  */
+export let lastVerificationError: string | null = null;
+
 export async function verifyFirebaseIdToken(idToken: string): Promise<VerifiedAuthUser | null> {
+  lastVerificationError = null;
   if (!idToken || typeof idToken !== 'string') {
+    lastVerificationError = 'Empty or non-string token provided.';
     return null;
   }
 
@@ -73,26 +77,30 @@ export async function verifyFirebaseIdToken(idToken: string): Promise<VerifiedAu
   try {
     const app = getFirebaseAdminApp();
     if (!app) {
-      console.error('[Firebase Admin]: Missing server credentials (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY).');
+      lastVerificationError = 'Missing server credentials (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY).';
+      console.error('[Firebase Admin]: Missing server credentials.');
       return null;
     }
 
     const auth = getAuth(app);
     const decodedToken = await auth.verifyIdToken(idToken);
 
-    if (!decodedToken.email) {
+    const verifiedEmail = decodedToken.email || (decodedToken as any).claims?.email;
+    if (!verifiedEmail) {
+      lastVerificationError = 'Token missing email claim.';
       console.warn('[Firebase Admin]: Token missing email claim.');
       return null;
     }
 
     return {
       uid: decodedToken.uid,
-      email: decodedToken.email.toLowerCase(),
+      email: verifiedEmail.toLowerCase(),
       emailVerified: Boolean(decodedToken.email_verified),
       name: decodedToken.name,
       picture: decodedToken.picture,
     };
   } catch (error: any) {
+    lastVerificationError = error.message || String(error);
     console.error('[Firebase Admin Token Verification Error]:', error.message || error);
     return null;
   }
