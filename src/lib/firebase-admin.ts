@@ -12,12 +12,14 @@ export interface VerifiedAuthUser {
 /**
  * Initializes or retrieves singleton Firebase Admin SDK instance.
  */
-function formatPrivateKey(rawKey: string | undefined): string | null {
+export function formatPrivateKey(rawKey: string | undefined): string | null {
   if (!rawKey || typeof rawKey !== 'string') return null;
   let key = rawKey.trim();
+
   if ((key.startsWith('"') && key.endsWith('"')) || (key.startsWith("'") && key.endsWith("'"))) {
     key = key.slice(1, -1).trim();
   }
+
   if (!key.includes('BEGIN PRIVATE KEY') && !key.includes('BEGIN RSA PRIVATE KEY')) {
     try {
       const decoded = Buffer.from(key, 'base64').toString('utf8');
@@ -28,8 +30,28 @@ function formatPrivateKey(rawKey: string | undefined): string | null {
       // not base64
     }
   }
-  key = key.replace(/\\n/g, '\n').replace(/\\r\\n/g, '\n').replace(/\r\n/g, '\n');
-  return key;
+
+  key = key.replace(/\\n/g, '\n').replace(/\\r/g, '');
+
+  const isRsa = key.includes('RSA PRIVATE KEY');
+  const header = isRsa ? '-----BEGIN RSA PRIVATE KEY-----' : '-----BEGIN PRIVATE KEY-----';
+  const footer = isRsa ? '-----END RSA PRIVATE KEY-----' : '-----END PRIVATE KEY-----';
+
+  if (!key.includes(header) || !key.includes(footer)) {
+    return null;
+  }
+
+  const startIndex = key.indexOf(header) + header.length;
+  const endIndex = key.indexOf(footer);
+  const rawBody = key.slice(startIndex, endIndex);
+
+  const cleanBase64 = rawBody.replace(/[^A-Za-z0-9+/=]/g, '');
+  if (!cleanBase64) return null;
+
+  const chunks = cleanBase64.match(/.{1,64}/g);
+  if (!chunks) return null;
+
+  return `${header}\n${chunks.join('\n')}\n${footer}\n`;
 }
 
 function getFirebaseAdminApp(): App | null {
