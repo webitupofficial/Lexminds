@@ -88,8 +88,8 @@ export default function GoogleAuthGate({
 
   if (loading) {
     return (
-      <div className="p-4 rounded-2xl bg-slate-50 dark:bg-legal-950 border border-slate-200 dark:border-legal-800 flex items-center justify-center space-x-3 text-xs text-slate-500">
-        <Loader2 className="w-4 h-4 animate-spin text-gold-500" />
+      <div className="p-4 rounded-sm tactile-control border border-ink-300 dark:border-ink-700 flex items-center justify-center space-x-3 text-xs text-ink-600 dark:text-ink-400 font-mono">
+        <Loader2 className="w-4 h-4 animate-spin text-vermilion" />
         <span>Checking institutional session...</span>
       </div>
     );

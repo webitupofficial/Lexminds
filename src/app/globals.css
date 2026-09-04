@@ -3,33 +3,35 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #fbf9f5;
-  --bg-secondary: #f4efea;
+  --bg-primary: #fbf9f4;
+  --bg-secondary: #f4f0e8;
   --bg-card: #ffffff;
   --text-primary: #11161d;
   --text-secondary: #2d3748;
   --text-muted: #64748b;
-  --border-subtle: #e2ded8;
-  --border-strong: #c8c2b9;
-  --oxblood-accent: #781d29;
-  --oxblood-hover: #5c0e19;
-  --gold-accent: #9e7b20;
-  --gold-glow: rgba(158, 123, 32, 0.12);
+  --border-subtle: #e5e0d8;
+  --border-strong: #11161d;
+  --border-faded-blue: #cbd8e8;
+  --accent-vermilion: #d9381e;
+  --accent-vermilion-hover: #b92812;
+  --accent-faded-blue: #2c3e50;
+  --shadow-brutal-color: #11161d;
 }
 
 .dark {
   --bg-primary: #0d1117;
-  --bg-secondary: #131822;
-  --bg-card: #161c26;
+  --bg-secondary: #141a22;
+  --bg-card: #18202c;
   --text-primary: #f1f5f9;
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
-  --border-subtle: #232d3d;
-  --border-strong: #334155;
-  --oxblood-accent: #d9455b;
-  --oxblood-hover: #e57283;
-  --gold-accent: #cfa73c;
-  --gold-glow: rgba(207, 167, 60, 0.18);
+  --border-subtle: #242f3d;
+  --border-strong: #f1f5f9;
+  --border-faded-blue: #2d4257;
+  --accent-vermilion: #e11d48;
+  --accent-vermilion-hover: #f43f5e;
+  --accent-faded-blue: #86aadb;
+  --shadow-brutal-color: #f1f5f9;
 }
 
 @layer base {
@@ -43,21 +45,21 @@
     color: var(--text-primary);
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     overflow-x: hidden;
-    transition: background-color 0.25s ease,
-                color 0.25s ease,
-                border-color 0.25s ease;
+    transition: background-color 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease;
   }
 
   ::selection {
-    background-color: var(--oxblood-accent);
+    background-color: var(--accent-vermilion);
     color: #ffffff;
   }
 }
 
 /* Custom Editorial Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -66,37 +68,140 @@
 
 ::-webkit-scrollbar-thumb {
   background: #94a3b8;
-  border-radius: 2px;
+  border-radius: 0px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
 
-/* Editorial Surfaces & Hairline Cards */
-.editorial-card,
-.clay-card,
-.neumorph-card {
+/* Neo-Brutalist & Minimalist Surface Utilities */
+.neo-border {
+  border: 1px solid var(--border-strong);
+}
+
+.neo-border-thick {
+  border: 2px solid var(--border-strong);
+}
+
+.neo-card {
   background: var(--bg-card);
+  border: 1px solid var(--border-strong);
+  box-shadow: 2px 2px 0px var(--shadow-brutal-color);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.neo-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0px var(--shadow-brutal-color);
+}
+
+/* Neo-Brutalist Interactive Buttons */
+.btn-neo-primary {
+  background-color: var(--accent-vermilion);
+  color: #ffffff;
+  font-weight: 600;
+  border: 1.5px solid var(--border-strong);
+  box-shadow: 2px 2px 0px var(--shadow-brutal-color);
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-neo-primary:hover {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--shadow-brutal-color);
+}
+
+.btn-neo-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--shadow-brutal-color);
+}
+
+.btn-neo-secondary {
+  background-color: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+  border: 1.5px solid var(--border-strong);
+  box-shadow: 2px 2px 0px var(--shadow-brutal-color);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+}
+
+.btn-neo-secondary:hover {
+  background-color: var(--bg-secondary);
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px var(--shadow-brutal-color);
+}
+
+.btn-neo-secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0px 0px 0px var(--shadow-brutal-color);
+}
+
+/* Tactile Neumorphic Controls (Selective for Inputs & Utility Switches) */
+.tactile-control {
+  background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.editorial-card:hover,
-.clay-card:hover,
-.neumorph-card:hover {
-  border-color: var(--border-strong);
-  box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.05);
+.dark .tactile-control {
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.45);
 }
 
-.editorial-dossier {
+.tactile-control:focus-within,
+.tactile-control:focus {
+  border-color: var(--accent-vermilion);
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08), 0 0 0 1px var(--accent-vermilion);
+}
+
+.tactile-segmented {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.06);
+  padding: 3px;
+  border-radius: 4px;
+}
+
+/* Liquid Glass Feature Panel & Masthead */
+.liquid-glass-nav {
+  background-color: rgba(251, 249, 244, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.dark .liquid-glass-nav {
+  background-color: rgba(13, 17, 23, 0.9);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+.liquid-glass-dossier {
   background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
-  border-left: 3px solid var(--oxblood-accent);
-  box-shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.04);
+  position: relative;
+  overflow: hidden;
+  border: 1.5px solid var(--border-strong);
+  box-shadow: 3px 3px 0px var(--shadow-brutal-color);
 }
 
+.liquid-glass-dossier::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 38%;
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.6) 0%, transparent 75%);
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.dark .liquid-glass-dossier::before {
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.08) 0%, transparent 75%);
+  opacity: 0.9;
+}
+
+/* Editorial Structure & Hairline Dividers */
 .hairline-rule {
   border-color: var(--border-subtle);
 }
@@ -106,51 +211,16 @@
   background-color: var(--border-subtle);
 }
 
-/* Inset Form Surfaces */
-.editorial-inset,
-.neumorph-inset {
-  background: var(--bg-secondary);
+.editorial-dossier {
+  background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  transition: border-color 0.2s ease;
+  border-left: 3px solid var(--accent-vermilion);
 }
 
-.editorial-inset:focus-within,
-.neumorph-inset:focus-within {
-  border-color: var(--oxblood-accent);
-}
-
-/* Editorial Button Base */
-.editorial-btn-primary {
-  background-color: var(--oxblood-accent);
-  color: #ffffff;
-  border: 1px solid transparent;
-  transition: all 0.2s ease;
-}
-
-.editorial-btn-primary:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-
-.editorial-btn-secondary {
-  background-color: transparent;
-  color: var(--text-primary);
-  border: 1px solid var(--border-strong);
-  transition: all 0.2s ease;
-}
-
-.editorial-btn-secondary:hover {
-  background-color: var(--bg-secondary);
-  border-color: var(--oxblood-accent);
-}
-
-/* Academic Masthead Gradient Text */
-.gold-gradient-text {
-  color: var(--oxblood-accent);
-}
-
-.dark .gold-gradient-text {
-  color: var(--oxblood-accent);
+.editorial-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 1px 1px 0px var(--shadow-brutal-color);
 }
 
 /* Legal Treatise Prose Typography */
@@ -193,7 +263,7 @@
 }
 
 .legal-prose blockquote {
-  border-left: 3px solid var(--oxblood-accent);
+  border-left: 3px solid var(--accent-vermilion);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
   font-style: italic;
@@ -201,10 +271,10 @@
 }
 
 /* Micro-animations & Reduced Motion Compliance */
-@keyframes fadeIn {
+@keyframes editorialFadeUp {
   from {
     opacity: 0;
-    transform: translateY(4px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -212,17 +282,18 @@
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate-editorial-reveal {
+  animation: editorialFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
   *,
   ::before,
   ::after {
-    animation-duration: 0.01ms !important;
+    animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
+    transform: none !important;
   }
 }

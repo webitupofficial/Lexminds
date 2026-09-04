@@ -181,39 +181,39 @@ export default function ApplicationModal({
                 }}
               >
                 {/* Step Indicators */}
-                <div className="grid grid-cols-3 gap-2 border-b border-ink-200 dark:border-ink-800 pb-4 text-xs font-mono font-semibold">
-                  <div className={`flex items-center space-x-2 ${step >= 1 ? 'text-oxblood-700 dark:text-oxblood-400' : 'text-ink-400'}`}>
-                    <span className={`w-5 h-5 rounded-sm flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-oxblood-700 text-white font-bold' : 'bg-ivory-200 dark:bg-ink-800'}`}>1</span>
+                <div className="grid grid-cols-3 gap-2 border-b border-ink-900/15 dark:border-ink-700 pb-4 text-xs font-mono font-semibold">
+                  <div className={`flex items-center space-x-2 ${step >= 1 ? 'text-vermilion font-bold' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 1 ? 'bg-vermilion text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>1</span>
                     <span>Applicant</span>
                   </div>
-                  <div className={`flex items-center space-x-2 ${step >= 2 ? 'text-oxblood-700 dark:text-oxblood-400' : 'text-ink-400'}`}>
-                    <span className={`w-5 h-5 rounded-sm flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-oxblood-700 text-white font-bold' : 'bg-ivory-200 dark:bg-ink-800'}`}>2</span>
+                  <div className={`flex items-center space-x-2 ${step >= 2 ? 'text-vermilion font-bold' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 2 ? 'bg-vermilion text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>2</span>
                     <span>Academics</span>
                   </div>
-                  <div className={`flex items-center space-x-2 ${step >= 3 ? 'text-oxblood-700 dark:text-oxblood-400' : 'text-ink-400'}`}>
-                    <span className={`w-5 h-5 rounded-sm flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-oxblood-700 text-white font-bold' : 'bg-ivory-200 dark:bg-ink-800'}`}>3</span>
-                    <span>Rationale &amp; Pay</span>
+                  <div className={`flex items-center space-x-2 ${step >= 3 ? 'text-vermilion font-bold' : 'text-ink-400'}`}>
+                    <span className={`w-5 h-5 flex items-center justify-center text-[10px] ${step >= 3 ? 'bg-vermilion text-white font-bold' : 'bg-paper-200 dark:bg-ink-800'}`}>3</span>
+                    <span>Declaration &amp; Pay</span>
                   </div>
                 </div>
 
                 {/* Step 1: Applicant Details */}
                 {step === 1 && (
-                  <div className="space-y-4 animate-fade-in">
+                  <div className="space-y-4 animate-editorial-reveal">
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
                         Verified Google Account
                       </label>
                       <input
                         type="text"
                         disabled
                         value={currentUser?.email || ''}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-100 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-500 text-xs font-mono cursor-not-allowed"
+                        className="w-full px-3.5 py-2.5 bg-paper-200 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 text-ink-500 text-xs font-mono cursor-not-allowed"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Full Legal Name <span className="text-rose-500">*</span>
+                      <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                        Full Legal Name <span className="text-vermilion">*</span>
                       </label>
                       <input
                         type="text"
@@ -221,13 +221,13 @@ export default function ApplicationModal({
                         value={formData.fullName}
                         onChange={handleChange}
                         placeholder="e.g. Adv. Rhea Chakraborty"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                        className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Phone Number (WhatsApp for updates) <span className="text-rose-500">*</span>
+                      <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                        Phone Number (WhatsApp for updates) <span className="text-vermilion">*</span>
                       </label>
                       <input
                         type="tel"
@@ -235,7 +235,7 @@ export default function ApplicationModal({
                         value={formData.phone}
                         onChange={handleChange}
                         placeholder="+91 98300 12345"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                        className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                       />
                     </div>
                   </div>
@@ -243,10 +243,10 @@ export default function ApplicationModal({
 
                 {/* Step 2: Academic Profile */}
                 {step === 2 && (
-                  <div className="space-y-4 animate-fade-in">
+                  <div className="space-y-4 animate-editorial-reveal">
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Law College / University <span className="text-rose-500">*</span>
+                      <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                        Law College / University <span className="text-vermilion">*</span>
                       </label>
                       <input
                         type="text"
@@ -254,20 +254,20 @@ export default function ApplicationModal({
                         value={formData.collegeName}
                         onChange={handleChange}
                         placeholder="e.g. National Law University Odisha (NLUO)"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                        className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                       />
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Current Year of Study <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                          Current Year of Study <span className="text-vermilion">*</span>
                         </label>
                         <select
                           name="yearOfStudy"
                           value={formData.yearOfStudy}
                           onChange={handleChange}
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                          className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 text-xs rounded-none"
                         >
                           <option>1st Year (5-Year B.A. LL.B / B.B.A. LL.B)</option>
                           <option>2nd Year (5-Year B.A. LL.B / B.B.A. LL.B)</option>
@@ -279,8 +279,8 @@ export default function ApplicationModal({
                       </div>
 
                       <div>
-                        <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                          Academic Score / CGPA / Grade <span className="text-rose-500">*</span>
+                        <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                          Academic Score / CGPA / Grade <span className="text-vermilion">*</span>
                         </label>
                         <input
                           type="text"
@@ -288,7 +288,7 @@ export default function ApplicationModal({
                           value={formData.academicScore}
                           onChange={handleChange}
                           placeholder="e.g. 8.4 / 10.0 or 74%"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                          className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                         />
                       </div>
                     </div>
@@ -297,10 +297,10 @@ export default function ApplicationModal({
 
                 {/* Step 3: Rationale & Declaration */}
                 {step === 3 && (
-                  <div className="space-y-4 animate-fade-in">
+                  <div className="space-y-4 animate-editorial-reveal">
                     <div>
-                      <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                        Statement of Purpose &amp; Research Interest (Min 30 chars) <span className="text-rose-500">*</span>
+                      <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                        Statement of Purpose &amp; Research Focus (Min 30 chars) <span className="text-vermilion">*</span>
                       </label>
                       <textarea
                         name="sop"
@@ -308,24 +308,24 @@ export default function ApplicationModal({
                         value={formData.sop}
                         onChange={handleChange}
                         placeholder="Detail your research focus, prior academic publications, or areas of jurisprudence you wish to specialize in during this fellowship..."
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                        className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                       />
-                      <p className="text-[10px] text-slate-400 text-right mt-0.5">
+                      <p className="text-[10px] text-ink-400 font-mono text-right mt-0.5">
                         {formData.sop.length}/30 characters minimum
                       </p>
                     </div>
 
-                    <div className="p-3 rounded-xl bg-slate-50 dark:bg-legal-900/60 border border-slate-200 dark:border-legal-800 space-y-2">
-                      <label className="flex items-start space-x-2 cursor-pointer">
+                    <div className="p-3.5 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 space-y-2">
+                      <label className="flex items-start space-x-2.5 cursor-pointer">
                         <input
                           type="checkbox"
                           name="declaration"
                           checked={formData.declaration}
                           onChange={handleChange}
-                          className="mt-0.5 rounded border-slate-300 text-gold-500 focus:ring-gold-500"
+                          className="mt-0.5 text-vermilion focus:ring-vermilion rounded-none"
                         />
-                        <span className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
-                          I confirm that all details provided are accurate. I understand that completion certificates are issued strictly upon verified completion of assigned research milestones, and this enrollment fee covers processing and editorial coordination.
+                        <span className="text-[11px] text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
+                          I confirm that all details provided are accurate. I understand that completion credentials are issued strictly upon verified completion of assigned research milestones, and this administrative fee covers evaluation and editorial coordination.
                         </span>
                       </label>
                     </div>
@@ -333,14 +333,14 @@ export default function ApplicationModal({
                 )}
 
                 {submitError && (
-                  <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-xs text-rose-600 dark:text-rose-400 flex items-center space-x-2">
+                  <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-xs text-rose-600 dark:text-rose-400 flex items-center space-x-2 font-mono">
                     <AlertCircle className="w-4 h-4 shrink-0" />
                     <span>{submitError}</span>
                   </div>
                 )}
 
                 {/* Navigation Buttons */}
-                <div className="flex items-center justify-between pt-4 border-t border-ink-200 dark:border-ink-800">
+                <div className="flex items-center justify-between pt-4 border-t border-ink-900/15 dark:border-ink-700">
                   {step > 1 ? (
                     <button
                       type="button"
@@ -362,7 +362,7 @@ export default function ApplicationModal({
                       (step === 2 && !validateStep2()) ||
                       (step === 3 && !validateStep3())
                     }
-                    className="px-6 py-2.5 bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white text-xs font-serif font-bold uppercase tracking-wider rounded-sm transition-all disabled:opacity-50 flex items-center space-x-1.5 shadow-sm"
+                    className="px-6 py-2.5 btn-neo-primary text-xs uppercase tracking-wider disabled:opacity-50 flex items-center space-x-1.5"
                   >
                     {submitting ? (
                       <>

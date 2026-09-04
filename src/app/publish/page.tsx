@@ -134,19 +134,19 @@ export default function PublishPage() {
       <Breadcrumbs items={[{ name: 'Publish With Us', href: '/publish' }]} />
 
       {/* Header Banner */}
-      <div className="editorial-card rounded-sm p-6 sm:p-10 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850">
+      <div className="neo-card p-6 sm:p-10 bg-white dark:bg-ink-900">
         <div className="max-w-3xl space-y-3">
-          <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 rounded-sm bg-ivory-200 dark:bg-ink-800 border border-ink-300 dark:border-ink-700 text-oxblood-700 dark:text-oxblood-400 text-[10px] font-mono font-bold uppercase tracking-wider">
+          <div className="inline-flex items-center space-x-2 px-2.5 py-0.5 bg-paper-200 dark:bg-ink-800 border border-ink-900/15 dark:border-ink-700 text-vermilion text-[10px] font-mono font-bold uppercase tracking-wider">
             <Sparkles className="w-3 h-3" />
             <span>Call For Papers &bull; Volume IV</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-white tracking-tight">
-            Publish Your Legal Research With <span className="text-oxblood-700 dark:text-oxblood-400">LexMinds</span>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink-900 dark:text-ink-100 tracking-tight">
+            Publish Your Legal Research With <span className="text-vermilion">LexMinds</span>
           </h1>
 
-          <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 leading-relaxed max-w-2xl font-normal">
-            Submit your research paper, case commentary, or legislative analysis to the LexMinds Law Review. Receive structured editorial evaluation, citation checks, and an archival publication docket upon acceptance.
+          <p className="text-xs sm:text-sm text-ink-700 dark:text-ink-300 leading-relaxed max-w-2xl font-normal">
+            Submit your research paper, case commentary, or statutory analysis to the LexMinds Law Journal. Receive structured student editorial evaluation, citation verification, and an archival publication docket upon acceptance.
           </p>
         </div>
       </div>
@@ -155,7 +155,7 @@ export default function PublishPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
           
           {/* Main Submission Form (8 Cols) */}
-          <div className="lg:col-span-8 editorial-card rounded-sm p-6 sm:p-8 space-y-8 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850">
+          <div className="lg:col-span-8 neo-card p-6 sm:p-8 space-y-8 bg-white dark:bg-ink-900">
             
             {/* Google Authentication Gate First */}
             <div>
@@ -175,19 +175,19 @@ export default function PublishPage() {
                   }
                 }}
               >
-                <form onSubmit={handleSubmitClick} className="space-y-6 pt-4 border-t border-ink-200 dark:border-ink-800">
+                <form onSubmit={handleSubmitClick} className="space-y-6 pt-4 border-t border-ink-900/15 dark:border-ink-700">
 
               
               {/* Author Information */}
               <div className="space-y-4">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400 border-b border-slate-200 dark:border-legal-800 pb-2">
+                <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-vermilion border-b border-ink-900/10 dark:border-ink-800 pb-2">
                   2. Author Credentials &amp; Credit Line
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Lead Author Full Name <span className="text-rose-500">*</span>
+                    <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                      Lead Author Full Name <span className="text-vermilion">*</span>
                     </label>
                     <input
                       type="text"
@@ -196,13 +196,13 @@ export default function PublishPage() {
                       value={formData.authorName}
                       onChange={handleChange}
                       placeholder="e.g. Adv. Devansh Kothari"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                      className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Designation / Role <span className="text-rose-500">*</span>
+                    <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                      Designation / Role <span className="text-vermilion">*</span>
                     </label>
                     <input
                       type="text"
@@ -211,15 +211,15 @@ export default function PublishPage() {
                       value={formData.authorDesignation}
                       onChange={handleChange}
                       placeholder="e.g. Advocate / 4th Year B.A. LL.B Scholar"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                      className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Affiliated Law School / Chamber <span className="text-rose-500">*</span>
+                    <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                      Affiliated Law School / Chamber <span className="text-vermilion">*</span>
                     </label>
                     <input
                       type="text"
@@ -228,13 +228,13 @@ export default function PublishPage() {
                       value={formData.authorInstitution}
                       onChange={handleChange}
                       placeholder="e.g. National Law School of India University"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                      className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Preferred Byline / Signature Credit <span className="text-rose-500">*</span>
+                    <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                      Preferred Byline / Signature Credit <span className="text-vermilion">*</span>
                     </label>
                     <input
                       type="text"
@@ -243,13 +243,13 @@ export default function PublishPage() {
                       value={formData.signatureLine}
                       onChange={handleChange}
                       placeholder="e.g. Adv. Devansh Kothari, High Court of Delhi"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                      className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
                     Short Author Bio (2-3 lines)
                   </label>
                   <textarea
@@ -258,20 +258,20 @@ export default function PublishPage() {
                     value={formData.authorBio}
                     onChange={handleChange}
                     placeholder="Brief background on your research focus, past publications, or professional practice area..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                   />
                 </div>
               </div>
 
               {/* Manuscript Details */}
               <div className="space-y-4">
-                <h2 className="text-sm font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400 border-b border-slate-200 dark:border-legal-800 pb-2">
+                <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-vermilion border-b border-ink-900/10 dark:border-ink-800 pb-2">
                   3. Manuscript Details
                 </h2>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Manuscript Title <span className="text-rose-500">*</span>
+                  <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                    Manuscript Title <span className="text-vermilion">*</span>
                   </label>
                   <input
                     type="text"
@@ -280,20 +280,20 @@ export default function PublishPage() {
                     value={formData.title}
                     onChange={handleChange}
                     placeholder="e.g. Interplay Between DPDP Act 2023 and the Right to Information Act"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                      Jurisprudential Track <span className="text-rose-500">*</span>
+                    <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                      Jurisprudential Track <span className="text-vermilion">*</span>
                     </label>
                     <select
                       name="category"
                       value={formData.category}
                       onChange={handleChange}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                      className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 text-xs rounded-none"
                     >
                       {categories.map((c) => (
                         <option key={c} value={c}>{c}</option>
@@ -302,7 +302,7 @@ export default function PublishPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
                       Keywords (comma separated)
                     </label>
                     <input
@@ -311,14 +311,14 @@ export default function PublishPage() {
                       value={formData.keywords}
                       onChange={handleChange}
                       placeholder="e.g. DPDP Act, Section 44(3), RTI Act, Privacy"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                      className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Structured Abstract (Min 50 chars) <span className="text-rose-500">*</span>
+                  <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
+                    Structured Abstract (Min 50 chars) <span className="text-vermilion">*</span>
                   </label>
                   <textarea
                     name="abstract"
@@ -327,17 +327,17 @@ export default function PublishPage() {
                     value={formData.abstract}
                     onChange={handleChange}
                     placeholder="Summarize your central thesis, statutory provisions analyzed, and primary conclusions..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500"
+                    className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                   />
-                  <p className="text-[10px] text-slate-400 text-right mt-0.5">
+                  <p className="text-[10px] text-ink-400 font-mono text-right mt-0.5">
                     {formData.abstract.length}/50 characters minimum
                   </p>
                 </div>
 
                 <div>
                   <div className="flex items-center justify-between mb-1">
-                    <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                      Article Content OR Restricted Reviewer Document URL <span className="text-rose-500">*</span>
+                    <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 uppercase tracking-wider">
+                      Article Content OR Reviewer Document URL <span className="text-vermilion">*</span>
                     </label>
                   </div>
                   <textarea
@@ -347,58 +347,58 @@ export default function PublishPage() {
                     value={formData.content}
                     onChange={handleChange}
                     placeholder="Paste the full text of your article in Markdown / clean text, OR enter a restricted Google Docs link (ensure link sharing allows reviewer access)..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-legal-900 border border-slate-300 dark:border-legal-700 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-gold-500 font-mono"
+                    className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs font-mono rounded-none"
                   />
-                  <p className="text-[10px] text-slate-400 text-right mt-0.5">
+                  <p className="text-[10px] text-ink-400 font-mono text-right mt-0.5">
                     {formData.content.length}/80 characters minimum
                   </p>
                 </div>
               </div>
 
               {/* Declarations & Consents */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-legal-900/60 border border-slate-200 dark:border-legal-800 space-y-3 text-xs">
-                <label className="flex items-start space-x-2 cursor-pointer">
+              <div className="p-4 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 space-y-3 text-xs">
+                <label className="flex items-start space-x-2.5 cursor-pointer">
                   <input
                     type="checkbox"
                     name="originalityDeclaration"
                     checked={formData.originalityDeclaration}
                     onChange={handleChange}
-                    className="mt-0.5 rounded border-slate-300 text-gold-500 focus:ring-gold-500"
+                    className="mt-0.5 text-vermilion focus:ring-vermilion rounded-none"
                   />
-                  <span className="text-slate-600 dark:text-slate-300">
+                  <span className="text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
                     <strong>Originality Declaration:</strong> I declare that this manuscript is my original scholarly work and has not been submitted or published elsewhere.
                   </span>
                 </label>
 
-                <label className="flex items-start space-x-2 cursor-pointer">
+                <label className="flex items-start space-x-2.5 cursor-pointer">
                   <input
                     type="checkbox"
                     name="aiReviewConsent"
                     checked={formData.aiReviewConsent}
                     onChange={handleChange}
-                    className="mt-0.5 rounded border-slate-300 text-gold-500 focus:ring-gold-500"
+                    className="mt-0.5 text-vermilion focus:ring-vermilion rounded-none"
                   />
-                  <span className="text-slate-600 dark:text-slate-300">
-                    <strong>Editorial Screening Consent:</strong> I consent to plagiarism screening (Turnitin) and editorial review by the LexMinds Editorial Board.
+                  <span className="text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
+                    <strong>Editorial Screening Consent:</strong> I consent to plagiarism screening and editorial review by the LexMinds Student Editorial Board.
                   </span>
                 </label>
 
-                <label className="flex items-start space-x-2 cursor-pointer">
+                <label className="flex items-start space-x-2.5 cursor-pointer">
                   <input
                     type="checkbox"
                     name="consentToPublish"
                     checked={formData.consentToPublish}
                     onChange={handleChange}
-                    className="mt-0.5 rounded-sm border-ink-300 text-oxblood-700 focus:ring-oxblood-700"
+                    className="mt-0.5 text-vermilion focus:ring-vermilion rounded-none"
                   />
-                  <span className="text-ink-600 dark:text-ink-300 text-xs">
-                    <strong>Publication Terms:</strong> I understand that paying the ₹499 fee initiates editorial evaluation. Articles are published only after editorial council approval.
+                  <span className="text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
+                    <strong>Publication Terms:</strong> I understand that paying the ₹499 fee initiates editorial evaluation. Articles are published only after editorial approval.
                   </span>
                 </label>
               </div>
 
               {submitError && (
-                <div className="p-3 rounded-sm bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-xs text-rose-600 dark:text-rose-400 flex items-center space-x-2">
+                <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-xs text-rose-600 dark:text-rose-400 flex items-center space-x-2 font-mono">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{submitError}</span>
                 </div>
@@ -408,7 +408,7 @@ export default function PublishPage() {
               <button
                 type="submit"
                 disabled={submitting || !isFormValid()}
-                className="w-full py-3.5 px-6 bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif font-bold text-xs uppercase tracking-widest rounded-sm shadow-sm transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="w-full py-3.5 px-6 btn-neo-primary text-xs uppercase tracking-wider flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 {submitting ? (
                   <>
@@ -429,13 +429,13 @@ export default function PublishPage() {
 
       {/* Right Sidebar: Policy & Fee Information (4 Cols) */}
       <div className="lg:col-span-4 space-y-6">
-        <div className="editorial-card rounded-sm p-6 border border-ink-200 dark:border-ink-800 bg-white dark:bg-ink-850 space-y-4">
-          <div className="flex items-center space-x-2.5 text-oxblood-700 dark:text-oxblood-400">
+        <div className="neo-card p-6 bg-white dark:bg-ink-900 space-y-4">
+          <div className="flex items-center space-x-2.5 text-vermilion">
             <Scale className="w-4 h-4" />
-            <h3 className="font-serif font-bold text-ink-950 dark:text-white text-base">Editorial Policy</h3>
+            <h3 className="font-serif font-bold text-ink-900 dark:text-ink-100 text-base">Editorial Policy</h3>
           </div>
 
-          <div className="space-y-3 text-xs text-ink-600 dark:text-ink-300">
+          <div className="space-y-3 text-xs text-ink-700 dark:text-ink-300 font-normal leading-relaxed">
             <p>
               <strong>Desk Screening:</strong> Manuscripts undergo editorial evaluation and academic originality triage upon queue intake.
             </p>
@@ -447,18 +447,18 @@ export default function PublishPage() {
             </p>
           </div>
 
-          <div className="pt-3 border-t border-ink-200 dark:border-ink-800 text-[11px] font-mono text-ink-500 dark:text-ink-400 flex items-center justify-between">
+          <div className="pt-3 border-t border-ink-900/10 dark:border-ink-800 text-[11px] font-mono text-ink-500 dark:text-ink-400 flex items-center justify-between">
             <span>Article Processing Fee:</span>
-            <span className="font-bold text-ink-950 dark:text-white">₹499.00 INR</span>
+            <span className="font-bold text-ink-900 dark:text-ink-100">₹499.00 INR</span>
           </div>
         </div>
 
-        <div className="p-4 rounded-sm bg-ivory-100 dark:bg-ink-900 border border-ink-200 dark:border-ink-800 text-xs text-ink-500 space-y-2">
-          <div className="flex items-center space-x-2 text-oxblood-700 dark:text-oxblood-400 font-serif font-bold">
+        <div className="p-4 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 text-xs text-ink-600 dark:text-ink-400 space-y-2">
+          <div className="flex items-center space-x-2 text-vermilion font-semibold">
             <Lock className="w-3.5 h-3.5" />
             <span>Author Security &amp; Records</span>
           </div>
-          <p className="text-[11px] leading-relaxed">
+          <p className="text-[11px] leading-relaxed font-normal">
             All submissions are logged in our editorial registry. Authors do not need account dashboards; official decision notices and reviewer notes are sent directly to your registered email.
           </p>
         </div>

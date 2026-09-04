@@ -9,7 +9,7 @@ import {
   X, 
   Sun, 
   Moon,
-  ArrowRight
+  ArrowUpRight
 } from 'lucide-react';
 import { useTheme } from '@/components/ThemeProvider';
 
@@ -23,22 +23,23 @@ export default function Header() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 15);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const navLinks = [
-    { name: 'Fellowships', href: '/internships' },
-    { name: 'Treatises & Articles', href: '/articles' },
+    { name: 'Open Calls', href: '/internships' },
+    { name: 'Treatises & Index', href: '/articles' },
+    { name: 'Submit Treatise', href: '/publish' },
     { name: 'Academic Desk', href: '/contact' },
   ];
 
   return (
     <header 
-      className={`sticky top-0 z-50 transition-colors duration-200 border-b ${
+      className={`sticky top-0 z-50 transition-all duration-200 liquid-glass-nav ${
         scrolled 
-          ? 'bg-[#fbf9f5]/95 dark:bg-[#0d1117]/95 backdrop-blur-md border-ink-200/90 dark:border-ink-800/90 shadow-sm py-2.5' 
-          : 'bg-[#fbf9f5] dark:bg-[#0d1117] border-ink-200/60 dark:border-ink-850 py-3 sm:py-4'
+          ? 'py-2.5 shadow-sm' 
+          : 'py-3.5 sm:py-4'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -46,76 +47,83 @@ export default function Header() {
           
           {/* Masthead Brand */}
           <Link href="/" className="flex items-center space-x-3 group">
-            <div className="w-9 h-9 rounded-sm bg-white dark:bg-ink-850 border border-ink-300 dark:border-ink-700 flex items-center justify-center text-oxblood-700 dark:text-oxblood-400 group-hover:border-oxblood-700 dark:group-hover:border-oxblood-400 transition-colors shadow-sm">
-              <Scale className="w-4 h-4 transition-transform duration-200 group-hover:scale-105" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-paper-100 dark:bg-ink-850 border border-ink-900 dark:border-ink-200 flex items-center justify-center text-vermilion dark:text-vermilion transition-colors shadow-tactile">
+              <Scale className="w-4 h-4 transition-transform duration-200 group-hover:scale-110" />
             </div>
             
             <div className="flex flex-col">
-              <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-ink-950 dark:text-white transition-colors">
-                Lex<span className="text-oxblood-700 dark:text-oxblood-400">Minds</span>
-              </span>
-              <span className="text-[9px] tracking-[0.2em] font-sans font-medium uppercase text-ink-500 dark:text-ink-400">
-                Law Journal &amp; Review
+              <div className="flex items-baseline space-x-1.5">
+                <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-ink-900 dark:text-ink-100">
+                  Lex<span className="text-vermilion">Minds</span>
+                </span>
+                <span className="text-[10px] font-mono uppercase tracking-wider text-ink-500 dark:text-ink-400 hidden sm:inline-block">
+                  Vol. IV
+                </span>
+              </div>
+              <span className="text-[9px] tracking-[0.18em] font-sans font-medium uppercase text-ink-500 dark:text-ink-400">
+                Independent Legal Journal
               </span>
             </div>
           </Link>
 
-          {/* Center Navigation with Active Underline */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* Center Navigation with Active Underline scaleX */}
+          <nav className="hidden md:flex items-center space-x-7" aria-label="Main Navigation">
             {navLinks.map((link) => {
               const isActive = pathname === link.href || (link.href !== '/' && pathname.startsWith(link.href));
               return (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`relative py-1 text-xs uppercase tracking-widest transition-colors ${
+                  className={`relative py-1 text-xs uppercase tracking-wider transition-colors font-medium ${
                     isActive
-                      ? 'text-oxblood-700 dark:text-oxblood-400 font-bold'
-                      : 'text-ink-600 dark:text-ink-400 hover:text-ink-900 dark:hover:text-ink-100 font-medium'
+                      ? 'text-vermilion dark:text-vermilion font-bold'
+                      : 'text-ink-700 dark:text-ink-300 hover:text-ink-900 dark:hover:text-ink-100'
                   }`}
                 >
                   <span>{link.name}</span>
-                  {isActive && (
-                    <span className="absolute -bottom-1 left-0 right-0 h-[2px] bg-oxblood-700 dark:bg-oxblood-400 transition-all" />
-                  )}
+                  <span 
+                    className={`absolute -bottom-1 left-0 right-0 h-[2px] bg-vermilion transition-transform duration-200 origin-left ${
+                      isActive ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+                    }`} 
+                  />
                 </Link>
               );
             })}
           </nav>
 
-          {/* Right Section: Theme Toggle & Primary Action */}
+          {/* Right Section: Tactile Utility Switch & Neo-brutalist Button */}
           <div className="flex items-center space-x-3">
             
-            {/* Restrained Theme Toggle */}
+            {/* Distinctive Neumorphic Tactile Theme Switch */}
             <button
               onClick={toggleTheme}
               aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-              className="p-2 rounded-sm bg-white dark:bg-ink-850 border border-ink-300 dark:border-ink-700 text-ink-700 dark:text-ink-300 hover:border-oxblood-700 dark:hover:border-oxblood-400 hover:text-oxblood-700 dark:hover:text-oxblood-400 transition-colors shadow-sm"
-              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              className="tactile-control p-2 rounded-sm text-ink-700 dark:text-ink-300 hover:text-vermilion dark:hover:text-vermilion cursor-pointer"
+              title={`Toggle theme (${theme === 'dark' ? 'currently dark' : 'currently light'})`}
             >
               <div className="w-4 h-4 flex items-center justify-center">
                 {theme === 'dark' ? (
-                  <Moon className="w-3.5 h-3.5 text-gold-400" />
+                  <Moon className="w-3.5 h-3.5 text-vermilion" />
                 ) : (
-                  <Sun className="w-3.5 h-3.5 text-oxblood-700" />
+                  <Sun className="w-3.5 h-3.5 text-ink-900" />
                 )}
               </div>
             </button>
 
-            {/* Primary Action Button */}
+            {/* Neo-brutalist Action Button */}
             <Link
               href="/internships"
-              className="hidden sm:inline-flex items-center space-x-1.5 px-4 py-2 rounded-sm bg-oxblood-700 hover:bg-oxblood-800 dark:bg-oxblood-600 dark:hover:bg-oxblood-500 text-white font-serif text-xs font-semibold tracking-wider transition-all shadow-sm"
+              className="hidden sm:inline-flex items-center space-x-1.5 px-3.5 py-1.5 text-xs font-semibold tracking-wide btn-neo-primary"
             >
-              <span>Fellowships</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>View Open Calls</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </Link>
 
             {/* Mobile Menu Toggle */}
             <div className="md:hidden flex items-center">
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-sm bg-white dark:bg-ink-850 text-ink-700 dark:text-ink-300 border border-ink-300 dark:border-ink-700"
+                className="p-1.5 rounded-sm bg-paper-100 dark:bg-ink-850 text-ink-900 dark:text-ink-100 border border-ink-900 dark:border-ink-200"
                 aria-label="Toggle Navigation Menu"
               >
                 {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
@@ -129,7 +137,7 @@ export default function Header() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#fbf9f5] dark:bg-[#0d1117] border-b border-ink-200 dark:border-ink-800 px-4 py-4 space-y-2 animate-fade-in">
+        <div className="md:hidden bg-paper-100 dark:bg-ink-900 border-b border-ink-900 dark:border-ink-200 px-4 py-4 space-y-2 animate-editorial-reveal">
           {navLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
@@ -137,25 +145,25 @@ export default function Header() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`flex items-center justify-between px-3 py-2 text-xs uppercase tracking-wider border-b border-ink-100 dark:border-ink-850 ${
+                className={`flex items-center justify-between px-3 py-2 text-xs uppercase tracking-wider border-b border-paper-300 dark:border-ink-800 ${
                   isActive
-                    ? 'text-oxblood-700 dark:text-oxblood-400 font-bold'
-                    : 'text-ink-700 dark:text-ink-300'
+                    ? 'text-vermilion font-bold'
+                    : 'text-ink-800 dark:text-ink-200'
                 }`}
               >
                 <span>{link.name}</span>
-                {isActive && <span className="text-oxblood-700 dark:text-oxblood-400">&bull;</span>}
+                {isActive && <span className="text-vermilion font-mono text-sm">&bull;</span>}
               </Link>
             );
           })}
 
-          <div className="pt-2">
+          <div className="pt-3">
             <Link
               href="/internships"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2.5 text-center block rounded-sm bg-oxblood-700 text-white font-serif text-xs font-semibold tracking-wider"
+              className="w-full py-2.5 text-center block text-xs font-semibold btn-neo-primary uppercase tracking-wider"
             >
-              View Fellowships
+              View Open Calls
             </Link>
           </div>
         </div>
