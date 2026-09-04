@@ -1,0 +1,148 @@
+export const internshipSchema = {
+  name: 'internship',
+  title: 'Research Fellowship / Internship',
+  type: 'document',
+  fields: [
+    {
+      name: 'title',
+      title: 'Fellowship Title',
+      type: 'string',
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {
+        source: 'title',
+        maxLength: 96,
+      },
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'organization',
+      title: 'Host Institution / Wing',
+      type: 'string',
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'orgType',
+      title: 'Organization Type',
+      type: 'string',
+      options: {
+        list: [
+          'Tier-1 Law Firm',
+          'Senior Advocate Chambers',
+          'Corporate In-House',
+          'Legal Tech & Research',
+          'Think Tank',
+        ],
+      },
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'practiceArea',
+      title: 'Practice Area',
+      type: 'string',
+      options: {
+        list: [
+          'Corporate & M&A',
+          'Litigation & Dispute Resolution',
+          'IPR & Tech Law',
+          'Cyber & AI Governance',
+          'Criminal & Constitutional Law',
+          'Arbitration & Banking',
+        ],
+      },
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'location',
+      title: 'Location',
+      type: 'string',
+      initialValue: 'Remote (Pan-India)',
+    },
+    {
+      name: 'mode',
+      title: 'Mode',
+      type: 'string',
+      options: {
+        list: ['Remote', 'On-site', 'Hybrid'],
+      },
+      initialValue: 'Remote',
+    },
+    {
+      name: 'duration',
+      title: 'Duration',
+      type: 'string',
+      initialValue: '4 Weeks',
+    },
+    {
+      name: 'stipend',
+      title: 'Stipend / Grant',
+      type: 'string',
+      initialValue: 'Honorarium & Research Publication Grant',
+    },
+    {
+      name: 'applicationFee',
+      title: 'Application Processing Fee (INR)',
+      type: 'number',
+      initialValue: 299,
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'seats',
+      title: 'Available Seats / Cohort Size',
+      type: 'number',
+      initialValue: 10,
+    },
+    {
+      name: 'deadline',
+      title: 'Application Deadline (YYYY-MM-DD)',
+      type: 'date',
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'featured',
+      title: 'Featured On Homepage',
+      type: 'boolean',
+      initialValue: false,
+    },
+    {
+      name: 'description',
+      title: 'Program Overview',
+      type: 'text',
+      rows: 4,
+      validation: (Rule: any) => Rule.required(),
+    },
+    {
+      name: 'responsibilities',
+      title: 'Key Responsibilities',
+      type: 'array',
+      of: [{ type: 'string' }],
+    },
+    {
+      name: 'eligibility',
+      title: 'Eligibility Criteria',
+      type: 'array',
+      of: [{ type: 'string' }],
+    },
+    {
+      name: 'learningOutcomes',
+      title: 'Pedagogical & Research Outcomes',
+      type: 'array',
+      of: [{ type: 'string' }],
+    },
+    {
+      name: 'selectionProcess',
+      title: 'Selection Rounds',
+      type: 'array',
+      of: [{ type: 'string' }],
+    },
+    {
+      name: 'postedDate',
+      title: 'Posted Date',
+      type: 'date',
+    },
+  ],
+};

@@ -10,6 +10,8 @@
     "test": "tsx --test tests/mvp-security-pipeline.test.ts"
   },
   "dependencies": {
+    "@sanity/client": "^8.5.0",
+    "@sanity/image-url": "^2.1.1",
     "clsx": "^2.1.1",
     "firebase": "^12.18.0",
     "firebase-admin": "13.10.0",

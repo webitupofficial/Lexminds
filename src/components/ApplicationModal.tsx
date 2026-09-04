@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import { Internship } from '@/lib/types';
 import GoogleAuthGate from './GoogleAuthGate';
-import RazorpayModal from './RazorpayModal';
 import { User as FirebaseUser } from 'firebase/auth';
 
 interface ApplicationModalProps {
@@ -46,10 +45,8 @@ export default function ApplicationModal({
     declaration: false,
   });
 
-  const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [confirmedDocket, setConfirmedDocket] = useState('');
-  const [confirmedPaymentId, setConfirmedPaymentId] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -82,9 +79,48 @@ export default function ApplicationModal({
     if (step === 1 && validateStep1()) setStep(2);
     else if (step === 2 && validateStep2()) setStep(3);
     else if (step === 3 && validateStep3()) {
-      setIsRazorpayOpen(true);
+      handleSubmitAndPay();
     }
   };
+
+  const handleSubmitAndPay = async () => {
+    if (!validateStep3() || !authToken) return;
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch('/api/applications/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          phone: formData.phone,
+          collegeName: formData.collegeName,
+          yearOfStudy: formData.yearOfStudy,
+          academicScore: formData.academicScore,
+          sop: formData.sop,
+          declaration: formData.declaration,
+          internshipKey: internship.slug || internship.id,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setSubmitError(data.error || 'Failed to submit application. Please try again.');
+        setSubmitting(false);
+        return;
+      }
+
+      window.location.href = data.paymentUrl;
+    } catch (err: any) {
+      setSubmitError(err.message || 'Error communicating with server.');
+      setSubmitting(false);
+    }
+  };
+
 
   return (
     <>
@@ -131,7 +167,7 @@ export default function ApplicationModal({
                   The application deadline for this research fellowship closed on {internship.deadline}. Please explore our other upcoming cohorts.
                 </p>
               </div>
-            ) : !submitted ? (
+            ) : (
               <GoogleAuthGate
                 requireAuthBeforeRender={true}
                 title="Google Account Verification Required"
@@ -296,13 +332,21 @@ export default function ApplicationModal({
                   </div>
                 )}
 
+                {submitError && (
+                  <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-xs text-rose-600 dark:text-rose-400 flex items-center space-x-2">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{submitError}</span>
+                  </div>
+                )}
+
                 {/* Navigation Buttons */}
                 <div className="flex items-center justify-between pt-4 border-t border-slate-200 dark:border-legal-800">
                   {step > 1 ? (
                     <button
                       type="button"
                       onClick={() => setStep(step - 1)}
-                      className="px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1"
+                      disabled={submitting}
+                      className="px-4 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center space-x-1 disabled:opacity-50"
                     >
                       <ChevronLeft className="w-4 h-4" />
                       <span>Back</span>
@@ -313,94 +357,33 @@ export default function ApplicationModal({
                     type="button"
                     onClick={handleNext}
                     disabled={
+                      submitting ||
                       (step === 1 && !validateStep1()) ||
                       (step === 2 && !validateStep2()) ||
                       (step === 3 && !validateStep3())
                     }
                     className="px-6 py-2.5 bg-slate-900 dark:bg-gold-500 hover:bg-slate-800 dark:hover:bg-gold-400 text-white dark:text-slate-950 text-xs font-bold uppercase tracking-wider rounded-xl transition-all disabled:opacity-50 flex items-center space-x-1.5 shadow-md"
                   >
-                    <span>{step === 3 ? `Pay ₹${internship.applicationFee} & Submit` : 'Continue'}</span>
-                    <ChevronRight className="w-4 h-4" />
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        <span>Redirecting to Payment...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>{step === 3 ? `Pay ₹${internship.applicationFee} & Submit` : 'Continue'}</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </>
+                    )}
                   </button>
                 </div>
               </GoogleAuthGate>
-            ) : (
-              /* Success / Enrolled Screen */
-              <div className="text-center py-6 space-y-5">
-                <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 rounded-2xl border border-emerald-500/40 flex items-center justify-center mx-auto shadow-lg">
-                  <CheckCircle2 className="w-10 h-10" />
-                </div>
-
-                <div className="space-y-1.5">
-                  <h3 className="text-2xl font-serif font-bold text-slate-900 dark:text-white">
-                    Fellowship Application Registered
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-                    Your application and payment have been verified. An editorial coordinator will review your statement of purpose and schedule the preliminary roundtable.
-                  </p>
-                </div>
-
-                <div className="bg-slate-50 dark:bg-legal-900/70 p-4 rounded-xl border border-slate-200 dark:border-legal-800 text-left space-y-2 text-xs max-w-md mx-auto">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Application Docket:</span>
-                    <span className="font-mono font-bold text-gold-700 dark:text-gold-400">{confirmedDocket}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Transaction ID:</span>
-                    <span className="font-mono text-slate-800 dark:text-slate-200">{confirmedPaymentId}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                    <span className="text-slate-500 dark:text-slate-400">Registered Email:</span>
-                    <span className="font-mono text-slate-800 dark:text-slate-200">{currentUser?.email}</span>
-                  </div>
-                  <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                    <span>Status:</span>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-semibold uppercase">Paid &amp; Under Review</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={onClose}
-                  className="px-8 py-3 bg-slate-900 dark:bg-gold-500 text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all"
-                >
-                  Close
-                </button>
-              </div>
             )}
           </div>
 
         </div>
       </div>
-
-      {/* Razorpay Modal */}
-      {isRazorpayOpen && authToken && (
-        <RazorpayModal
-          isOpen={isRazorpayOpen}
-          onClose={() => setIsRazorpayOpen(false)}
-          title={internship.title}
-          subtitle={`Fellowship Enrollment • ${internship.organization}`}
-          amount={internship.applicationFee}
-          productKey="internship_enrollment"
-          authToken={authToken}
-          metadata={{
-            applicantName: formData.fullName,
-            phone: formData.phone,
-            institution: formData.collegeName,
-            yearOfStudy: formData.yearOfStudy,
-            academicScore: formData.academicScore,
-            sop: formData.sop,
-            internshipKey: internship.slug,
-            internshipId: internship.id,
-            internshipTitle: internship.title,
-          }}
-          onSuccess={({ referenceId, paymentId }) => {
-            setConfirmedDocket(referenceId);
-            setConfirmedPaymentId(paymentId);
-            setIsRazorpayOpen(false);
-            setSubmitted(true);
-          }}
-        />
-      )}
     </>
   );
 }
+

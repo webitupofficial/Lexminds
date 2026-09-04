@@ -247,12 +247,52 @@ Under the CCI (Combinations) Regulations 2024, SBOI is triggered if:
 ];
 
 // In-memory published articles adapter (allows admin approval to publish without server restart in dev)
+import {
+  fetchSanityArticles,
+  fetchSanityArticleBySlug,
+  fetchSanityInternships,
+  fetchSanityInternshipBySlug,
+} from './sanity';
+
+// In-memory published articles adapter (allows immediate updates and safe offline/test execution)
 let livePublishedArticles: Article[] = [...INITIAL_ARTICLES];
 
 /**
  * Editorial Content Service Adapter.
- * Serves as the clean abstraction layer for Sanity CMS integration.
+ * Serves as the clean abstraction layer for Sanity Headless CMS.
  */
+export async function fetchArticlesFromCMS(): Promise<Article[]> {
+  const sanityArticles = await fetchSanityArticles();
+  if (sanityArticles && sanityArticles.length > 0) {
+    return sanityArticles;
+  }
+  return livePublishedArticles.filter((a) => a.status === 'published');
+}
+
+export async function fetchArticleBySlugFromCMS(slug: string): Promise<Article | undefined> {
+  const sanityArticle = await fetchSanityArticleBySlug(slug);
+  if (sanityArticle) {
+    return sanityArticle;
+  }
+  return livePublishedArticles.find((a) => a.slug === slug && a.status === 'published');
+}
+
+export async function fetchInternshipsFromCMS(): Promise<Internship[]> {
+  const sanityInternships = await fetchSanityInternships();
+  if (sanityInternships && sanityInternships.length > 0) {
+    return sanityInternships;
+  }
+  return INITIAL_INTERNSHIPS;
+}
+
+export async function fetchInternshipBySlugFromCMS(slug: string): Promise<Internship | undefined> {
+  const sanityInternship = await fetchSanityInternshipBySlug(slug);
+  if (sanityInternship) {
+    return sanityInternship;
+  }
+  return INITIAL_INTERNSHIPS.find((i) => i.slug === slug);
+}
+
 export function getPublishedArticles(): Article[] {
   return livePublishedArticles.filter((a) => a.status === 'published');
 }
@@ -262,7 +302,6 @@ export function getArticleBySlug(slug: string): Article | undefined {
 }
 
 export function addPublishedArticle(article: Article): void {
-  // Prevent duplicates
   const existingIdx = livePublishedArticles.findIndex((a) => a.slug === article.slug);
   if (existingIdx >= 0) {
     livePublishedArticles[existingIdx] = article;
@@ -287,4 +326,9 @@ export const dataStore = {
   addArticle: addPublishedArticle,
   getInternships,
   getInternshipBySlug,
+  fetchArticlesFromCMS,
+  fetchArticleBySlugFromCMS,
+  fetchInternshipsFromCMS,
+  fetchInternshipBySlugFromCMS,
 };
+

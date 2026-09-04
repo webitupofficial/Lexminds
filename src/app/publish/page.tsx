@@ -15,11 +15,11 @@ import {
   Clock,
   ArrowRight,
   Lock,
-  Scale
+  Scale,
+  Loader2
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import GoogleAuthGate from '@/components/GoogleAuthGate';
-import RazorpayModal from '@/components/RazorpayModal';
 import { User as FirebaseUser } from 'firebase/auth';
 
 export default function PublishPage() {
@@ -42,10 +42,8 @@ export default function PublishPage() {
     consentToPublish: false,
   });
 
-  const [isRazorpayOpen, setIsRazorpayOpen] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [confirmedDocket, setConfirmedDocket] = useState('');
-  const [confirmedPaymentId, setConfirmedPaymentId] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const categories = [
     'Data Privacy & Tech Law',
@@ -84,12 +82,50 @@ export default function PublishPage() {
     );
   };
 
-  const handleSubmitClick = (e: React.FormEvent) => {
+  const handleSubmitClick = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isFormValid()) {
-      setIsRazorpayOpen(true);
+    if (!isFormValid() || !authToken) return;
+
+    setSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch('/api/publish/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          authorName: formData.authorName,
+          designation: formData.authorDesignation,
+          institution: formData.authorInstitution,
+          authorBio: formData.authorBio,
+          signatureLine: formData.signatureLine,
+          title: formData.title,
+          category: formData.category,
+          keywords: formData.keywords.split(',').map((k) => k.trim()).filter(Boolean),
+          abstract: formData.abstract,
+          content: formData.content,
+          originalityDeclaration: formData.originalityDeclaration,
+          consentToPublish: formData.consentToPublish,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setSubmitError(data.error || 'Failed to submit manuscript. Please try again.');
+        setSubmitting(false);
+        return;
+      }
+
+      window.location.href = data.paymentUrl;
+    } catch (err: any) {
+      setSubmitError(err.message || 'Error communicating with server.');
+      setSubmitting(false);
     }
   };
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 space-y-8 sm:space-y-10">
@@ -115,21 +151,18 @@ export default function PublishPage() {
         </div>
       </div>
 
-      {!submitted ? (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
+      {/* Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 items-start">
           
           {/* Main Submission Form (8 Cols) */}
           <div className="lg:col-span-8 neumorph-card rounded-3xl p-6 sm:p-8 space-y-8 border border-slate-200 dark:border-gold-500/30">
             
-            {/* Google Authentication Gate */}
+            {/* Google Authentication Gate First */}
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider text-gold-700 dark:text-gold-400 mb-2">
-                1. Author Identity Verification
-              </h2>
               <GoogleAuthGate
-                requireAuthBeforeRender={false}
-                title="Author Google Verification"
-                description="Sign in with Google to authenticate your author submission and secure your review docket."
+                requireAuthBeforeRender={true}
+                title="Author Google Verification Required"
+                description="Sign in with your verified Google account before filling out the manuscript submission form. This ensures verified contact association and protects the editorial review queue from automated submissions."
                 onAuthStateChange={(user, token) => {
                   setCurrentUser(user);
                   setAuthToken(token);
@@ -141,10 +174,9 @@ export default function PublishPage() {
                     }));
                   }
                 }}
-              />
-            </div>
+              >
+                <form onSubmit={handleSubmitClick} className="space-y-6 pt-4 border-t border-slate-200 dark:border-legal-800">
 
-            <form onSubmit={handleSubmitClick} className="space-y-6">
               
               {/* Author Information */}
               <div className="space-y-4">
@@ -365,141 +397,74 @@ export default function PublishPage() {
                 </label>
               </div>
 
+              {submitError && (
+                <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-xs text-rose-600 dark:text-rose-400 flex items-center space-x-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{submitError}</span>
+                </div>
+              )}
+
               {/* Submission CTA */}
               <button
                 type="submit"
-                disabled={!isFormValid()}
+                disabled={submitting || !isFormValid()}
                 className="w-full py-4 px-6 bg-gradient-to-r from-gold-400 via-gold-500 to-gold-400 hover:from-gold-300 hover:to-gold-500 text-slate-950 font-bold text-xs uppercase tracking-widest rounded-2xl shadow-md transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
               >
-                <span>Pay ₹499 &amp; Submit Manuscript</span>
-                <ArrowRight className="w-4 h-4" />
+                {submitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>Redirecting to Payment...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Proceed to Payment (₹499) &amp; Submit</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </form>
-
-          </div>
-
-          {/* Right Sidebar: Policy & Fee Information (4 Cols) */}
-          <div className="lg:col-span-4 space-y-6">
-            
-            <div className="neumorph-card rounded-3xl p-6 border border-slate-200 dark:border-gold-500/30 space-y-4">
-              <div className="flex items-center space-x-3 text-gold-700 dark:text-gold-400">
-                <Scale className="w-5 h-5" />
-                <h3 className="font-serif font-bold text-slate-900 dark:text-white text-base">Editorial Policy</h3>
-              </div>
-
-              <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
-                <p>
-                  <strong>Desk Screening:</strong> Manuscripts undergo double-blind plagiarism triage within 48 hours.
-                </p>
-                <p>
-                  <strong>Strict Standards:</strong> Only approved manuscripts that meet originality thresholds are published live.
-                </p>
-                <p>
-                  <strong>Author Credit:</strong> Published articles prominently display author byline, institution, bio, and standardized Bluebook / OSCOLA citations.
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-slate-200 dark:border-legal-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
-                <span>Article Processing Fee:</span>
-                <span className="font-bold text-slate-900 dark:text-white">₹499.00 INR</span>
-              </div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-legal-900/40 border border-slate-200 dark:border-legal-800 text-xs text-slate-500 space-y-2">
-              <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400">
-                <Lock className="w-4 h-4" />
-                <span className="font-semibold">Author Security</span>
-              </div>
-              <p>
-                All submissions are securely logged in our private registry. Authors do not need account dashboards; official decision notices and reviewer notes are sent directly to your registered email.
-              </p>
-            </div>
-
-          </div>
-
+          </GoogleAuthGate>
         </div>
-      ) : (
-        /* Confirmation Screen */
-        <div className="neumorph-card rounded-3xl p-8 sm:p-12 text-center max-w-2xl mx-auto space-y-6 border border-slate-200 dark:border-gold-500/30">
-          <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-400 rounded-2xl border border-emerald-500/40 flex items-center justify-center mx-auto shadow-lg animate-bounce">
-            <CheckCircle2 className="w-10 h-10" />
+      </div>
+
+      {/* Right Sidebar: Policy & Fee Information (4 Cols) */}
+      <div className="lg:col-span-4 space-y-6">
+        <div className="neumorph-card rounded-3xl p-6 border border-slate-200 dark:border-gold-500/30 space-y-4">
+          <div className="flex items-center space-x-3 text-gold-700 dark:text-gold-400">
+            <Scale className="w-5 h-5" />
+            <h3 className="font-serif font-bold text-slate-900 dark:text-white text-base">Editorial Policy</h3>
           </div>
 
-          <div className="space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 dark:text-white">
-              Manuscript Successfully Queued
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-lg mx-auto">
-              Your manuscript and payment have been verified. The paper has entered our double-blind editorial review queue with status <span className="font-semibold text-gold-600 dark:text-gold-400">paid_submitted</span>.
+          <div className="space-y-3 text-xs text-slate-600 dark:text-slate-300">
+            <p>
+              <strong>Desk Screening:</strong> Manuscripts undergo double-blind plagiarism triage within 48 hours.
+            </p>
+            <p>
+              <strong>Strict Standards:</strong> Only approved manuscripts that meet originality thresholds are published live.
+            </p>
+            <p>
+              <strong>Author Credit:</strong> Published articles prominently display author byline, institution, bio, and standardized Bluebook / OSCOLA citations.
             </p>
           </div>
 
-          <div className="bg-slate-50 dark:bg-legal-900/70 p-4 rounded-xl border border-slate-200 dark:border-legal-800 text-left space-y-2 text-xs max-w-md mx-auto">
-            <div className="flex justify-between items-center">
-              <span className="text-slate-500 dark:text-slate-400">Submission Docket:</span>
-              <span className="font-mono font-bold text-gold-700 dark:text-gold-400">{confirmedDocket}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-slate-500 dark:text-slate-400">Payment ID:</span>
-              <span className="font-mono text-slate-800 dark:text-slate-200">{confirmedPaymentId}</span>
-            </div>
-            <div className="flex justify-between text-slate-500 dark:text-slate-400">
-              <span className="text-slate-500 dark:text-slate-400">Registered Author:</span>
-              <span className="font-mono text-slate-800 dark:text-slate-200">{currentUser?.email}</span>
-            </div>
-            <div className="flex justify-between text-slate-500 dark:text-slate-400">
-              <span>Status:</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold uppercase">Paid &bull; In Review Queue</span>
-            </div>
+          <div className="pt-3 border-t border-slate-200 dark:border-legal-800 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
+            <span>Article Processing Fee:</span>
+            <span className="font-bold text-slate-900 dark:text-white">₹499.00 INR</span>
           </div>
-
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-            Please retain your Submission Docket for correspondence. Articles are reviewed within 4-7 business days and published only upon editorial approval.
-          </p>
-
-          <Link
-            href="/articles"
-            className="inline-block px-8 py-3 bg-slate-900 dark:bg-gold-500 text-white dark:text-slate-950 font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-md"
-          >
-            Browse Published Treatises
-          </Link>
         </div>
-      )}
 
-      {/* Razorpay Checkout Modal */}
-      {isRazorpayOpen && authToken && (
-        <RazorpayModal
-          isOpen={isRazorpayOpen}
-          onClose={() => setIsRazorpayOpen(false)}
-          title={formData.title}
-          subtitle="Article Processing & Peer Review Fee"
-          amount={499}
-          productKey="article_submission"
-          authToken={authToken}
-          metadata={{
-            authorName: formData.authorName,
-            designation: formData.authorDesignation,
-            institution: formData.authorInstitution,
-            authorBio: formData.authorBio,
-            signatureLine: formData.signatureLine,
-            title: formData.title,
-            category: formData.category,
-            keywords: formData.keywords,
-            abstract: formData.abstract,
-            content: formData.content,
-            originalityDeclaration: formData.originalityDeclaration,
-            consentToPublish: formData.consentToPublish,
-            targetTitle: formData.title,
-          }}
-          onSuccess={({ referenceId, paymentId }) => {
-            setConfirmedDocket(referenceId);
-            setConfirmedPaymentId(paymentId);
-            setIsRazorpayOpen(false);
-            setSubmitted(true);
-          }}
-        />
-      )}
-
+        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-legal-900/40 border border-slate-200 dark:border-legal-800 text-xs text-slate-500 space-y-2">
+          <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400">
+            <Lock className="w-4 h-4" />
+            <span className="font-semibold">Author Security</span>
+          </div>
+          <p>
+            All submissions are securely logged in our private registry. Authors do not need account dashboards; official decision notices and reviewer notes are sent directly to your registered email.
+          </p>
+        </div>
+      </div>
+    </div>
     </div>
   );
 }
+

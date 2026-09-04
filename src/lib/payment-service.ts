@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { appendToSheet, findRowById, updateRowById, upsertRowById } from './google-sheets';
 import { InternshipApplication, ArticleSubmission, PaymentRecord } from './types';
+import { createPaymentSessionToken, verifyPaymentSessionToken, PaymentSessionPayload } from './payment-token';
 
 // ==============================================================================
 // Authoritative Server-Side Product Catalog & Pricing (in Paise)
@@ -168,6 +169,173 @@ export async function createAuthoritativeOrder(params: {
 }
 
 /**
+ * Creates an authoritative pending submission, stores payment_pending row in Google Sheets,
+ * creates the Razorpay order, and generates a signed payment session token.
+ */
+export async function createPendingSubmissionOrder(params: {
+  productKey: 'internship_enrollment' | 'article_submission';
+  firebaseUid: string;
+  verifiedEmail: string;
+  formData: Record<string, any>;
+}): Promise<{
+  orderId: string;
+  amountPaise: number;
+  currency: string;
+  keyId: string;
+  paymentRecordId: string;
+  internalReference: string;
+  sessionToken: string;
+  paymentUrl: string;
+}> {
+  const product = PRODUCT_CATALOG[params.productKey];
+  if (!product) {
+    throw new Error(`Invalid product key: "${params.productKey}". Order creation rejected.`);
+  }
+
+  const { keyId, keySecret } = validateRazorpayCredentials();
+  const timestamp = new Date().toISOString();
+  const paymentRecordId = `PAY-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+  
+  const referencePrefix = params.productKey === 'internship_enrollment' ? 'APP' : 'SUB';
+  const internalReference = `${referencePrefix}-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
+  const receipt = `rcpt_${paymentRecordId.toLowerCase()}`;
+
+  let orderId = '';
+
+  if (process.env.APP_ENV === 'test') {
+    orderId = `order_test_${Date.now()}`;
+  } else {
+    const authHeader = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+    const res = await fetch('https://api.razorpay.com/v1/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${authHeader}`,
+      },
+      body: JSON.stringify({
+        amount: product.amountPaise,
+        currency: product.currency,
+        receipt,
+        notes: {
+          productKey: params.productKey,
+          internalReference,
+          firebaseUid: params.firebaseUid,
+          verifiedEmail: params.verifiedEmail,
+        },
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.id) {
+      console.error('[Razorpay Order API Error]:', data);
+      throw new Error(data.error?.description || 'Failed to create order with payment gateway.');
+    }
+    orderId = data.id;
+  }
+
+  // 1. Write destination row with payment_pending status
+  if (params.productKey === 'internship_enrollment') {
+    const appRow = [
+      internalReference,
+      params.firebaseUid,
+      params.verifiedEmail,
+      params.formData.applicantName || params.formData.fullName || 'Scholar Applicant',
+      params.formData.phone || '',
+      params.formData.institution || params.formData.collegeName || '',
+      params.formData.yearOfStudy || '',
+      params.formData.academicScore || params.formData.cgpa || '',
+      params.formData.internshipKey || params.formData.internshipId || 'legal-research-fellowship',
+      'payment_pending', // Status starts as payment_pending
+      paymentRecordId,
+      params.formData.sop || '',
+      timestamp,
+      timestamp,
+    ];
+    await appendToSheet('Applications', appRow);
+  } else if (params.productKey === 'article_submission') {
+    const keywordsStr = Array.isArray(params.formData.keywords)
+      ? params.formData.keywords.join(', ')
+      : String(params.formData.keywords || '');
+
+    const subRow = [
+      internalReference,
+      params.firebaseUid,
+      params.verifiedEmail,
+      params.formData.authorName || '',
+      params.formData.designation || '',
+      params.formData.institution || params.formData.authorInstitution || '',
+      params.formData.authorBio || '',
+      params.formData.signatureLine || '',
+      params.formData.title || '',
+      params.formData.category || '',
+      keywordsStr,
+      params.formData.abstract || '',
+      params.formData.content || params.formData.manuscriptUrl || '',
+      params.formData.originalityDeclaration ? 'true' : 'false',
+      params.formData.consentToPublish ? 'true' : 'false',
+      paymentRecordId,
+      'payment_pending', // Status starts as payment_pending
+      '', // Reviewer notes
+      '', // Plagiarism notes
+      '', // AI review notes
+      '', // Publication URL
+      timestamp,
+      '', // Reviewed At
+      '', // Published At
+      '', // Reviewer Email
+    ];
+    await appendToSheet('ArticleSubmissions', subRow);
+  }
+
+  // 2. Write Payments row with status 'created' and razorpayOrderId
+  const paymentRow = [
+    paymentRecordId,
+    params.productKey,
+    internalReference,
+    params.firebaseUid,
+    params.verifiedEmail,
+    orderId,
+    '', // payment ID empty until verified
+    product.amountPaise,
+    product.currency,
+    'created',
+    internalReference,
+    receipt,
+    timestamp,
+    '', // verifiedAt
+    '', // webhookAt
+    'none',
+    '',
+  ];
+  await appendToSheet('Payments', paymentRow);
+
+  // 3. Generate short-lived signed session token (30-minute validity)
+  const sessionToken = createPaymentSessionToken({
+    orderId,
+    referenceId: internalReference,
+    productKey: params.productKey,
+    amountPaise: product.amountPaise,
+    currency: product.currency,
+    email: params.verifiedEmail,
+    firebaseUid: params.firebaseUid,
+  });
+
+  const paymentUrl = `/payment?orderId=${encodeURIComponent(orderId)}&token=${encodeURIComponent(sessionToken)}`;
+
+  return {
+    orderId,
+    amountPaise: product.amountPaise,
+    currency: product.currency,
+    keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || keyId,
+    paymentRecordId,
+    internalReference,
+    sessionToken,
+    paymentUrl,
+  };
+}
+
+
+/**
  * Reconciles and completes a payment verification idempotently.
  */
 export async function reconcilePaymentAndFulfill(params: {
@@ -239,68 +407,75 @@ export async function reconcilePaymentAndFulfill(params: {
 
   await updateRowById('Payments', 5, params.orderId, updatedPaymentRow);
 
-  // 6. Write to destination tab (Applications or ArticleSubmissions) idempotently
+  // 6. Update destination tab (Applications or ArticleSubmissions) idempotently
   if (params.productKey === 'internship_enrollment') {
-    // Applications Tab Mapping:
-    // [Application ID, Firebase UID, Verified Email, Applicant Name, Phone, Institution,
-    //  Year of Study, Academic Score, Internship Key, Status, Payment Record ID, Admin Notes, Created At, Updated At]
-    const appRow = [
-      internalReference,
-      params.firebaseUid,
-      params.verifiedEmail,
-      params.payload.applicantName || params.payload.fullName || 'Scholar Applicant',
-      params.payload.phone || '',
-      params.payload.institution || params.payload.collegeName || '',
-      params.payload.yearOfStudy || '',
-      params.payload.academicScore || params.payload.cgpa || '',
-      params.payload.internshipKey || params.payload.internshipId || 'legal-research-fellowship',
-      'paid', // Status: paid
-      paymentRecordId,
-      params.payload.sop || '',
-      now,
-      now,
-    ];
-
-    await upsertRowById('Applications', 0, internalReference, appRow);
+    const existingApp = await findRowById('Applications', 0, internalReference);
+    if (existingApp) {
+      const updatedAppRow = [...existingApp.row];
+      updatedAppRow[9] = 'paid'; // Status: paid
+      updatedAppRow[10] = paymentRecordId;
+      updatedAppRow[13] = now; // Updated At
+      await updateRowById('Applications', 0, internalReference, updatedAppRow);
+    } else {
+      const appRow = [
+        internalReference,
+        params.firebaseUid,
+        params.verifiedEmail,
+        params.payload.applicantName || params.payload.fullName || 'Scholar Applicant',
+        params.payload.phone || '',
+        params.payload.institution || params.payload.collegeName || '',
+        params.payload.yearOfStudy || '',
+        params.payload.academicScore || params.payload.cgpa || '',
+        params.payload.internshipKey || params.payload.internshipId || 'legal-research-fellowship',
+        'paid', // Status: paid
+        paymentRecordId,
+        params.payload.sop || '',
+        now,
+        now,
+      ];
+      await upsertRowById('Applications', 0, internalReference, appRow);
+    }
   } else if (params.productKey === 'article_submission') {
-    // ArticleSubmissions Tab Mapping:
-    // [Submission ID, Firebase UID, Verified Email, Author Name, Designation, Institution,
-    //  Author Bio, Signature Line, Title, Category, Keywords, Abstract, Content / Doc URL,
-    //  Originality Declaration, Consent to Publish, Payment Record ID, Status, Reviewer Notes,
-    //  Plagiarism Notes, AI Review Notes, Publication URL, Created At, Reviewed At, Published At, Reviewer Email]
-    const keywordsStr = Array.isArray(params.payload.keywords)
-      ? params.payload.keywords.join(', ')
-      : String(params.payload.keywords || '');
+    const existingSub = await findRowById('ArticleSubmissions', 0, internalReference);
+    if (existingSub) {
+      const updatedSubRow = [...existingSub.row];
+      updatedSubRow[15] = paymentRecordId;
+      updatedSubRow[16] = 'paid_submitted'; // Status: paid_submitted
+      await updateRowById('ArticleSubmissions', 0, internalReference, updatedSubRow);
+    } else {
+      const keywordsStr = Array.isArray(params.payload.keywords)
+        ? params.payload.keywords.join(', ')
+        : String(params.payload.keywords || '');
 
-    const subRow = [
-      internalReference,
-      params.firebaseUid,
-      params.verifiedEmail,
-      params.payload.authorName || '',
-      params.payload.designation || '',
-      params.payload.institution || '',
-      params.payload.authorBio || '',
-      params.payload.signatureLine || '',
-      params.payload.title || '',
-      params.payload.category || '',
-      keywordsStr,
-      params.payload.abstract || '',
-      params.payload.content || params.payload.manuscriptUrl || '',
-      params.payload.originalityDeclaration ? 'true' : 'false',
-      params.payload.consentToPublish ? 'true' : 'false',
-      paymentRecordId,
-      'paid_submitted', // Status: paid_submitted
-      '', // Reviewer notes
-      '', // Plagiarism notes
-      '', // AI review notes
-      '', // Publication URL
-      now,
-      '', // Reviewed At
-      '', // Published At
-      '', // Reviewer Email
-    ];
-
-    await upsertRowById('ArticleSubmissions', 0, internalReference, subRow);
+      const subRow = [
+        internalReference,
+        params.firebaseUid,
+        params.verifiedEmail,
+        params.payload.authorName || '',
+        params.payload.designation || '',
+        params.payload.institution || '',
+        params.payload.authorBio || '',
+        params.payload.signatureLine || '',
+        params.payload.title || '',
+        params.payload.category || '',
+        keywordsStr,
+        params.payload.abstract || '',
+        params.payload.content || params.payload.manuscriptUrl || '',
+        params.payload.originalityDeclaration ? 'true' : 'false',
+        params.payload.consentToPublish ? 'true' : 'false',
+        paymentRecordId,
+        'paid_submitted', // Status: paid_submitted
+        '', // Reviewer notes
+        '', // Plagiarism notes
+        '', // AI review notes
+        '', // Publication URL
+        now,
+        '', // Reviewed At
+        '', // Published At
+        '', // Reviewer Email
+      ];
+      await upsertRowById('ArticleSubmissions', 0, internalReference, subRow);
+    }
   }
 
   return {
@@ -310,6 +485,44 @@ export async function reconcilePaymentAndFulfill(params: {
     alreadyProcessed: false,
   };
 }
+
+/**
+ * Verifies payment using signed session token and Razorpay signature,
+ * updating Sheets row to paid/paid_submitted with full idempotency.
+ */
+export async function verifySessionAndFulfill(params: {
+  orderId: string;
+  paymentId: string;
+  signature: string;
+  sessionToken: string;
+}): Promise<{
+  verified: boolean;
+  paymentRecordId: string;
+  referenceId: string;
+  alreadyProcessed?: boolean;
+}> {
+  const tokenPayload = verifyPaymentSessionToken(params.sessionToken);
+  if (!tokenPayload) {
+    throw new Error('Invalid or expired payment session token. Please re-initiate checkout.');
+  }
+
+  if (tokenPayload.orderId !== params.orderId) {
+    throw new Error('Session token does not match the provided Razorpay order ID.');
+  }
+
+  return reconcilePaymentAndFulfill({
+    orderId: params.orderId,
+    paymentId: params.paymentId,
+    signature: params.signature,
+    productKey: tokenPayload.productKey,
+    firebaseUid: tokenPayload.firebaseUid,
+    verifiedEmail: tokenPayload.email,
+    payload: {
+      internalReference: tokenPayload.referenceId,
+    },
+  });
+}
+
 
 /**
  * Verifies and processes Razorpay Webhook events.
