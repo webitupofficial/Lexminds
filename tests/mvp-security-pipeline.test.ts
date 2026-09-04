@@ -11,6 +11,7 @@ process.env.RAZORPAY_KEY_ID = 'rzp_test_mock_id';
 process.env.RAZORPAY_KEY_SECRET = 'mock_test_secret_32chars_length_ok';
 process.env.RAZORPAY_WEBHOOK_SECRET = 'mock_webhook_secret_key_12345';
 process.env.PAYMENT_SESSION_SECRET = 'mock_test_secret_32chars_length_ok';
+process.env.CRON_SECRET = 'mock_cron_secret_test_token_32chars_ok';
 
 import { resetTestStore, findRowById, getTabRows, appendToSheet } from '../src/lib/google-sheets';
 import {
@@ -40,6 +41,7 @@ import { POST as submitApplicationRoute } from '../src/app/api/applications/subm
 import { POST as submitPublishRoute } from '../src/app/api/publish/submit/route';
 import { POST as webhookRoute } from '../src/app/api/webhooks/razorpay/route';
 import { GET as publicArticlesRoute } from '../src/app/api/articles/route';
+import { POST as maintenanceCleanupRoute } from '../src/app/api/maintenance/cleanup-abandoned/route';
 
 describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => {
   beforeEach(() => {
@@ -344,7 +346,7 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
   });
 
   // ---------------------------------------------------------------------------
-  // 8. Refreshing or Duplicate Callbacks Does NOT Duplicate Records (Idempotency)
+  // 8. Refreshing or Duplicate Callbacks: Same Payment ID Succeeds Without Writing, Conflicting ID Rejects
   // ---------------------------------------------------------------------------
   test('8. Duplicate verification callbacks or page refreshes are idempotent', async () => {
     const submission = await createPendingSubmissionOrder({
@@ -360,7 +362,7 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
       process.env.RAZORPAY_KEY_SECRET!
     );
 
-    // First call
+    // First call: succeeds and writes
     const res1 = await verifySessionAndFulfill({
       orderId: submission.orderId,
       paymentId,
@@ -370,7 +372,7 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     assert.equal(res1.verified, true);
     assert.equal(res1.alreadyProcessed, false);
 
-    // Second call (simulating page refresh or duplicate webhook)
+    // Second call with identical payment ID: re-reads row and returns success without writing
     const res2 = await verifySessionAndFulfill({
       orderId: submission.orderId,
       paymentId,
@@ -380,7 +382,26 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     assert.equal(res2.verified, true);
     assert.equal(res2.alreadyProcessed, true);
 
-    // Verify row counts: exactly 1 in Applications, 1 in Payments (getTabRows excludes header)
+    // Third call with conflicting DIFFERENT payment ID for the same order: rejects and alerts
+    const conflictingPaymentId = 'pay_conflicting_999';
+    const conflictingSig = generateRazorpayHmac(
+      `${submission.orderId}|${conflictingPaymentId}`,
+      process.env.RAZORPAY_KEY_SECRET!
+    );
+
+    await assert.rejects(
+      async () => {
+        await verifySessionAndFulfill({
+          orderId: submission.orderId,
+          paymentId: conflictingPaymentId,
+          signature: conflictingSig,
+          sessionToken: submission.sessionToken,
+        });
+      },
+      /Payment conflict/
+    );
+
+    // Verify row counts: exactly 1 in Applications, 1 in Payments (never appends a second paid record)
     const apps = await getTabRows('Applications');
     const payments = await getTabRows('Payments');
     assert.equal(apps.length, 1);
@@ -425,9 +446,9 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
   });
 
   // ---------------------------------------------------------------------------
-  // 10. Abandoned Pending Rows Cleanup & Reporting
+  // 10. Abandoned Pending Rows Cleanup & Protected Maintenance Endpoint
   // ---------------------------------------------------------------------------
-  test('10. Abandoned payment_pending rows cleanup marks stale rows as abandoned', async () => {
+  test('10. Abandoned payment_pending rows cleanup marks stale rows as abandoned and requires CRON_SECRET', async () => {
     // Inject a pending row with timestamp 48 hours in the past
     const pastTime = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
 
@@ -449,9 +470,32 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     ];
     await appendToSheet('Applications', staleAppRow);
 
-    // Run cleanup with 24 hours threshold
-    const report = await reportAndCleanupAbandonedPendingRows(24);
-    assert.ok(report.applicationsAbandoned >= 1);
+    // 1. Calling /api/maintenance/cleanup-abandoned without CRON_SECRET is rejected with 401
+    const unauthReq = new Request('http://localhost:3000/api/maintenance/cleanup-abandoned', {
+      method: 'POST',
+    });
+    const unauthRes = await maintenanceCleanupRoute(unauthReq);
+    assert.equal(unauthRes.status, 401);
+
+    // 2. Calling with wrong secret is rejected with 401
+    const invalidSecretReq = new Request('http://localhost:3000/api/maintenance/cleanup-abandoned', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer wrong_token_attempt' },
+    });
+    const invalidSecretRes = await maintenanceCleanupRoute(invalidSecretReq);
+    assert.equal(invalidSecretRes.status, 401);
+
+    // 3. Calling with valid CRON_SECRET succeeds with 200 and performs cleanup
+    const authReq = new Request('http://localhost:3000/api/maintenance/cleanup-abandoned?maxAgeHours=24', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${process.env.CRON_SECRET}` },
+    });
+    const authRes = await maintenanceCleanupRoute(authReq);
+    assert.equal(authRes.status, 200);
+
+    const reportData = await authRes.json();
+    assert.equal(reportData.success, true);
+    assert.ok(reportData.report.applicationsAbandoned >= 1);
 
     // Verify row status transitioned to abandoned
     const cleanedApp = await findRowById('Applications', 0, 'APP-STALE-001');

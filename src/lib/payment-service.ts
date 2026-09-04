@@ -1,5 +1,5 @@
 import crypto from 'crypto';
-import { appendToSheet, findRowById, updateRowById, upsertRowById } from './google-sheets';
+import { appendToSheet, findRowById, updateRowById, upsertRowById, SheetTabName } from './google-sheets';
 import { InternshipApplication, ArticleSubmission, PaymentRecord } from './types';
 import { createPaymentSessionToken, verifyPaymentSessionToken, PaymentSessionPayload } from './payment-token';
 
@@ -358,24 +358,32 @@ export async function reconcilePaymentAndFulfill(params: {
     throw new Error('Payment signature verification failed. Cryptographic mismatch.');
   }
 
-  // 2. Find pending payment record by Order ID (col index 5)
-  const existingRecord = await findRowById('Payments', 5, params.orderId);
-  if (!existingRecord) {
+  // 2. Deterministically find payment record by Razorpay Order ID (col index 5)
+  const existingPaymentRecord = await findRowById('Payments', 5, params.orderId);
+  if (!existingPaymentRecord) {
     throw new Error(`No payment order found matching order ID: ${params.orderId}`);
   }
 
   const [
     paymentRecordId,
     recordedProductKey,
-    internalReference,
+    recordedInternalRef,
     recordedUid,
     recordedEmail,
-    orderId,
+    recordedOrderId,
     recordedPaymentId,
     amountPaiseStr,
     currency,
-    currentStatus,
-  ] = existingRecord.row;
+    currentPaymentStatus,
+  ] = existingPaymentRecord.row;
+
+  // Use internal reference and Razorpay order ID as deterministic identifiers
+  const internalReference = recordedInternalRef;
+  if (params.payload?.internalReference && params.payload.internalReference !== internalReference) {
+    throw new Error(
+      `Deterministic identifier mismatch: internal reference "${params.payload.internalReference}" does not match order "${params.orderId}".`
+    );
+  }
 
   // 3. Confirm verified product & amount match server record
   const product = PRODUCT_CATALOG[params.productKey];
@@ -387,96 +395,86 @@ export async function reconcilePaymentAndFulfill(params: {
     throw new Error('Payment amount tampering detected. Transaction rejected.');
   }
 
-  // 4. Idempotency Check: if already verified, return immediately without duplicate writes
-  if (currentStatus === 'verified' && recordedPaymentId === params.paymentId) {
-    return {
-      verified: true,
-      paymentRecordId,
-      referenceId: internalReference,
-      alreadyProcessed: true,
-    };
+  // Determine target destination tab
+  const destinationTab: SheetTabName =
+    params.productKey === 'internship_enrollment' ? 'Applications' : 'ArticleSubmissions';
+
+  // 4. Re-read the destination row before writing using internal reference as deterministic identifier
+  const destinationRecord = await findRowById(destinationTab, 0, internalReference);
+  if (!destinationRecord) {
+    console.error(
+      `[CRITICAL RECONCILIATION ERROR]: Destination row in ${destinationTab} not found for reference "${internalReference}". Cannot verify.`
+    );
+    throw new Error(
+      `Pending record not found in ${destinationTab} for reference ${internalReference}. Cannot fulfill payment.`
+    );
+  }
+
+  // Check whether destination row is already paid
+  let isDestinationPaid = false;
+  if (destinationTab === 'Applications') {
+    isDestinationPaid = destinationRecord.row[9] === 'paid';
+  } else if (destinationTab === 'ArticleSubmissions') {
+    isDestinationPaid = destinationRecord.row[16] === 'paid_submitted';
+  }
+
+  const isPaymentVerified = currentPaymentStatus === 'verified';
+
+  // Deterministic Idempotency & Conflict Check:
+  // If already paid with the same payment ID, return success without writing.
+  // If paid with a different payment ID, reject and alert.
+  if (isPaymentVerified || isDestinationPaid) {
+    if (recordedPaymentId === params.paymentId) {
+      // Re-read confirmed identical payment ID: return success without writing
+      return {
+        verified: true,
+        paymentRecordId,
+        referenceId: internalReference,
+        alreadyProcessed: true,
+      };
+    }
+
+    if (recordedPaymentId && recordedPaymentId !== params.paymentId) {
+      console.error(
+        `[CRITICAL PAYMENT CONFLICT ALERT]: Order ${params.orderId} (Reference: ${internalReference}) is already recorded as paid under Payment ID "${recordedPaymentId}", but received conflicting Payment ID "${params.paymentId}". Potential duplicate payment attempt or spoofing!`
+      );
+      throw new Error(
+        `Payment conflict: Order ${params.orderId} is already marked as paid under payment ID ${recordedPaymentId}. Conflicting payment ID rejected.`
+      );
+    }
+
+    if (isDestinationPaid) {
+      console.error(
+        `[CRITICAL PAYMENT CONFLICT ALERT]: Reference ${internalReference} in ${destinationTab} is already marked as paid. Conflicting verification attempt with Payment ID "${params.paymentId}" rejected.`
+      );
+      throw new Error(
+        `Payment conflict: Reference ${internalReference} is already settled under an existing payment.`
+      );
+    }
   }
 
   const now = new Date().toISOString();
 
-  // 5. Update Payments row to verified
-  const updatedPaymentRow = [...existingRecord.row];
-  updatedPaymentRow[6] = params.paymentId; // Razorpay Payment ID
-  updatedPaymentRow[9] = 'verified'; // Status
-  updatedPaymentRow[13] = now; // Verified At
-
-  await updateRowById('Payments', 5, params.orderId, updatedPaymentRow);
-
-  // 6. Update destination tab (Applications or ArticleSubmissions) idempotently
-  if (params.productKey === 'internship_enrollment') {
-    const existingApp = await findRowById('Applications', 0, internalReference);
-    if (existingApp) {
-      const updatedAppRow = [...existingApp.row];
-      updatedAppRow[9] = 'paid'; // Status: paid
-      updatedAppRow[10] = paymentRecordId;
-      updatedAppRow[13] = now; // Updated At
-      await updateRowById('Applications', 0, internalReference, updatedAppRow);
-    } else {
-      const appRow = [
-        internalReference,
-        params.firebaseUid,
-        params.verifiedEmail,
-        params.payload.applicantName || params.payload.fullName || 'Scholar Applicant',
-        params.payload.phone || '',
-        params.payload.institution || params.payload.collegeName || '',
-        params.payload.yearOfStudy || '',
-        params.payload.academicScore || params.payload.cgpa || '',
-        params.payload.internshipKey || params.payload.internshipId || 'legal-research-fellowship',
-        'paid', // Status: paid
-        paymentRecordId,
-        params.payload.sop || '',
-        now,
-        now,
-      ];
-      await upsertRowById('Applications', 0, internalReference, appRow);
-    }
-  } else if (params.productKey === 'article_submission') {
-    const existingSub = await findRowById('ArticleSubmissions', 0, internalReference);
-    if (existingSub) {
-      const updatedSubRow = [...existingSub.row];
-      updatedSubRow[15] = paymentRecordId;
-      updatedSubRow[16] = 'paid_submitted'; // Status: paid_submitted
-      await updateRowById('ArticleSubmissions', 0, internalReference, updatedSubRow);
-    } else {
-      const keywordsStr = Array.isArray(params.payload.keywords)
-        ? params.payload.keywords.join(', ')
-        : String(params.payload.keywords || '');
-
-      const subRow = [
-        internalReference,
-        params.firebaseUid,
-        params.verifiedEmail,
-        params.payload.authorName || '',
-        params.payload.designation || '',
-        params.payload.institution || '',
-        params.payload.authorBio || '',
-        params.payload.signatureLine || '',
-        params.payload.title || '',
-        params.payload.category || '',
-        keywordsStr,
-        params.payload.abstract || '',
-        params.payload.content || params.payload.manuscriptUrl || '',
-        params.payload.originalityDeclaration ? 'true' : 'false',
-        params.payload.consentToPublish ? 'true' : 'false',
-        paymentRecordId,
-        'paid_submitted', // Status: paid_submitted
-        '', // Reviewer notes
-        '', // Plagiarism notes
-        '', // AI review notes
-        '', // Publication URL
-        now,
-        '', // Reviewed At
-        '', // Published At
-        '', // Reviewer Email
-      ];
-      await upsertRowById('ArticleSubmissions', 0, internalReference, subRow);
-    }
+  // 5. Update destination row strictly in-place (Never append a second record)
+  if (destinationTab === 'Applications') {
+    const updatedAppRow = [...destinationRecord.row];
+    updatedAppRow[9] = 'paid'; // Status: paid
+    updatedAppRow[10] = paymentRecordId;
+    updatedAppRow[13] = now; // Updated At
+    await updateRowById('Applications', 0, internalReference, updatedAppRow);
+  } else if (destinationTab === 'ArticleSubmissions') {
+    const updatedSubRow = [...destinationRecord.row];
+    updatedSubRow[15] = paymentRecordId;
+    updatedSubRow[16] = 'paid_submitted'; // Status: paid_submitted
+    await updateRowById('ArticleSubmissions', 0, internalReference, updatedSubRow);
   }
+
+  // 6. Update Payments row strictly in-place
+  const updatedPaymentRow = [...existingPaymentRecord.row];
+  updatedPaymentRow[6] = params.paymentId; // Razorpay Payment ID
+  updatedPaymentRow[9] = 'verified'; // Status: verified
+  updatedPaymentRow[13] = now; // Verified At
+  await updateRowById('Payments', 5, params.orderId, updatedPaymentRow);
 
   return {
     verified: true,
@@ -587,34 +585,74 @@ export async function processRazorpayWebhook(
   ] = record.row;
 
   if (event === 'payment.captured') {
-    // If not already verified, reconcile asynchronously
-    if (currentStatus !== 'verified') {
-      const updatedRow = [...record.row];
-      updatedRow[6] = paymentId || updatedRow[6];
-      updatedRow[9] = 'verified';
-      updatedRow[13] = updatedRow[13] || now;
-      updatedRow[14] = now; // webhookAt
+    const targetTab: SheetTabName =
+      productKey === 'internship_enrollment' ? 'Applications' : 'ArticleSubmissions';
 
-      await updateRowById('Payments', 5, orderId, updatedRow);
+    // Re-read destination row before writing
+    const destinationRecord = await findRowById(targetTab, 0, internalReference);
 
-      // Reconcile linked application or submission
-      if (productKey === 'internship_enrollment') {
-        const appRecord = await findRowById('Applications', 0, internalReference);
-        if (appRecord) {
-          const appRow = [...appRecord.row];
-          appRow[9] = 'paid';
-          appRow[13] = now;
-          await updateRowById('Applications', 0, internalReference, appRow);
-        }
-      } else if (productKey === 'article_submission') {
-        const subRecord = await findRowById('ArticleSubmissions', 0, internalReference);
-        if (subRecord) {
-          const subRow = [...subRecord.row];
-          subRow[16] = 'paid_submitted';
-          await updateRowById('ArticleSubmissions', 0, internalReference, subRow);
-        }
+    const isDestinationPaid = Boolean(
+      destinationRecord &&
+      ((targetTab === 'Applications' && destinationRecord.row[9] === 'paid') ||
+       (targetTab === 'ArticleSubmissions' && destinationRecord.row[16] === 'paid_submitted'))
+    );
+
+    const isPaymentVerified = currentStatus === 'verified';
+    const recordedPaymentId = record.row[6];
+
+    // Idempotency and conflict checks
+    if (isPaymentVerified || isDestinationPaid) {
+      if (recordedPaymentId === paymentId) {
+        return {
+          success: true,
+          event,
+          message: 'Payment already captured and verified with identical payment ID. No write performed.',
+        };
+      }
+
+      if (recordedPaymentId && recordedPaymentId !== paymentId) {
+        console.error(
+          `[CRITICAL WEBHOOK CONFLICT ALERT]: Order ${orderId} (Reference: ${internalReference}) is already recorded as verified with Payment ID ${recordedPaymentId}, but webhook received conflicting Payment ID ${paymentId}.`
+        );
+        throw new Error(
+          `Webhook conflict: Order ${orderId} already settled under different payment ID ${recordedPaymentId}.`
+        );
+      }
+
+      if (isDestinationPaid) {
+        console.error(
+          `[CRITICAL WEBHOOK CONFLICT ALERT]: Reference ${internalReference} in ${targetTab} is already marked as paid.`
+        );
+        throw new Error(
+          `Webhook conflict: Reference ${internalReference} already marked as paid.`
+        );
       }
     }
+
+    // Reconcile linked application or submission in-place
+    if (destinationRecord) {
+      if (targetTab === 'Applications') {
+        const appRow = [...destinationRecord.row];
+        appRow[9] = 'paid';
+        appRow[10] = paymentRecordId;
+        appRow[13] = now;
+        await updateRowById('Applications', 0, internalReference, appRow);
+      } else if (targetTab === 'ArticleSubmissions') {
+        const subRow = [...destinationRecord.row];
+        subRow[15] = paymentRecordId;
+        subRow[16] = 'paid_submitted';
+        await updateRowById('ArticleSubmissions', 0, internalReference, subRow);
+      }
+    }
+
+    const updatedRow = [...record.row];
+    updatedRow[6] = paymentId || updatedRow[6];
+    updatedRow[9] = 'verified';
+    updatedRow[13] = updatedRow[13] || now;
+    updatedRow[14] = now; // webhookAt
+    await updateRowById('Payments', 5, orderId, updatedRow);
+
+    return { success: true, event, message: 'Payment successfully captured and reconciled.' };
   } else if (event === 'payment.failed') {
     const updatedRow = [...record.row];
     updatedRow[9] = 'failed';
