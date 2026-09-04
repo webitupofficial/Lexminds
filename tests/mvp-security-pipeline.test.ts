@@ -530,4 +530,38 @@ describe('LexMinds MVP Security & Transaction Pipeline Test Suite', () => {
     assert.ok(appRow);
     assert.equal(appRow.row[9], 'cancelled'); // Linked app cancelled
   });
+
+  // ---------------------------------------------------------------------------
+  // 16. Regression: Firebase Admin Server Module & Payment Route Load Without ERR_REQUIRE_ESM
+  // ---------------------------------------------------------------------------
+  test('16. Regression: Firebase Admin server modules and payment route load without ERR_REQUIRE_ESM', async () => {
+    // 1. Verify dynamic CJS require of firebase-admin, jwks-rsa, and jose
+    const admin = require('firebase-admin');
+    const adminApp = require('firebase-admin/app');
+    const adminAuth = require('firebase-admin/auth');
+    const jwks = require('jwks-rsa');
+    const jose = require('jose');
+
+    assert.ok(admin, 'firebase-admin must load cleanly');
+    assert.equal(admin.SDK_VERSION, '13.10.0', 'firebase-admin must resolve pinned version 13.10.0');
+    assert.ok(adminApp.initializeApp, 'firebase-admin/app must export initializeApp');
+    assert.ok(adminAuth.getAuth, 'firebase-admin/auth must export getAuth');
+    assert.equal(typeof jwks, 'function', 'jwks-rsa must export factory function');
+    assert.ok(jose, 'jose must resolve in CommonJS environment without ERR_REQUIRE_ESM');
+
+    // 2. Invoke /api/payment/create-order route handler unauthenticated
+    const unauthReq = new Request('http://localhost:3000/api/payment/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ productKey: 'internship_enrollment' }),
+    });
+
+    const response = await createOrderRoute(unauthReq);
+    assert.equal(response.status, 401, 'Unauthenticated request must return 401');
+
+    const json = await response.json();
+    assert.ok(json.error, 'Response must return JSON error');
+    assert.match(json.error, /Authentication required/i, 'Error must indicate authentication required');
+  });
 });
+
