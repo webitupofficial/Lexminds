@@ -32,7 +32,16 @@ function getFirebaseAdminApp(): App | null {
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
   const privateKey = formatPrivateKey(process.env.FIREBASE_PRIVATE_KEY);
 
-  if (!projectId || !clientEmail || !privateKey) {
+  if (!projectId) {
+    lastVerificationError = 'FIREBASE_PROJECT_ID is not configured';
+    return null;
+  }
+  if (!clientEmail) {
+    lastVerificationError = 'FIREBASE_CLIENT_EMAIL is not configured';
+    return null;
+  }
+  if (!privateKey) {
+    lastVerificationError = 'FIREBASE_PRIVATE_KEY is not configured or formatPrivateKey failed';
     return null;
   }
 
@@ -45,6 +54,7 @@ function getFirebaseAdminApp(): App | null {
       }),
     });
   } catch (err: any) {
+    lastVerificationError = `Firebase Admin initializeApp failed: ${err.message || err}`;
     console.error('[Firebase Admin Init Error]:', err.message || err);
     return null;
   }
