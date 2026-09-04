@@ -154,11 +154,15 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-paper dark:bg-ink-950 text-ink dark:text-ink-50 antialiased selection:bg-royal selection:text-white transition-colors duration-250">
+      <body className="min-h-screen flex flex-col bg-paper dark:bg-ink-950 text-ink dark:text-ink-50 antialiased selection:bg-royal selection:text-white transition-colors duration-250 relative overflow-x-hidden">
+        {/* Controlled Atmospheric Royal Violet Glow */}
+        <div className="atmospheric-glow" aria-hidden="true" />
         <ThemeProvider>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <div className="relative z-10 flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>

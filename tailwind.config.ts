@@ -11,17 +11,17 @@ const config: Config = {
     extend: {
       colors: {
         paper: {
-          DEFAULT: '#F7F3EC',
-          50: '#FAF8F4',
-          100: '#F7F3EC',
-          200: '#EFEAE0',
-          300: '#E3DCce',
+          DEFAULT: '#FAF7F0',
+          50: '#FDFBF7',
+          100: '#FAF7F0',
+          200: '#EFE9DD',
+          300: '#E2DBD0',
           400: '#D2C8B4',
           500: '#B8AB92',
         },
         surface: {
-          light: '#FFFDF8',
-          dark: '#181A23',
+          light: '#FFFDF9',
+          dark: '#141622',
         },
         royal: {
           DEFAULT: '#5B3DF5',
@@ -51,11 +51,11 @@ const config: Config = {
           900: '#7A1316',
         },
         ink: {
-          DEFAULT: '#111218',
-          950: '#0C0D12',
-          900: '#111218',
-          850: '#181A23',
-          800: '#212430',
+          DEFAULT: '#0A0B0E',
+          950: '#0A0B0E',
+          900: '#101116',
+          850: '#141622',
+          800: '#1D202C',
           700: '#323647',
           600: '#4A4F63',
           500: '#5E606A',
