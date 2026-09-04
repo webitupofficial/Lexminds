@@ -31,17 +31,17 @@ export default function InternshipsPage() {
       
       {/* Breadcrumbs & Editorial Header */}
       <div className="space-y-6">
-        <Breadcrumbs items={[{ name: 'Fellowship Open Calls' }]} />
+        <Breadcrumbs items={[{ name: 'Internship Programmes' }]} />
         
         <div className="border-b border-ink-900/15 dark:border-ink-700 pb-8 space-y-3">
           <span className="text-xs font-mono font-bold uppercase tracking-wider text-royal-500 dark:text-royal-400">
-            Open Call &bull; Academic Dockets
+            Practical Learning &bull; Student Programmes
           </span>
           <h1 className="text-4xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
-            Research Fellowships
+            Internship Programmes
           </h1>
           <p className="text-base text-ink-600 dark:text-ink-300 max-w-2xl leading-relaxed font-normal">
-            Structured 8-week cohorts combining statutory analysis, research mentorship, and editorial publication. Evaluated on merit and writing clarity.
+            LexMinds India organises student-focused programmes designed to provide practical learning experiences in legal research, article drafting, case analysis, and legal media.
           </p>
         </div>
       </div>

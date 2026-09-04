@@ -122,27 +122,38 @@ export default function ContactPage() {
               <div className="flex items-start space-x-2.5">
                 <Mail className="w-4 h-4 text-royal-500 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-ink-950 dark:text-ink-50 block font-mono text-[11px] uppercase">Electronic Desks:</strong>
-                  <span className="block font-mono text-xs mt-0.5">editorial@lexminds.in (Treatises &amp; Law Journal)</span>
-                  <span className="block font-mono text-xs">fellowships@lexminds.in (Research Fellowships)</span>
-                  <span className="block font-mono text-xs">contact@lexminds.in (General Communications)</span>
+                  <strong className="text-ink-950 dark:text-ink-50 block font-mono text-[11px] uppercase">Primary Email:</strong>
+                  <a 
+                    href="mailto:lexmindsindia@gmail.com" 
+                    className="block font-mono text-xs mt-0.5 text-royal-600 dark:text-royal-400 font-bold hover:underline"
+                  >
+                    lexmindsindia@gmail.com
+                  </a>
+                  <span className="block text-[11px] text-ink-500 dark:text-ink-400 mt-0.5">
+                    For internship programmes, publication submissions, and general inquiries.
+                  </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Academic Ethics & Errata Notice */}
+          {/* Academic Integrity & Feedback */}
           <div className="p-6 sm:p-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-3 text-xs text-ink-700 dark:text-ink-300 shadow-brutal">
             <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2 text-base">
               <Shield className="w-4 h-4 text-royal-500" />
-              <span>Academic Integrity &amp; Errata Desk</span>
+              <span>Integrity &amp; Editorial Desk</span>
             </h4>
             <p className="text-xs text-ink-600 dark:text-ink-400 leading-relaxed font-normal">
-              Authors and readers wishing to submit citation corrections, academic errata, or ethical clarifications may write directly to the Editorial Council:
+              Authors and readers wishing to submit citation corrections, academic feedback, or inquiries may write directly to:
             </p>
             <div className="p-3.5 bg-paper dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 space-y-1 text-xs font-mono rounded-sm">
-              <div className="font-semibold text-royal-600 dark:text-royal-400">Editorial Council &bull; Academic Oversight</div>
-              <div className="text-ink-600 dark:text-ink-400">Email: editorial@lexminds.in</div>
+              <div className="font-semibold text-royal-600 dark:text-royal-400">LexMinds India &bull; Student Editorial Team</div>
+              <div className="text-ink-600 dark:text-ink-400">
+                Email:{' '}
+                <a href="mailto:lexmindsindia@gmail.com" className="text-royal-600 dark:text-royal-400 underline">
+                  lexmindsindia@gmail.com
+                </a>
+              </div>
             </div>
           </div>
 

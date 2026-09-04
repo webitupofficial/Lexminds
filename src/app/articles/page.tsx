@@ -50,18 +50,18 @@ export default function ArticlesPage() {
       
       {/* Breadcrumbs & Editorial Header */}
       <div className="space-y-6">
-        <Breadcrumbs items={[{ name: 'Treatises & Index' }]} />
+        <Breadcrumbs items={[{ name: 'Publications & Articles' }]} />
         
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-ink-900/15 dark:border-ink-700 pb-8">
           <div className="space-y-3">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-royal-500 dark:text-royal-400">
-              Law Journal &bull; Volume Ledger
+              Student Publications &bull; Legal Writing
             </span>
             <h1 className="text-4xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
-              Legal Treatises &amp; Inquiries
+              Articles, Commentaries &amp; Research
             </h1>
             <p className="text-base text-ink-600 dark:text-ink-300 max-w-2xl leading-relaxed font-normal">
-              Scholarly treatises, constitutional analyses, and statutory commentaries examining contemporary transitions in Indian jurisprudence.
+              Legal articles, case commentaries, judgment analyses, and student research published through LexMinds India.
             </p>
           </div>
 

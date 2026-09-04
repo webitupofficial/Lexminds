@@ -18,26 +18,25 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://lexminds.in'),
   title: {
-    default: 'LexMinds | Legal Scholarship & Research Fellowship',
-    template: '%s | LexMinds Law Journal',
+    default: 'LexMinds India | Legal Education, Research, Writing & Media',
+    template: '%s | LexMinds India',
   },
   description:
-    'LexMinds is an independent student-led legal scholarship initiative publishing analytical treatises, student case notes, and merit-evaluated research fellowship dossiers.',
+    'LexMinds India is a student-led platform focused on legal education, research, writing, publications and legal media. Empowering students through legal learning and practical skills.',
   keywords: [
-    'Legal Research India',
+    'LexMinds India',
+    'Legal Education India',
+    'Law Student Research',
+    'Legal Writing and Publications',
+    'Legal Media',
     'Student Law Review',
-    'Law Student Fellowship',
-    'Supreme Court Case Notes',
-    'Legal Research Articles',
-    'Publish Legal Paper',
-    'LexMinds',
-    'DPDP Act 2023',
-    'Bharatiya Nyaya Sanhita',
-    'Constitutional Law Analysis'
+    'Legal Internships India',
+    'Case Commentaries',
+    'Judgment Analysis'
   ],
-  authors: [{ name: 'LexMinds Editorial Board', url: 'https://lexminds.in' }],
-  creator: 'LexMinds Editorial Secretariat',
-  publisher: 'LexMinds Law Review',
+  authors: [{ name: 'LexMinds India Team', url: 'https://lexminds.in' }],
+  creator: 'LexMinds India',
+  publisher: 'LexMinds India',
   robots: {
     index: true,
     follow: true,
