@@ -9,31 +9,150 @@ import {
   ChevronUp, 
   Building, 
   Loader2, 
-  ExternalLink 
+  User, 
+  Phone, 
+  GraduationCap, 
+  Send, 
+  CheckCircle2, 
+  AlertCircle, 
+  Copy, 
+  Check,
+  FileText,
+  Tag
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 
+const INQUIRY_CATEGORIES = [
+  'Internship & Research Fellowship',
+  'Article Submission & Peer Review',
+  'Certificate & Credential Verification',
+  'Academic Partnership & Campus Outreach',
+  'General Inquiry / Secretariat',
+];
+
 export default function ContactPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [iframeLoading, setIframeLoading] = useState<boolean>(true);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    institution: '',
+    category: 'Internship & Research Fellowship',
+    subject: '',
+    message: '',
+    hp_website: '', // Honeypot field for bot suppression
+  });
+
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [submittedTicket, setSubmittedTicket] = useState<{
+    ticketId: string;
+    email: string;
+    subject: string;
+    createdAt: string;
+  } | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    if (errorMessage) setErrorMessage(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+
+    // Client-side quick validations
+    if (!formData.name.trim()) {
+      setErrorMessage('Please provide your full name.');
+      return;
+    }
+
+    if (!formData.email.trim() || !formData.email.includes('@')) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    if (!formData.subject.trim()) {
+      setErrorMessage('Please enter a subject line for your inquiry.');
+      return;
+    }
+
+    if (formData.message.trim().length < 10) {
+      setErrorMessage('Please enter an inquiry message with at least 10 characters.');
+      return;
+    }
+
+    setSubmitting(true);
+
+    try {
+      const res = await fetch('/api/contact/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to register inquiry ticket. Please try again.');
+      }
+
+      setSubmittedTicket({
+        ticketId: data.ticketId,
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        createdAt: data.createdAt || new Date().toISOString(),
+      });
+
+      // Reset form
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        institution: '',
+        category: 'Internship & Research Fellowship',
+        subject: '',
+        message: '',
+        hp_website: '',
+      });
+    } catch (err: any) {
+      console.error('[Contact Form Submission Error]:', err);
+      setErrorMessage(err.message || 'An unexpected error occurred. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCopyTicket = () => {
+    if (!submittedTicket) return;
+    navigator.clipboard.writeText(submittedTicket.ticketId);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const faqs = [
     {
       q: 'How does LexMinds structure and evaluate fellowship cohorts?',
-      a: 'Fellowships are structured by senior student editors. Fellows receive directed guidance in statutory interpretation, case digest drafting, and citation standardization under OSCOLA and Bluebook rules.'
+      a: 'Fellowships are structured by senior student editors. Fellows receive directed guidance in statutory interpretation, case digest drafting, and citation standardization under OSCOLA and Bluebook rules.',
     },
     {
       q: 'What is the standard turnaround time for article submissions?',
-      a: 'Initial manuscript intake screening takes 3-5 business days. Evaluation by the student editorial board takes 7-10 business days, after which authors receive written editorial notes and publication decisions.'
+      a: 'Initial manuscript intake screening takes 3-5 business days. Evaluation by the student editorial board takes 7-10 business days, after which authors receive written editorial notes and publication decisions.',
     },
     {
       q: 'Are certificates of publication and fellowship credentials verifiable by universities?',
-      a: 'Yes. Every publication docket and fellowship completion letter issued via LexMinds contains a unique, tamper-evident alphanumeric reference code verifiable with our academic desk.'
+      a: 'Yes. Every publication docket and fellowship completion letter issued via LexMinds contains a unique, tamper-evident alphanumeric reference code verifiable with our academic desk.',
     },
     {
       q: 'How are evaluation and application fees processed?',
-      a: 'All fees are securely processed via Razorpay with instant support for UPI (Google Pay, PhonePe, Paytm), Debit/Credit Cards, and Net Banking with immediate receipt generation.'
-    }
+      a: 'All fees are securely processed via Razorpay with instant support for UPI (Google Pay, PhonePe, Paytm), Debit/Credit Cards, and Net Banking with immediate receipt generation.',
+    },
   ];
 
   return (
@@ -51,52 +170,338 @@ export default function ContactPage() {
           Academic Correspondence Desk
         </h1>
         <p className="text-base text-ink-600 dark:text-ink-300 max-w-2xl leading-relaxed font-normal">
-          Reach our student editorial council, fellowship coordinators, or academic ethics desk. Inquiries submitted below are logged directly in our editorial registry.
+          Reach our student editorial council, fellowship coordinators, or academic ethics desk. Inquiries submitted below are logged directly into our official ContactTickets registry.
         </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-start">
         
-        {/* Left: Embedded Google Form (7 Cols) */}
-        <div className="lg:col-span-7 p-6 sm:p-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-5">
+        {/* Left: Native Contact Form or Success Confirmation (7 Cols) */}
+        <div className="lg:col-span-7 p-6 sm:p-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal">
           
-          <div className="flex items-center justify-between pb-3 border-b border-ink-900/10 dark:border-ink-800">
-            <h2 className="text-lg font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2">
-              <Mail className="w-4 h-4 text-royal-500" />
-              <span>Official Academic Registry Form</span>
-            </h2>
-            <a 
-              href="https://docs.google.com/forms/d/e/1FAIpQLScTtf9fSfKdgnXOwDvx-8SN96FrYMvnuI_SmKNYmclkKMrorw/viewform"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-mono text-ink-500 hover:text-royal-500 dark:text-ink-400 flex items-center space-x-1"
-            >
-              <span>Open in new tab</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
-
-          {/* Embedded Google Form Container */}
-          <div className="relative w-full overflow-hidden border border-ink-900/15 dark:border-ink-700 bg-white rounded-sm shadow-sm min-h-[950px]">
-            {iframeLoading && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-paper dark:bg-ink-900 text-ink-500 text-xs space-y-2 z-10">
-                <Loader2 className="w-5 h-5 animate-spin text-royal-500" />
-                <span className="font-mono">Loading Inquiry Registry...</span>
+          {submittedTicket ? (
+            /* Success State Docket Card */
+            <div className="space-y-6 animate-editorial-reveal">
+              <div className="flex items-center space-x-3 text-emerald-700 dark:text-emerald-400 pb-4 border-b border-ink-900/10 dark:border-ink-800">
+                <CheckCircle2 className="w-7 h-7 shrink-0" />
+                <div>
+                  <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50">
+                    Inquiry Docket Created
+                  </h2>
+                  <p className="text-xs text-ink-600 dark:text-ink-400 font-mono">
+                    Logged in official ContactTickets Registry
+                  </p>
+                </div>
               </div>
-            )}
-            <iframe
-              src="https://docs.google.com/forms/d/e/1FAIpQLScTtf9fSfKdgnXOwDvx-8SN96FrYMvnuI_SmKNYmclkKMrorw/viewform?embedded=true"
-              width="100%"
-              height="1183"
-              frameBorder="0"
-              marginHeight={0}
-              marginWidth={0}
-              className="w-full min-h-[1100px] border-0"
-              onLoad={() => setIframeLoading(false)}
-            >
-              Loading…
-            </iframe>
-          </div>
+
+              {/* Ticket Reference Panel */}
+              <div className="p-5 bg-paper-100 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 rounded-sm space-y-3 shadow-inner">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-ink-500 dark:text-ink-400">
+                    Ticket Reference Code
+                  </span>
+                  <button
+                    onClick={handleCopyTicket}
+                    className="inline-flex items-center space-x-1 px-2.5 py-1 text-xs font-mono font-medium rounded bg-surface-light dark:bg-surface-dark border border-ink-900/20 dark:border-ink-600 hover:text-royal-500 transition-colors"
+                    title="Copy Ticket ID"
+                  >
+                    {copied ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-600" />
+                        <span className="text-emerald-600">Copied</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5" />
+                        <span>Copy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="text-xl sm:text-2xl font-mono font-bold text-royal-600 dark:text-royal-400 tracking-wider select-all">
+                  {submittedTicket.ticketId}
+                </div>
+
+                <div className="pt-2 border-t border-ink-900/10 dark:border-ink-800 text-xs text-ink-600 dark:text-ink-400 space-y-1">
+                  <div>
+                    <span className="font-semibold text-ink-900 dark:text-ink-200">Registered Email:</span>{' '}
+                    <span className="font-mono">{submittedTicket.email}</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-ink-900 dark:text-ink-200">Subject:</span>{' '}
+                    <span>{submittedTicket.subject}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Secretariat Guidance */}
+              <div className="p-4 bg-surface-light dark:bg-surface-dark border-l-4 border-royal-500 text-xs text-ink-700 dark:text-ink-300 space-y-1">
+                <span className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm block">
+                  Next Steps:
+                </span>
+                <p className="leading-relaxed">
+                  Our student editorial secretariat reviews registry entries daily. An acknowledgment and directed response will be sent to your email address within <strong>24 to 48 business hours</strong>.
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={() => setSubmittedTicket(null)}
+                  className="w-full sm:w-auto px-5 py-2.5 text-xs font-semibold btn-brand-secondary inline-flex items-center justify-center space-x-2"
+                >
+                  <span>Submit Another Inquiry</span>
+                </button>
+              </div>
+            </div>
+          ) : (
+            /* Native Contact Form */
+            <form onSubmit={handleSubmit} className="space-y-5">
+              
+              <div className="pb-3 border-b border-ink-900/10 dark:border-ink-800">
+                <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2">
+                  <Mail className="w-5 h-5 text-royal-500" />
+                  <span>Academic Inquiry Docket</span>
+                </h2>
+                <p className="text-xs text-ink-600 dark:text-ink-400 mt-1">
+                  All fields are recorded directly in the official LexMinds ContactTickets spreadsheet.
+                </p>
+              </div>
+
+              {/* Error Banner */}
+              {errorMessage && (
+                <div className="p-3.5 bg-crimson-50 dark:bg-crimson-900/30 border border-crimson-500 text-crimson-800 dark:text-crimson-200 text-xs rounded-sm flex items-start space-x-2 animate-editorial-reveal">
+                  <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-crimson-600 dark:text-crimson-400" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              {/* Bot Protection Honeypot (Hidden) */}
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="hp_website">Do not fill this field</label>
+                <input
+                  id="hp_website"
+                  type="text"
+                  name="hp_website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.hp_website}
+                  onChange={handleInputChange}
+                />
+              </div>
+
+              {/* Name & Email Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                {/* Full Name */}
+                <div className="space-y-1.5">
+                  <label 
+                    htmlFor="contact-name" 
+                    className="block text-xs font-mono font-bold uppercase tracking-wider text-ink-800 dark:text-ink-200"
+                  >
+                    Full Name <span className="text-crimson-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-400">
+                      <User className="w-4 h-4" />
+                    </div>
+                    <input
+                      id="contact-name"
+                      type="text"
+                      name="name"
+                      required
+                      placeholder="e.g., Aditya Sharma"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      className="w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm tactile-control rounded-sm bg-paper-50 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 text-ink-950 dark:text-ink-50 placeholder-ink-400 focus:outline-none focus:border-royal-500 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* Email Address */}
+                <div className="space-y-1.5">
+                  <label 
+                    htmlFor="contact-email" 
+                    className="block text-xs font-mono font-bold uppercase tracking-wider text-ink-800 dark:text-ink-200"
+                  >
+                    Email Address <span className="text-crimson-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-400">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <input
+                      id="contact-email"
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="e.g., student@law.university.edu"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className="w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm tactile-control rounded-sm bg-paper-50 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 text-ink-950 dark:text-ink-50 placeholder-ink-400 focus:outline-none focus:border-royal-500 transition-colors"
+                    />
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Phone & Institution Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                
+                {/* Phone Number */}
+                <div className="space-y-1.5">
+                  <label 
+                    htmlFor="contact-phone" 
+                    className="block text-xs font-mono font-bold uppercase tracking-wider text-ink-800 dark:text-ink-200"
+                  >
+                    Phone / WhatsApp <span className="text-ink-400 text-[10px] font-normal lowercase">(optional)</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-400">
+                      <Phone className="w-4 h-4" />
+                    </div>
+                    <input
+                      id="contact-phone"
+                      type="tel"
+                      name="phone"
+                      placeholder="e.g., +91 98765 43210"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      className="w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm tactile-control rounded-sm bg-paper-50 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 text-ink-950 dark:text-ink-50 placeholder-ink-400 focus:outline-none focus:border-royal-500 transition-colors"
+                    />
+                  </div>
+                </div>
+
+                {/* Institution / College */}
+                <div className="space-y-1.5">
+                  <label 
+                    htmlFor="contact-institution" 
+                    className="block text-xs font-mono font-bold uppercase tracking-wider text-ink-800 dark:text-ink-200"
+                  >
+                    Institution / University <span className="text-ink-400 text-[10px] font-normal lowercase">(optional)</span>
+                  </label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-400">
+                      <GraduationCap className="w-4 h-4" />
+                    </div>
+                    <input
+                      id="contact-institution"
+                      type="text"
+                      name="institution"
+                      placeholder="e.g., National Law University"
+                      value={formData.institution}
+                      onChange={handleInputChange}
+                      className="w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm tactile-control rounded-sm bg-paper-50 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 text-ink-950 dark:text-ink-50 placeholder-ink-400 focus:outline-none focus:border-royal-500 transition-colors"
+                    />
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Inquiry Category */}
+              <div className="space-y-1.5">
+                <label 
+                  htmlFor="contact-category" 
+                  className="block text-xs font-mono font-bold uppercase tracking-wider text-ink-800 dark:text-ink-200"
+                >
+                  Inquiry Category <span className="text-crimson-500">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-400">
+                    <Tag className="w-4 h-4" />
+                  </div>
+                  <select
+                    id="contact-category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    className="w-full pl-9 pr-8 py-2.5 text-xs sm:text-sm tactile-control rounded-sm bg-paper-50 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 text-ink-950 dark:text-ink-50 focus:outline-none focus:border-royal-500 transition-colors cursor-pointer appearance-none"
+                  >
+                    {INQUIRY_CATEGORIES.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-ink-400">
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Subject Line */}
+              <div className="space-y-1.5">
+                <label 
+                  htmlFor="contact-subject" 
+                  className="block text-xs font-mono font-bold uppercase tracking-wider text-ink-800 dark:text-ink-200"
+                >
+                  Subject Line <span className="text-crimson-500">*</span>
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-ink-400">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <input
+                    id="contact-subject"
+                    type="text"
+                    name="subject"
+                    required
+                    placeholder="e.g., Query regarding eligibility criteria for Spring 2026 fellowship"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    className="w-full pl-9 pr-3 py-2.5 text-xs sm:text-sm tactile-control rounded-sm bg-paper-50 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 text-ink-950 dark:text-ink-50 placeholder-ink-400 focus:outline-none focus:border-royal-500 transition-colors"
+                  />
+                </div>
+              </div>
+
+              {/* Detailed Message */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <label 
+                    htmlFor="contact-message" 
+                    className="block text-xs font-mono font-bold uppercase tracking-wider text-ink-800 dark:text-ink-200"
+                  >
+                    Detailed Inquiry Message <span className="text-crimson-500">*</span>
+                  </label>
+                  <span className="text-[11px] font-mono text-ink-400">
+                    {formData.message.length} characters
+                  </span>
+                </div>
+                <textarea
+                  id="contact-message"
+                  name="message"
+                  required
+                  rows={5}
+                  placeholder="Please provide complete context regarding your inquiry, application reference (if applicable), or institutional proposition..."
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  className="w-full p-3 text-xs sm:text-sm tactile-control rounded-sm bg-paper-50 dark:bg-ink-900 border border-ink-900/20 dark:border-ink-700 text-ink-950 dark:text-ink-50 placeholder-ink-400 focus:outline-none focus:border-royal-500 transition-colors leading-relaxed"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full sm:w-auto px-6 py-3 text-xs sm:text-sm font-semibold btn-brand-primary inline-flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Transmitting Docket to Sheets...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Transmit Inquiry to Secretariat</span>
+                      <Send className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              </div>
+
+            </form>
+          )}
 
         </div>
 
@@ -163,7 +568,7 @@ export default function ContactPage() {
               Response Standards
             </span>
             <p className="text-xs text-ink-600 dark:text-ink-400 leading-relaxed font-normal">
-              Inquiries submitted through this registry are reviewed during regular academic desk hours. Editorial responses are typically issued within 2 to 3 business days.
+              Inquiries submitted through this registry are logged into our Google Sheets registry and reviewed during regular academic desk hours. Editorial responses are typically issued within 24 to 48 business hours.
             </p>
           </div>
 

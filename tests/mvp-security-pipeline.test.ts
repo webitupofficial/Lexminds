@@ -42,6 +42,7 @@ import { POST as submitPublishRoute } from '../src/app/api/publish/submit/route'
 import { POST as webhookRoute } from '../src/app/api/webhooks/razorpay/route';
 import { GET as publicArticlesRoute } from '../src/app/api/articles/route';
 import { POST as maintenanceCleanupRoute } from '../src/app/api/maintenance/cleanup-abandoned/route';
+import { POST as submitContactRoute } from '../src/app/api/contact/submit/route';
 
 describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => {
   beforeEach(() => {
@@ -578,5 +579,84 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
 
     const response = await createOrderRoute(unauthReq);
     assert.equal(response.status, 401);
+  });
+
+  // ---------------------------------------------------------------------------
+  // 16. Contact Tickets: Submits valid contact inquiry to ContactTickets tab
+  // ---------------------------------------------------------------------------
+  test('16. Submits valid contact inquiry to ContactTickets sheet tab and rejects invalid inputs', async () => {
+    // 1. Missing name should fail
+    const invalidReq1 = new Request('http://localhost:3000/api/contact/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: '',
+        email: 'scholar@example.com',
+        subject: 'General Question',
+        message: 'This is a valid inquiry message.',
+      }),
+    });
+    const res1 = await submitContactRoute(invalidReq1);
+    assert.equal(res1.status, 400);
+
+    // 2. Invalid email should fail
+    const invalidReq2 = new Request('http://localhost:3000/api/contact/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Aditya Sharma',
+        email: 'not-an-email',
+        subject: 'General Question',
+        message: 'This is a valid inquiry message.',
+      }),
+    });
+    const res2 = await submitContactRoute(invalidReq2);
+    assert.equal(res2.status, 400);
+
+    // 3. Short message should fail
+    const invalidReq3 = new Request('http://localhost:3000/api/contact/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Aditya Sharma',
+        email: 'aditya@example.com',
+        subject: 'General Question',
+        message: 'Short',
+      }),
+    });
+    const res3 = await submitContactRoute(invalidReq3);
+    assert.equal(res3.status, 400);
+
+    // 4. Valid submission should succeed and append row to ContactTickets tab
+    const validReq = new Request('http://localhost:3000/api/contact/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: 'Aditya Sharma',
+        email: 'aditya.sharma@nls.ac.in',
+        phone: '+91 9876543210',
+        institution: 'National Law School of India University',
+        category: 'Internship & Research Fellowship',
+        subject: 'Spring Fellowship Timeline',
+        message: 'Could you please clarify the expected cohort commencement date for the upcoming fellowship?',
+      }),
+    });
+    const validRes = await submitContactRoute(validReq);
+    assert.equal(validRes.status, 200);
+
+    const validData = await validRes.json();
+    assert.equal(validData.success, true);
+    assert.ok(validData.ticketId.startsWith('TKT-'));
+
+    // Verify row was written to ContactTickets tab in testStore
+    const contactRows = await getTabRows('ContactTickets');
+    assert.equal(contactRows.length, 1);
+    assert.equal(contactRows[0][0], validData.ticketId);
+    assert.equal(contactRows[0][1], 'aditya.sharma@nls.ac.in');
+    assert.equal(contactRows[0][2], 'Aditya Sharma');
+    assert.equal(contactRows[0][3], '+91 9876543210');
+    assert.equal(contactRows[0][4], 'National Law School of India University');
+    assert.equal(contactRows[0][5], '[Internship & Research Fellowship] Spring Fellowship Timeline');
+    assert.equal(contactRows[0][7], 'new');
   });
 });
