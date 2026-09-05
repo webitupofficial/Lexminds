@@ -16,7 +16,8 @@ import {
   ArrowRight,
   Lock,
   Scale,
-  Loader2
+  Loader2,
+  Link2
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import GoogleAuthGate from '@/components/GoogleAuthGate';
@@ -75,7 +76,7 @@ export default function PublishPage() {
       formData.signatureLine.trim() !== '' &&
       formData.title.trim() !== '' &&
       formData.abstract.trim().length >= 50 &&
-      formData.content.trim().length >= 80 &&
+      formData.content.trim().length >= 10 &&
       formData.originalityDeclaration &&
       formData.aiReviewConsent &&
       formData.consentToPublish
@@ -335,21 +336,43 @@ export default function PublishPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1.5 uppercase tracking-wider">
-                    Full Manuscript Text (Markdown Supported, Minimum 80 characters) <span className="text-coral">*</span>
-                  </label>
-                  <textarea
-                    name="content"
-                    rows={10}
-                    required
-                    value={formData.content}
-                    onChange={handleChange}
-                    placeholder="Paste your complete paper content here, including headings (##), paragraphs, and footnotes adhering to Bluebook 21st or OSCOLA..."
-                    className="w-full px-4 py-3 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-sm font-mono rounded-sm"
-                  />
-                  <p className="text-[11px] text-ink-400 font-mono text-right mt-1">
-                    {formData.content.length}/80 characters minimum
-                  </p>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 uppercase tracking-wider">
+                      Paste Drive Link (Google Drive / Docs) <span className="text-coral">*</span>
+                    </label>
+                    <span className="text-[10px] font-mono text-royal-600 dark:text-royal-400">
+                      Cloud Document URL
+                    </span>
+                  </div>
+
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-ink-400">
+                      <Link2 className="w-4 h-4 text-royal-500" />
+                    </div>
+                    <input
+                      type="url"
+                      name="content"
+                      required
+                      value={formData.content}
+                      onChange={handleChange}
+                      placeholder="https://drive.google.com/file/d/... or https://docs.google.com/document/d/..."
+                      className="w-full pl-10 pr-4 py-3 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-sm font-mono rounded-sm"
+                    />
+                  </div>
+
+                  {/* Privacy, Storage & Work Ethics Guarantee Notice */}
+                  <div className="mt-2.5 p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 rounded-sm space-y-1.5 text-xs text-ink-600 dark:text-ink-400">
+                    <div className="flex items-center space-x-1.5 text-ink-950 dark:text-ink-50 font-semibold font-mono text-[11px] uppercase tracking-wider">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                      <span>Data Privacy &amp; Publication Ethics</span>
+                    </div>
+                    <p className="leading-relaxed text-[11px] text-ink-700 dark:text-ink-300">
+                      We do not store or retain your private documents, personal data, or file content on external servers. Your manuscript is accessed strictly by our Editorial Board for peer-review triage and will be published strictly according to our academic work ethics and institutional standards.
+                    </p>
+                    <p className="text-[10px] font-mono text-ink-500 dark:text-ink-400">
+                      &bull; Please ensure link sharing permission is set to <strong>&ldquo;Anyone with the link can view&rdquo;</strong> (or <strong>&ldquo;Commenter&rdquo;</strong>) in Google Drive / Docs.
+                    </p>
+                  </div>
                 </div>
               </div>
 

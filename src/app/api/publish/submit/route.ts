@@ -52,8 +52,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Abstract must be at least 50 characters.' }, { status: 400 });
     }
 
-    if (!content || typeof content !== 'string' || content.trim().length < 80) {
-      return NextResponse.json({ error: 'Manuscript content or link must be at least 80 characters.' }, { status: 400 });
+    if (!content || typeof content !== 'string' || content.trim().length < 10) {
+      return NextResponse.json({ error: 'A valid manuscript Drive link (URL) is required.' }, { status: 400 });
     }
 
     if (!originalityDeclaration || !consentToPublish) {
