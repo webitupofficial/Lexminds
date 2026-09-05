@@ -24,16 +24,16 @@ export const metadata: Metadata = {
   description:
     'Official Cancellation & Refund Policy of Lex Minds governing cohort capacity fees, duplicate payment remedies, platform rescheduling, peer-review evaluation standards, and claim adjudication timelines.',
   alternates: {
-    canonical: 'https://lexminds.in/refund-policy',
+    canonical: 'https://lexminds.in/cancellation-refund-policy',
   },
 };
 
-export default function RefundPolicyPage() {
+export default function CancellationRefundPolicyPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-10">
       
       {/* Breadcrumbs */}
-      <Breadcrumbs items={[{ name: 'Cancellation & Refund Policy', href: '/refund-policy' }]} />
+      <Breadcrumbs items={[{ name: 'Cancellation & Refund Policy', href: '/cancellation-refund-policy' }]} />
 
       {/* Header Banner */}
       <div className="p-8 sm:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-4">
