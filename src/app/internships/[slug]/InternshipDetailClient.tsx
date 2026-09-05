@@ -228,9 +228,9 @@ export default function InternshipDetailClient({ internship }: Props) {
               <div>Verified Google Authentication required at submission.</div>
               <div>
                 Subject to{' '}
-                <a href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline">Terms</a>{' '}
-                and{' '}
-                <a href="/refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline">Refund Policy</a>.
+                <a href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline">Terms</a>,{' '}
+                <a href="/privacy" target="_blank" className="text-royal-600 dark:text-royal-400 underline">Privacy</a>, and{' '}
+                <a href="/cancellation-refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline">Cancellation &amp; Refund Policy</a>.
               </div>
             </div>
 

@@ -325,13 +325,15 @@ export default function ApplicationModal({
                           className="mt-0.5 text-coral-500 focus:ring-vermilion rounded-none"
                         />
                         <span className="text-[11px] text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
-                          I confirm that all details provided are accurate. I understand that this fee (₹39, crossed from ₹299) covers administrative application evaluation only and does not guarantee fellowship selection, enrollment, or certification. Lex Minds is an educational platform and not a law firm. I have read and agree to the{' '}
-                          <a href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                          I confirm that the information provided is accurate. I understand that the evaluation fee does not guarantee selection, enrollment, certification, publication, or any specific outcome. Lex Minds is an educational platform and not a law firm. I have read and agree to the{' '}
+                          <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
                             Terms &amp; Conditions
-                          </a>{' '}
-                          and{' '}
-                          <a href="/refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
-                            Refund Policy
+                          </a>,{' '}
+                          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                            Privacy Policy
+                          </a>, and{' '}
+                          <a href="/cancellation-refund-policy" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                            Cancellation &amp; Refund Policy
                           </a>.
                         </span>
                       </label>

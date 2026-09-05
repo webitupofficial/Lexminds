@@ -393,9 +393,11 @@ export default function PaymentClient() {
             By proceeding with payment, you acknowledge that you have read and agree to our{' '}
             <Link href="/terms" className="text-royal-600 dark:text-royal-400 underline font-bold" target="_blank">
               Terms &amp; Conditions
-            </Link>{' '}
-            and{' '}
-            <Link href="/refund-policy" className="text-royal-600 dark:text-royal-400 underline font-bold" target="_blank">
+            </Link>,{' '}
+            <Link href="/privacy" className="text-royal-600 dark:text-royal-400 underline font-bold" target="_blank">
+              Privacy Policy
+            </Link>, and{' '}
+            <Link href="/cancellation-refund-policy" className="text-royal-600 dark:text-royal-400 underline font-bold" target="_blank">
               Cancellation &amp; Refund Policy
             </Link>.
           </div>

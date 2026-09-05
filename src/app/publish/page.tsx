@@ -390,13 +390,15 @@ export default function PublishPage() {
                     className="mt-0.5 text-royal-600 focus:ring-royal-500 rounded-none"
                   />
                   <span className="text-xs text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
-                    <strong>Open-Access Consent &amp; Policy Acceptance:</strong> Upon editorial acceptance, I grant Lex Minds the non-exclusive right to publish this treatise in open-access format with author attribution. I understand that the editorial evaluation fee (₹99, crossed from ₹399) covers peer-review triage only and does NOT guarantee publication. Lex Minds is an educational platform and not a law firm. I agree to the{' '}
+                    <strong>Open-Access Consent &amp; Policy Acceptance:</strong> Upon editorial acceptance, I grant Lex Minds the non-exclusive right to publish this treatise in open-access format with author attribution. I understand that the editorial evaluation fee does not guarantee selection, enrollment, certification, publication, or any specific outcome. Lex Minds is an educational platform and not a law firm. I have read and agree to the{' '}
                     <Link href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
                       Terms &amp; Conditions
-                    </Link>{' '}
-                    and{' '}
-                    <Link href="/refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
-                      Refund Policy
+                    </Link>,{' '}
+                    <Link href="/privacy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                      Privacy Policy
+                    </Link>, and{' '}
+                    <Link href="/cancellation-refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                      Cancellation &amp; Refund Policy
                     </Link>.
                   </span>
                 </label>
