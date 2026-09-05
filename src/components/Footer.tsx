@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { Mail } from 'lucide-react';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
-
   return (
     <footer className="bg-paper dark:bg-ink-950 border-t border-ink-900/15 dark:border-ink-800 text-ink-600 dark:text-ink-400 text-xs transition-colors duration-200">
       
@@ -120,7 +118,15 @@ export default function Footer() {
         {/* Bottom Colophon & Disclaimer */}
         <div className="mt-14 pt-8 border-t border-ink-900/10 dark:border-ink-800 flex flex-col sm:flex-row items-center justify-between text-xs text-ink-500 dark:text-ink-400 gap-4">
           <div>
-            &copy; {currentYear} Lex Minds. Independent student-led platform for legal education and practical learning.
+            &copy; 2026 Lex Minds | Made with 💖 | By{' '}
+            <a
+              href="https://www.webitup24.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-royal-500 dark:hover:text-royal-400 font-medium transition-colors underline underline-offset-2"
+            >
+              Webitup24
+            </a>
           </div>
           <div className="flex items-center space-x-6">
             <Link href="/about" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
