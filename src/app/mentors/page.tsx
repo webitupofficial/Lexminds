@@ -4,19 +4,19 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import MentorsClient from './MentorsClient';
 import { MENTORS_DATA } from '@/lib/mentors-data';
-import { Scale, Users, Sparkles, Award, GraduationCap, ShieldCheck } from 'lucide-react';
+import { Users } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: 'Mentors & Faculty Advisory Council | Lex Minds',
   description:
-    'Connect with distinguished Senior Advocates, Tier-1 Law Firm Partners, and NLU Faculty members for 1:1 clinical guidance, appellate drafting, and legal research publication mentorship.',
+    'Connect with experienced legal mentors, advocates, and academic scholars for guidance in legal research, analytical writing, and practical legal jurisprudence.',
   alternates: {
     canonical: 'https://lexminds.in/mentors',
   },
   openGraph: {
     title: 'Mentors & Faculty Advisory Council | Lex Minds',
     description:
-      'Distinguished Senior Advocates, Tier-1 Partners, and NLU Professors providing 1:1 clinical guidance for law students and researchers.',
+      'Distinguished legal mentors and scholars providing guidance for law students and researchers.',
     url: 'https://lexminds.in/mentors',
     siteName: 'Lex Minds',
     images: [
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     card: 'summary',
     title: 'Mentors & Faculty Advisory Council | Lex Minds',
     description:
-      'Distinguished Senior Advocates, Tier-1 Partners, and NLU Professors providing 1:1 clinical guidance for law students and researchers.',
+      'Distinguished legal mentors and scholars providing guidance for law students and researchers.',
     images: ['/icon.svg'],
   },
 };
@@ -42,7 +42,7 @@ export default function MentorsPage() {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'Lex Minds Mentors & Faculty Advisory Council',
-    description: 'Distinguished legal mentors and clinical advisors at Lex Minds.',
+    description: 'Distinguished legal mentors and advisors at Lex Minds.',
     url: 'https://lexminds.in/mentors',
     numberOfItems: MENTORS_DATA.length,
     itemListElement: MENTORS_DATA.map((mentor, index) => ({
@@ -51,12 +51,13 @@ export default function MentorsPage() {
       item: {
         '@type': 'Person',
         name: mentor.name,
-        jobTitle: mentor.title,
-        worksFor: {
-          '@type': 'Organization',
-          name: mentor.organization,
-        },
-        alumniOf: mentor.almaMater,
+        jobTitle: mentor.designation,
+        worksFor: mentor.organization
+          ? {
+              '@type': 'Organization',
+              name: mentor.organization,
+            }
+          : undefined,
         description: mentor.bio,
       },
     })),
@@ -70,64 +71,27 @@ export default function MentorsPage() {
       <Breadcrumbs items={[{ name: 'Mentors & Faculty', href: '/mentors' }]} />
 
       {/* Hero Section */}
-      <div className="p-8 sm:p-12 md:p-14 bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 rounded-2xl shadow-brutal space-y-6 relative overflow-hidden">
+      <div className="p-8 sm:p-12 md:p-14 bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 rounded-sm shadow-brutal space-y-5 relative overflow-hidden">
         
         {/* Ambient subtle glow */}
         <div className="absolute top-0 right-0 w-96 h-96 bg-royal-500/10 dark:bg-royal-500/15 blur-3xl pointer-events-none rounded-full" />
 
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-royal-50 dark:bg-royal-950/60 border border-royal-200 dark:border-royal-800/70 text-royal-700 dark:text-royal-300 text-[11px] font-mono font-bold uppercase tracking-wider">
+        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-sm bg-royal-50 dark:bg-royal-950/60 border border-royal-200 dark:border-royal-800 text-royal-700 dark:text-royal-300 text-[11px] font-mono font-bold uppercase tracking-wider">
           <Users className="w-3.5 h-3.5" />
           <span>Faculty &amp; Advisory Council &bull; Lex Minds</span>
         </div>
 
-        <div className="space-y-3 max-w-4xl">
+        <div className="space-y-3 max-w-3xl">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-tight">
-            Distinguished Mentors &amp; Clinical Advisory Council
+            Mentors &amp; Faculty Advisory Council
           </h1>
-          <p className="text-base sm:text-lg text-ink-700 dark:text-ink-200 leading-relaxed font-normal">
-            Bridging academic scholarship with premier industry and courtroom practice. Receive 1:1 clinical mentorship from designated Senior Advocates, Tier-1 M&amp;A Partners, Technology Counsel, and National Law University professors.
+          <p className="text-sm sm:text-base text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+            Bridging academic legal scholarship with practical legal education and courtroom insight. Connect with experienced mentors for guidance in legal research, analytical writing, and professional legal development.
           </p>
         </div>
-
-        {/* Highlight Metrics */}
-        <div className="pt-4 grid grid-cols-2 sm:grid-cols-4 gap-4 border-t border-ink-900/10 dark:border-ink-800">
-          <div className="space-y-0.5">
-            <div className="text-2xl sm:text-3xl font-serif font-black text-royal-600 dark:text-royal-400">
-              6
-            </div>
-            <div className="text-xs font-mono uppercase tracking-wider text-ink-600 dark:text-ink-400">
-              Council Mentors
-            </div>
-          </div>
-          <div className="space-y-0.5">
-            <div className="text-2xl sm:text-3xl font-serif font-black text-royal-600 dark:text-royal-400">
-              18+ Yrs
-            </div>
-            <div className="text-xs font-mono uppercase tracking-wider text-ink-600 dark:text-ink-400">
-              Avg. Bar &amp; Firm Exp.
-            </div>
-          </div>
-          <div className="space-y-0.5">
-            <div className="text-2xl sm:text-3xl font-serif font-black text-royal-600 dark:text-royal-400">
-              1:1
-            </div>
-            <div className="text-xs font-mono uppercase tracking-wider text-ink-600 dark:text-ink-400">
-              Clinical Advisory
-            </div>
-          </div>
-          <div className="space-y-0.5">
-            <div className="text-2xl sm:text-3xl font-serif font-black text-royal-600 dark:text-royal-400">
-              100%
-            </div>
-            <div className="text-xs font-mono uppercase tracking-wider text-ink-600 dark:text-ink-400">
-              Verified Practitioners
-            </div>
-          </div>
-        </div>
-
       </div>
 
-      {/* Main Interactive Mentors Client with 6 Glass Cards */}
+      {/* Main Clean Mentors Grid */}
       <MentorsClient initialMentors={MENTORS_DATA} />
 
     </div>
