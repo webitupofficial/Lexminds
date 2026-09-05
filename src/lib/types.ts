@@ -1,5 +1,5 @@
 // ==============================================================================
-// LexMinds Domain Data Models (Strict Types)
+// Lex Minds Domain Data Models (Strict Types)
 // ==============================================================================
 
 /**
@@ -157,7 +157,8 @@ export interface Internship {
     | 'Senior Advocate Chambers'
     | 'Corporate In-House'
     | 'Legal Tech & Research'
-    | 'Think Tank';
+    | 'Think Tank'
+    | 'Legal Education & Research';
   practiceArea:
     | 'Corporate & M&A'
     | 'Litigation & Dispute Resolution'

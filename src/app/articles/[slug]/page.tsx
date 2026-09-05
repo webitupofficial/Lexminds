@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props) {
   if (!article) return { title: 'Article Not Found' };
 
   return {
-    title: `${article.title} | LexMinds Law Review`,
+    title: `${article.title} | Lex Minds Law Review`,
     description: article.abstract,
     authors: [{ name: article.author.name }],
     alternates: {
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: Props) {
       url: `https://lexminds.in/articles/${article.slug}`,
       publishedTime: `${article.publishedAt}T00:00:00+05:30`,
       authors: [article.author.name],
-      siteName: 'LexMinds Law Review',
+      siteName: 'Lex Minds Law Review',
     },
   };
 }
@@ -68,7 +68,7 @@ export default function ArticleDetailPage({ params }: Props) {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'LexMinds Law Review',
+      name: 'Lex Minds Law Review',
       logo: {
         '@type': 'ImageObject',
         url: 'https://lexminds.in/icon.svg',

@@ -11,13 +11,13 @@ export const PRODUCT_CATALOG: Record<
   { name: string; amountPaise: number; currency: string }
 > = {
   internship_enrollment: {
-    name: 'Legal Research & Editorial Fellowship Enrollment',
-    amountPaise: 29900, // ₹299.00
+    name: 'Internship & Fellowship Application Evaluation Fee',
+    amountPaise: 3900, // ₹39.00 (discounted from ₹299.00)
     currency: 'INR',
   },
   article_submission: {
-    name: 'Article Submission & Double-Blind Peer Review',
-    amountPaise: 49900, // ₹499.00
+    name: 'Article Manuscript Editorial Evaluation Fee',
+    amountPaise: 9900, // ₹99.00 (discounted from ₹399.00)
     currency: 'INR',
   },
 };

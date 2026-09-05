@@ -7,30 +7,30 @@ import { MENTORS_DATA } from '@/lib/mentors-data';
 import { Scale, Users, Sparkles, Award, GraduationCap, ShieldCheck } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Mentors & Faculty Advisory Council | LexMinds India',
+  title: 'Mentors & Faculty Advisory Council | Lex Minds',
   description:
     'Connect with distinguished Senior Advocates, Tier-1 Law Firm Partners, and NLU Faculty members for 1:1 clinical guidance, appellate drafting, and legal research publication mentorship.',
   alternates: {
     canonical: 'https://lexminds.in/mentors',
   },
   openGraph: {
-    title: 'Mentors & Faculty Advisory Council | LexMinds India',
+    title: 'Mentors & Faculty Advisory Council | Lex Minds',
     description:
       'Distinguished Senior Advocates, Tier-1 Partners, and NLU Professors providing 1:1 clinical guidance for law students and researchers.',
     url: 'https://lexminds.in/mentors',
-    siteName: 'LexMinds India',
+    siteName: 'Lex Minds',
     images: [
       {
         url: '/icon.svg',
         width: 800,
         height: 800,
-        alt: 'LexMinds Gavel Insignia',
+        alt: 'Lex Minds Gavel Insignia',
       },
     ],
   },
   twitter: {
     card: 'summary',
-    title: 'Mentors & Faculty Advisory Council | LexMinds India',
+    title: 'Mentors & Faculty Advisory Council | Lex Minds',
     description:
       'Distinguished Senior Advocates, Tier-1 Partners, and NLU Professors providing 1:1 clinical guidance for law students and researchers.',
     images: ['/icon.svg'],
@@ -41,8 +41,8 @@ export default function MentorsPage() {
   const jsonLdData = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'LexMinds Mentors & Faculty Advisory Council',
-    description: 'Distinguished legal mentors and clinical advisors at LexMinds India.',
+    name: 'Lex Minds Mentors & Faculty Advisory Council',
+    description: 'Distinguished legal mentors and clinical advisors at Lex Minds.',
     url: 'https://lexminds.in/mentors',
     numberOfItems: MENTORS_DATA.length,
     itemListElement: MENTORS_DATA.map((mentor, index) => ({
@@ -77,7 +77,7 @@ export default function MentorsPage() {
 
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-royal-50 dark:bg-royal-950/60 border border-royal-200 dark:border-royal-800/70 text-royal-700 dark:text-royal-300 text-[11px] font-mono font-bold uppercase tracking-wider">
           <Users className="w-3.5 h-3.5" />
-          <span>Faculty &amp; Advisory Council &bull; LexMinds India</span>
+          <span>Faculty &amp; Advisory Council &bull; Lex Minds</span>
         </div>
 
         <div className="space-y-3 max-w-4xl">

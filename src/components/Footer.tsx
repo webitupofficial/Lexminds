@@ -22,14 +22,14 @@ export default function Footer() {
               </div>
               <div className="flex items-baseline space-x-1.5">
                 <span className="font-serif text-xl font-bold tracking-tight text-ink-950 dark:text-ink-50">
-                  LexMinds India
+                  Lex Minds
                 </span>
                 <span className="w-2 h-2 rounded-full bg-royal-500 dark:bg-royal-400 inline-block" />
               </div>
             </Link>
             
             <p className="text-ink-600 dark:text-ink-300 text-xs leading-relaxed max-w-md font-normal">
-              LexMinds India is a student-led platform focused on legal education, research, writing, publications and legal media. Empowering students through legal learning and practical skills.
+              Lex Minds is an independent, student-led platform focused on legal education, research, writing, publications and legal learning. Empowering law students through structured practical research.
             </p>
 
             <div className="font-mono text-xs text-royal-600 dark:text-royal-400 font-semibold">
@@ -98,6 +98,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/refund-policy" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors font-semibold text-royal-600 dark:text-royal-400">
+                  Refund &amp; Cancellation Policy
+                </Link>
+              </li>
+              <li>
                 <Link href="/editorial-policy" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
                   Editorial Standards
                 </Link>
@@ -115,7 +120,7 @@ export default function Footer() {
         {/* Bottom Colophon & Disclaimer */}
         <div className="mt-14 pt-8 border-t border-ink-900/10 dark:border-ink-800 flex flex-col sm:flex-row items-center justify-between text-xs text-ink-500 dark:text-ink-400 gap-4">
           <div>
-            &copy; {currentYear} LexMinds India. Independent student-led platform for legal education and practical learning.
+            &copy; {currentYear} Lex Minds. Independent student-led platform for legal education and practical learning.
           </div>
           <div className="flex items-center space-x-6">
             <Link href="/about" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
@@ -126,6 +131,9 @@ export default function Footer() {
             </Link>
             <Link href="/terms" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
               Terms
+            </Link>
+            <Link href="/refund-policy" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
+              Refunds
             </Link>
             <Link href="/contact" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
               Contact

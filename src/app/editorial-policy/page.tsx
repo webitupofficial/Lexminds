@@ -12,7 +12,7 @@ import {
 import Breadcrumbs from '@/components/Breadcrumbs';
 
 export const metadata = {
-  title: 'Editorial Policy & Standards | LexMinds Law Journal',
+  title: 'Editorial Policy & Standards | Lex Minds Law Journal',
   description: 'Guidelines on student-led editorial review, originality standards, Bluebook & OSCOLA citation formatting, and author copyright terms.',
   alternates: {
     canonical: 'https://lexminds.in/editorial-policy',
@@ -35,7 +35,7 @@ export default function EditorialPolicyPage() {
           Editorial Policy &amp; Standards
         </h1>
         <p className="text-base text-ink-600 dark:text-ink-300 max-w-3xl leading-relaxed font-normal">
-          The LexMinds Law Journal adheres to rigorous standards of student legal publishing, promoting critical inquiry, original scholarship, and transparent editorial evaluation.
+          The Lex Minds Law Journal adheres to rigorous standards of student legal publishing, promoting critical inquiry, original scholarship, and transparent editorial evaluation.
         </p>
       </div>
 
@@ -113,7 +113,7 @@ export default function EditorialPolicyPage() {
             <span>4. Author Rights &amp; Open Access Publishing</span>
           </h2>
           <p>
-            LexMinds is dedicated to open-access legal scholarship:
+            Lex Minds is dedicated to open-access legal scholarship:
           </p>
           <ul className="space-y-2.5 list-disc list-inside text-ink-600 dark:text-ink-400">
             <li>Authors retain the moral copyright and ownership of their published work.</li>

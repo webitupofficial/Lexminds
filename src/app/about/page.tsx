@@ -16,8 +16,8 @@ import {
 import Breadcrumbs from '@/components/Breadcrumbs';
 
 export const metadata = {
-  title: 'About Us — LexMinds India | Legal Education, Research & Publications',
-  description: 'Learn about LexMinds India, a student-led platform empowering students through legal learning, research, writing, publications, and practical skills.',
+  title: 'About Us — Lex Minds | Legal Education, Research & Publications',
+  description: 'Learn about Lex Minds, a student-led platform empowering students through legal learning, research, writing, publications, and practical skills.',
   alternates: {
     canonical: 'https://lexminds.in/about',
   },
@@ -34,15 +34,15 @@ export default function AboutPage() {
       <div className="p-8 sm:p-14 bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 rounded-sm shadow-brutal space-y-4">
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-sm bg-royal-50 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 text-royal-700 dark:text-royal-300 text-[11px] font-mono font-bold uppercase tracking-wider">
           <Scale className="w-3.5 h-3.5" />
-          <span>About Us — LexMinds India</span>
+          <span>About Us — Lex Minds</span>
         </div>
 
         <h1 className="text-3xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-tight">
-          Welcome to LexMinds India
+          Welcome to Lex Minds
         </h1>
 
         <p className="text-base sm:text-lg text-ink-700 dark:text-ink-200 leading-relaxed font-normal">
-          <strong className="text-ink-950 dark:text-ink-50 font-semibold">LexMinds India</strong> is a student-led platform focused on legal education, research, writing, publications and legal media.
+          <strong className="text-ink-950 dark:text-ink-50 font-semibold">Lex Minds</strong> is a student-led platform focused on legal education, research, writing, publications and legal media.
         </p>
 
         <p className="text-sm sm:text-base text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
@@ -69,7 +69,7 @@ export default function AboutPage() {
           We believe that legal education should go beyond textbooks and classrooms.
         </p>
         <p className="text-sm sm:text-base text-ink-700 dark:text-ink-300 leading-relaxed">
-          LexMinds India aims to encourage students to explore the law through research, legal writing, case analysis, publications and responsible legal communication.
+          Lex Minds aims to encourage students to explore the law through research, legal writing, case analysis, publications and responsible legal communication.
         </p>
         <p className="text-sm sm:text-base text-ink-700 dark:text-ink-300 leading-relaxed font-medium">
           Our vision is to build a growing community where students can develop their knowledge, skills and confidence while contributing meaningful educational content to the legal community.
@@ -86,7 +86,7 @@ export default function AboutPage() {
             What We Do
           </h2>
           <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-400 mt-1">
-            At LexMinds India, we focus on different areas of legal learning and development, including:
+            At Lex Minds, we focus on different areas of legal learning and development, including:
           </p>
         </div>
 
@@ -173,7 +173,7 @@ export default function AboutPage() {
         </div>
 
         <p className="text-sm sm:text-base text-ink-700 dark:text-ink-300 leading-relaxed">
-          LexMinds India organises student-focused programmes designed to provide practical learning experiences. The focus of our programmes may vary depending on the particular internship or programme.
+          Lex Minds organises student-focused programmes designed to provide practical learning experiences. The focus of our programmes may vary depending on the particular internship or programme.
         </p>
 
         <div className="space-y-2">
@@ -251,7 +251,7 @@ export default function AboutPage() {
           </h2>
         </div>
         <p className="text-sm sm:text-base text-ink-700 dark:text-ink-300 leading-relaxed">
-          LexMinds India is built and managed as a student-led initiative. We believe that students have the potential to learn, collaborate and create meaningful contributions to legal education.
+          Lex Minds is built and managed as a student-led initiative. We believe that students have the potential to learn, collaborate and create meaningful contributions to legal education.
         </p>
         <p className="text-sm sm:text-base text-ink-700 dark:text-ink-300 leading-relaxed">
           As a growing platform, we also value the guidance of experienced legal professionals, educators and mentors who can help us improve our work and maintain professional standards.
@@ -319,7 +319,7 @@ export default function AboutPage() {
           <span>Important Note</span>
         </h3>
         <p className="text-xs sm:text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
-          LexMinds India is an independent, student-led platform. Unless explicitly stated otherwise through an official and verifiable affiliation, LexMinds India is not a law firm, university, government institution or statutory authority.
+          Lex Minds is an independent, student-led platform. Unless explicitly stated otherwise through an official and verifiable affiliation, Lex Minds is not a law firm, university, government institution or statutory authority.
         </p>
         <p className="text-xs sm:text-sm text-ink-700 dark:text-ink-300 leading-relaxed font-medium">
           The content available on the platform is intended for educational and informational purposes.
@@ -335,7 +335,7 @@ export default function AboutPage() {
           Learn. Research. Write. Create. Grow.
         </h3>
         <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 max-w-xl mx-auto leading-relaxed">
-          Whether you are interested in legal research, writing, publications or legal media, LexMinds India aims to provide a platform for learning, collaboration and growth.
+          Whether you are interested in legal research, writing, publications or legal media, Lex Minds aims to provide a platform for learning, collaboration and growth.
         </p>
         <p className="text-xs font-mono font-semibold text-ink-700 dark:text-ink-300">
           Empowering Students Through Legal Learning and Practical Skills.

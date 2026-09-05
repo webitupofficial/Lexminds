@@ -215,7 +215,7 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
                       <h3 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-snug group-hover:text-royal-600 dark:group-hover:text-royal-400 transition-colors">
                         {mentor.name}
                       </h3>
-                      <span title="Verified LexMinds Faculty Mentor">
+                      <span title="Verified Lex Minds Faculty Mentor">
                         <ShieldCheck className="w-4 h-4 text-royal-500 dark:text-royal-400 shrink-0" />
                       </span>
                     </div>
@@ -307,7 +307,7 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
             Structured Clinical Pathway
           </span>
           <h2 className="text-2xl sm:text-3xl font-serif font-bold text-ink-950 dark:text-ink-50 mt-0.5">
-            How LexMinds Mentorship Works
+            How Lex Minds Mentorship Works
           </h2>
           <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-400 mt-1 max-w-2xl">
             A selective, clinical guidance bridge connecting serious law students with practicing Senior Advocates, Tier-1 Partners, and Academic Scholars.
@@ -366,7 +366,7 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
             Are You a Practicing Advocate, Partner, or Legal Academic?
           </h3>
           <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 max-w-xl">
-            Join the LexMinds Mentorship Council to support the next generation of researchers, student authors, and advocates through clinical masterclasses.
+            Join the Lex Minds Mentorship Council to support the next generation of researchers, student authors, and advocates through clinical masterclasses.
           </p>
         </div>
 
@@ -422,7 +422,7 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
                   Request Successfully Registered
                 </h4>
                 <p className="text-xs text-ink-600 dark:text-ink-300 max-w-sm mx-auto leading-relaxed">
-                  Your mentorship request for <strong className="font-semibold text-ink-900 dark:text-ink-100">{activeModalMentor.name}</strong> has been transmitted to the LexMinds Academic Secretariat. Our team will verify credentials and reach out via email within 48 business hours.
+                  Your mentorship request for <strong className="font-semibold text-ink-900 dark:text-ink-100">{activeModalMentor.name}</strong> has been transmitted to the Lex Minds Advisory Council. Our team will review credentials and reach out via email within 48 business hours.
                 </p>
                 <button
                   onClick={() => setActiveModalMentor(null)}

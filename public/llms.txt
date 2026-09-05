@@ -1,42 +1,45 @@
-# LexMinds (`https://lexminds.in`)
-> Bridging Legal Education & Industry Practice
+# Lex Minds (`https://lexminds.in`)
+> Legal Education, Research, Writing & Practical Learning
 
 ## Overview
-LexMinds is India's premier legal ecosystem platform dedicated to connecting law students, young advocates, and legal researchers with verified industry internships, high-impact mentorship, and a peer-reviewed, double-blind legal article publishing journal.
+Lex Minds is an independent, student-led legal education platform dedicated to empowering law students and researchers through legal learning, research fellowships, structured manuscript peer-review, and practical skill development.
 
 ## Core Capabilities & Services
 
-### 1. Legal Internship Portal (`/internships`)
-- **Verified Listings**: Curated internships across Tier-1 law firms, Supreme Court & High Court senior advocate chambers, corporate legal departments, fintech startups, and think tanks.
+### 1. Legal Internship & Fellowship Programmes (`/internships`)
+- **Student-Focused Programmes**: Structured experiential learning cohorts in legal research, statutory interpretation, case digest drafting, and citation standardization.
 - **Practice Areas**:
-  - Corporate Mergers & Acquisitions (M&A) and Securities Law
-  - Constitutional & Appellate Litigation
-  - Intellectual Property Rights (IPR & Patent Litigation)
-  - Technology, Data Privacy & AI Governance
-  - Commercial Arbitration & Dispute Resolution
-  - Criminal Law & Criminal Jurisprudence (BNS / BNSS / BSA)
-- **Application Workflow**: Structured multi-step application with Statement of Purpose (SOP), academic credentials, verified resume submission, and seamless Razorpay processing fee checkout.
+  - Corporate Law & Regulatory Compliance
+  - Constitutional & Appellate Law
+  - Intellectual Property Rights
+  - Technology & Data Privacy (DPDP Act 2023)
+  - Commercial Dispute Resolution & Arbitration
+  - Criminal Jurisprudence (BNS / BNSS / BSA)
+- **Application Workflow**: Multi-step application with Statement of Purpose (SOP), academic credentials, Google authentication, and nominal administrative evaluation fee (₹39 INR) processed via Razorpay. Note: Payment does not guarantee selection.
 
 ### 2. Article Publishing & Legal Journal (`/articles` & `/publish`)
-- **Peer-Reviewed Journal**: Publishing authoritative research articles, case commentaries, legislative analyses, and policy briefs.
-- **Publish With Us**: Transparent manuscript submission system with anti-plagiarism verification (Turnitin < 10%), double-blind editorial review, and formal certificate of publication.
-- **Citation Standards**: Formatted to Indian legal citation standards, Bluebook (21st ed.), and OSCOLA.
+- **Student-Led Editorial Review**: Publishing analytical research papers, case commentaries, and statutory analyses.
+- **Publish With Us**: Transparent manuscript intake and editorial review process with citation verification and archival publication dockets. Nominal editorial evaluation fee (₹99 INR) processed via Razorpay. Payment does not guarantee acceptance or publication.
+- **Citation Standards**: Formatted to Bluebook and OSCOLA standards.
 
-### 3. Editorial & Mentorship Network (`/about`)
-- Advisory board of Senior Advocates, Partners from leading law firms, and National Law University (NLU) faculty members.
-- Practical legal drafting workshops, moot court masterclasses, and career coaching.
+### 3. Mentorship & Clinical Guidance (`/mentors` & `/about`)
+- Advisory panel of experienced legal practitioners, advocates, and academic scholars.
+- Practical guidance in legal writing, research methodologies, and career development.
 
 ## Key URLs
 - Home: https://lexminds.in/
 - Mentors & Faculty: https://lexminds.in/mentors
-- Internship Portal: https://lexminds.in/internships
+- Internship Programmes: https://lexminds.in/internships
 - Articles Archive: https://lexminds.in/articles
 - Publish With Us: https://lexminds.in/publish
 - Editorial Policy: https://lexminds.in/editorial-policy
-- About LexMinds: https://lexminds.in/about
-- Contact & Support: https://lexminds.in/contact
+- Terms & Conditions: https://lexminds.in/terms
+- Privacy Policy: https://lexminds.in/privacy
+- Cancellation & Refund Policy: https://lexminds.in/refund-policy
+- About Us: https://lexminds.in/about
+- Contact Us: https://lexminds.in/contact
 
 ## Contact & Grievance Redressal
-- Email: editorial@lexminds.in | internships@lexminds.in
-- Domain: lexminds.in
-- Headquarters: New Delhi, India
+- Support Email: lexmindsindia@gmail.com
+- Domain: https://lexminds.in
+- Operations: Online / Pan-India Digital Operations

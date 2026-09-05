@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { 
   Scale, 
@@ -20,8 +21,11 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Terms & Conditions | Lex Minds India',
-  description: 'Official Terms & Conditions governing access, internship programmes, publications, certificate verification, and user conduct on Lex Minds India.',
+  title: 'Terms & Conditions | Lex Minds',
+  description: 'Terms & Conditions governing access, internship programmes, publications, certificate verification, and user conduct on Lex Minds.',
+  alternates: {
+    canonical: 'https://lexminds.in/terms',
+  },
 };
 
 export default function TermsPage() {
@@ -336,18 +340,47 @@ export default function TermsPage() {
           </p>
         </section>
 
-        {/* 14. Fees and Payments */}
-        <section className="space-y-3">
+        {/* 14. Fees, Pricing and Paid Products */}
+        <section className="space-y-4">
           <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5 border-b border-ink-900/10 dark:border-ink-800 pb-2">
             <span className="font-mono text-royal-600 dark:text-royal-400 text-base">14.</span>
-            <span>Fees and Payments</span>
+            <span>Fees, Pricing and Paid Products</span>
           </h2>
           <p>
-            Certain programmes may require a registration or participation fee. Where a fee applies, the amount and applicable payment terms will be communicated before registration.
+            Lex Minds charges one-time, non-recurring evaluation fees to cover the operational, anti-plagiarism, and administrative costs of processing student applications and manuscript submissions:
           </p>
-          <p>
-            Users should review the applicable programme information before making payment. Where applicable, refunds or cancellations will be governed by the relevant Refund/Cancellation Policy. Users must not attempt fraudulent transactions or unauthorised payment reversals.
-          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+            <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-1.5 rounded-sm">
+              <div className="text-xs font-mono font-bold uppercase text-royal-600 dark:text-royal-400">Paid Product 01</div>
+              <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm">Internship / Fellowship Application Evaluation Fee</h4>
+              <div className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
+                ₹39.00 INR <span className="text-xs line-through text-ink-400 font-normal">₹299.00</span>{' '}
+                <span className="text-[11px] font-mono text-ink-500 font-normal">(Inclusive of all applicable taxes)</span>
+              </div>
+              <p className="text-xs text-ink-600 dark:text-ink-400">
+                Covers administrative intake, academic eligibility screening, Statement of Purpose (SOP) evaluation, and docket creation.
+              </p>
+            </div>
+
+            <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-1.5 rounded-sm">
+              <div className="text-xs font-mono font-bold uppercase text-royal-600 dark:text-royal-400">Paid Product 02</div>
+              <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm">Article Manuscript Editorial Evaluation Fee</h4>
+              <div className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
+                ₹99.00 INR <span className="text-xs line-through text-ink-400 font-normal">₹399.00</span>{' '}
+                <span className="text-[11px] font-mono text-ink-500 font-normal">(Inclusive of all applicable taxes)</span>
+              </div>
+              <p className="text-xs text-ink-600 dark:text-ink-400">
+                Covers intake screening, originality/anti-plagiarism screening, peer-review coordination, and editorial formatting review.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-500/30 text-xs text-amber-900 dark:text-amber-200 rounded-sm space-y-1.5">
+            <strong className="block font-serif text-sm">Non-Guarantee Disclosure:</strong>
+            <p>
+              Payment of an evaluation fee covers the cost of processing and evaluating your application or manuscript. <strong>Payment does not guarantee selection for an internship, acceptance of a paper, publication in the journal, issuance of a certificate, or any specific outcome.</strong> Selection and publication decisions are made independently based on academic quality and submission standards.
+            </p>
+          </div>
         </section>
 
         {/* 15. Refunds and Cancellations */}
@@ -357,10 +390,24 @@ export default function TermsPage() {
             <span>Refunds and Cancellations</span>
           </h2>
           <p>
-            The refund terms applicable to a programme will depend on the programme&apos;s stated refund policy. Where no refund is available, this should be clearly communicated to the participant before payment.
+            Because evaluation begins immediately upon receipt of a submission, evaluation fees are generally non-refundable once payment is completed, except in verified cases of:
           </p>
+          <ul className="list-disc list-inside space-y-1 text-ink-600 dark:text-ink-400 pl-2">
+            <li>Accidental duplicate payments for the exact same submission.</li>
+            <li>Technical processing errors where an account was debited without generating a docket reference.</li>
+            <li>Documented unauthorized transactions.</li>
+          </ul>
           <p>
-            Lex Minds India may consider exceptional circumstances on a case-by-case basis, but such consideration does not create an automatic right to a refund.
+            Refund requests must be sent within 7 calendar days of payment to{' '}
+            <a href="mailto:lexmindsindia@gmail.com" className="text-royal-600 dark:text-royal-400 font-semibold underline">
+              lexmindsindia@gmail.com
+            </a>. Verified refunds are credited to the original payment instrument within 5 to 7 business days.
+          </p>
+          <p className="font-medium text-ink-900 dark:text-ink-100">
+            For complete terms, please read our dedicated{' '}
+            <Link href="/refund-policy" className="text-royal-600 dark:text-royal-400 font-bold underline">
+              Cancellation &amp; Refund Policy
+            </Link>.
           </p>
         </section>
 
@@ -371,14 +418,14 @@ export default function TermsPage() {
             <span>Mentor and Professional Guidance</span>
           </h2>
           <p>
-            Lex Minds India may involve mentors, legal professionals, educators, researchers, or other professionals. Mentor participation does not necessarily mean that the mentor:
+            Lex Minds may involve mentors, legal professionals, educators, researchers, or other professionals. Mentor participation does not necessarily mean that the mentor:
           </p>
           <ul className="list-disc list-inside space-y-1 text-ink-600 dark:text-ink-400 pl-2">
-            <li>Is an employee of Lex Minds India</li>
-            <li>Represents Lex Minds India</li>
+            <li>Is an employee of Lex Minds</li>
+            <li>Represents Lex Minds</li>
             <li>Provides individual legal advice</li>
             <li>Guarantees an internship or employment opportunity</li>
-            <li>Endorses every activity or publication of Lex Minds India</li>
+            <li>Endorses every activity or publication of Lex Minds</li>
           </ul>
           <p className="text-xs text-ink-500">
             Mentorship is intended primarily for educational and professional-development purposes.
@@ -399,20 +446,20 @@ export default function TermsPage() {
           </p>
         </section>
 
-        {/* 18. No Legal Advice */}
+        {/* 18. No Legal Advice & Not a Law Firm */}
         <section className="space-y-3">
           <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5 border-b border-ink-900/10 dark:border-ink-800 pb-2">
             <span className="font-mono text-royal-600 dark:text-royal-400 text-base">18.</span>
-            <span>No Legal Advice</span>
+            <span>No Legal Advice &bull; Lex Minds is Not a Law Firm</span>
           </h2>
           <p>
-            Content available through Lex Minds India—including articles, notes, case summaries, educational materials, webinars, social-media posts, and internship activities—is generally provided for educational and informational purposes.
+            <strong>Lex Minds is an independent, student-led educational platform and is not a law firm.</strong> Lex Minds does not provide legal representation, legal advice, legal opinions, or legal consultancy of any nature.
           </p>
           <p className="font-semibold text-ink-900 dark:text-ink-100">
-            Such content does not constitute individual legal advice.
+            Content available through Lex Minds—including published articles, student commentaries, case briefs, workshops, and mentorship discussions—is strictly intended for informational, academic, and educational purposes.
           </p>
           <p>
-            Use of the website does not create an advocate-client relationship or any other professional legal relationship between Lex Minds India and the user.
+            Use of this website, participating in programmes, or communicating with mentors does not create an advocate-client relationship or any other professional legal relationship.
           </p>
         </section>
 

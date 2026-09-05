@@ -109,7 +109,7 @@ export default function PaymentClient() {
       key: session.keyId,
       amount: session.amountPaise,
       currency: session.currency,
-      name: 'LexMinds Legal Platform',
+      name: 'Lex Minds',
       description: session.productName,
       order_id: session.orderId,
       prefill: {
@@ -120,7 +120,7 @@ export default function PaymentClient() {
         productKey: session.productKey,
       },
       theme: {
-        color: '#d9381e',
+        color: '#5B3DF5',
       },
       modal: {
         ondismiss: () => {
@@ -319,7 +319,7 @@ export default function PaymentClient() {
           </h1>
 
           <p className="text-sm text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
-            Your application record has been recorded with <span className="font-mono font-semibold text-royal-600 dark:text-royal-400">payment pending</span> status. Please complete the statutory processing fee to finalize and lock your docket.
+            Your application record has been logged with <span className="font-mono font-semibold text-royal-600 dark:text-royal-400">payment pending</span> status. Please complete the administrative evaluation fee to finalize your docket.
           </p>
         </div>
 
@@ -327,14 +327,29 @@ export default function PaymentClient() {
         <div className="p-6 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-4 rounded-sm">
           <div className="flex justify-between items-start">
             <div className="space-y-0.5">
-              <span className="text-xs text-ink-500 dark:text-ink-400 font-mono uppercase">Designated Item</span>
+              <span className="text-xs text-ink-500 dark:text-ink-400 font-mono uppercase">Designated Service</span>
               <h3 className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
                 {session.productName}
               </h3>
+              <span className="text-[11px] font-mono text-ink-500 block">
+                Inclusive of all applicable taxes
+              </span>
             </div>
-            <span className="text-2xl font-serif font-bold text-royal-600 dark:text-royal-400">
-              ₹{feeRupees}
-            </span>
+            <div className="text-right">
+              <div className="flex items-baseline space-x-2 justify-end">
+                <span className="text-2xl sm:text-3xl font-serif font-bold text-royal-600 dark:text-royal-400">
+                  ₹{feeRupees}
+                </span>
+                {session.productKey === 'internship_enrollment' ? (
+                  <span className="text-sm line-through text-ink-400">₹299</span>
+                ) : (
+                  <span className="text-sm line-through text-ink-400">₹399</span>
+                )}
+              </div>
+              <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 block font-semibold">
+                Limited Academic Subsidy Applied
+              </span>
+            </div>
           </div>
 
           <div className="pt-4 border-t border-ink-900/10 dark:border-ink-800 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-mono">
@@ -346,7 +361,7 @@ export default function PaymentClient() {
             </div>
 
             <div>
-              <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Verified Identity:</span>
+              <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Applicant Email:</span>
               <span className="font-medium text-ink-950 dark:text-ink-50 text-xs truncate mt-0.5 block">
                 {session.email}
               </span>
@@ -354,15 +369,35 @@ export default function PaymentClient() {
           </div>
         </div>
 
-        {/* Security Guarantees */}
+        {/* Non-Guarantee & Compliance Disclosure */}
+        <div className="p-4 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-500/30 text-xs text-amber-900 dark:text-amber-200 rounded-sm space-y-1.5 leading-relaxed font-normal">
+          <strong className="block font-serif text-sm text-ink-950 dark:text-ink-50">
+            Mandatory Evaluation Disclosure:
+          </strong>
+          <p>
+            Payment covers operational evaluation, academic intake triage, and peer-review coordination. <strong>Payment does not guarantee fellowship selection, article publication, or certificate issuance.</strong> Lex Minds is an educational platform and is not a law firm; we do not provide legal advice or representation.
+          </p>
+        </div>
+
+        {/* Security Guarantees & Policy Links */}
         <div className="space-y-2 text-xs text-ink-500 dark:text-ink-400 font-mono">
           <div className="flex items-center space-x-2">
             <ShieldCheck className="w-4 h-4 text-royal-500 shrink-0" />
-            <span>Credentials are processed directly via Razorpay and never stored on LexMinds servers.</span>
+            <span>Encrypted checkout processed directly via Razorpay. Card/UPI credentials are never stored on Lex Minds servers.</span>
           </div>
           <div className="flex items-center space-x-2">
             <Lock className="w-4 h-4 text-royal-500 shrink-0" />
             <span>This payment session link is valid for 30 minutes from form submission.</span>
+          </div>
+          <div className="pt-2 border-t border-ink-900/10 dark:border-ink-800 text-[11px] text-ink-600 dark:text-ink-400">
+            By proceeding with payment, you acknowledge that you have read and agree to our{' '}
+            <Link href="/terms" className="text-royal-600 dark:text-royal-400 underline font-bold" target="_blank">
+              Terms &amp; Conditions
+            </Link>{' '}
+            and{' '}
+            <Link href="/refund-policy" className="text-royal-600 dark:text-royal-400 underline font-bold" target="_blank">
+              Cancellation &amp; Refund Policy
+            </Link>.
           </div>
         </div>
 
@@ -387,7 +422,7 @@ export default function PaymentClient() {
           </button>
 
           <p className="text-xs font-mono text-center text-ink-500 dark:text-ink-400">
-            Authorizes submission with authoritative docket {session.referenceId}.
+            Reconciles submission with docket {session.referenceId}.
           </p>
         </div>
 

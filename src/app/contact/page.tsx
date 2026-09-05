@@ -27,7 +27,7 @@ const INQUIRY_CATEGORIES = [
   'Article Submission & Peer Review',
   'Certificate & Credential Verification',
   'Academic Partnership & Campus Outreach',
-  'General Inquiry / Secretariat',
+  'General Inquiry & Support',
 ];
 
 export default function ContactPage() {
@@ -138,7 +138,7 @@ export default function ContactPage() {
 
   const faqs = [
     {
-      q: 'How does LexMinds structure and evaluate fellowship cohorts?',
+      q: 'How does Lex Minds structure and evaluate fellowship cohorts?',
       a: 'Fellowships are structured by senior student editors. Fellows receive directed guidance in statutory interpretation, case digest drafting, and citation standardization under OSCOLA and Bluebook rules.',
     },
     {
@@ -147,7 +147,7 @@ export default function ContactPage() {
     },
     {
       q: 'Are certificates of publication and fellowship credentials verifiable by universities?',
-      a: 'Yes. Every publication docket and fellowship completion letter issued via LexMinds contains a unique, tamper-evident alphanumeric reference code verifiable with our academic desk.',
+      a: 'Yes. Every publication docket and fellowship completion letter issued via Lex Minds contains a unique, tamper-evident alphanumeric reference code verifiable with our academic desk.',
     },
     {
       q: 'How are evaluation and application fees processed?',
@@ -164,13 +164,13 @@ export default function ContactPage() {
       {/* Header */}
       <div className="border-b border-ink-900/15 dark:border-ink-700 pb-8 space-y-3">
         <span className="text-xs font-mono font-bold uppercase tracking-wider text-royal-500 dark:text-royal-400">
-          Academic Secretariat &bull; Inquiries
+          Editorial &amp; Student Operations &bull; Inquiries
         </span>
         <h1 className="text-4xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
           Academic Correspondence Desk
         </h1>
         <p className="text-base text-ink-600 dark:text-ink-300 max-w-2xl leading-relaxed font-normal">
-          Reach our student editorial council, fellowship coordinators, or academic ethics desk. Inquiries submitted below are logged directly into our official ContactTickets registry.
+          Reach our student editorial council and fellowship coordinators. Inquiries submitted below are logged directly into our ContactTickets registry.
         </p>
       </div>
 
@@ -189,7 +189,7 @@ export default function ContactPage() {
                     Inquiry Docket Created
                   </h2>
                   <p className="text-xs text-ink-600 dark:text-ink-400 font-mono">
-                    Logged in official ContactTickets Registry
+                    Logged in ContactTickets Registry
                   </p>
                 </div>
               </div>
@@ -235,13 +235,13 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              {/* Secretariat Guidance */}
+              {/* Team Guidance */}
               <div className="p-4 bg-surface-light dark:bg-surface-dark border-l-4 border-royal-500 text-xs text-ink-700 dark:text-ink-300 space-y-1">
                 <span className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm block">
                   Next Steps:
                 </span>
                 <p className="leading-relaxed">
-                  Our student editorial secretariat reviews registry entries daily. An acknowledgment and directed response will be sent to your email address within <strong>24 to 48 business hours</strong>.
+                  Our student editorial team reviews registry entries daily. An acknowledgment and response will be sent to your email address within <strong>24 to 48 business hours</strong>.
                 </p>
               </div>
 
@@ -264,7 +264,7 @@ export default function ContactPage() {
                   <span>Academic Inquiry Docket</span>
                 </h2>
                 <p className="text-xs text-ink-600 dark:text-ink-400 mt-1">
-                  All fields are recorded directly in the official LexMinds ContactTickets spreadsheet.
+                  All fields are recorded directly in the Lex Minds ContactTickets registry.
                 </p>
               </div>
 
@@ -493,7 +493,7 @@ export default function ContactPage() {
                     </>
                   ) : (
                     <>
-                      <span>Transmit Inquiry to Secretariat</span>
+                      <span>Transmit Inquiry</span>
                       <Send className="w-4 h-4" />
                     </>
                   )}
@@ -508,19 +508,19 @@ export default function ContactPage() {
         {/* Right Info (5 Cols) */}
         <div className="lg:col-span-5 space-y-6">
           
-          {/* Editorial Secretariat Desk Info */}
+          {/* Operations & Communications Desk Info */}
           <div className="p-6 sm:p-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-4 text-xs shadow-brutal">
             <h3 className="text-lg font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2">
               <Building className="w-4 h-4 text-royal-500" />
-              <span>Secretariat &amp; Communications</span>
+              <span>Operations &amp; Communications</span>
             </h3>
 
             <div className="space-y-3 text-ink-700 dark:text-ink-300">
               <div className="flex items-start space-x-2.5">
                 <MapPin className="w-4 h-4 text-royal-500 shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-ink-950 dark:text-ink-50 block font-mono text-[11px] uppercase">Secretariat:</strong>
-                  <span>Digital Editorial Secretariat &bull; Online Operations (Pan-India)</span>
+                  <strong className="text-ink-950 dark:text-ink-50 block font-mono text-[11px] uppercase">Operations:</strong>
+                  <span>Digital Editorial &bull; Online Operations (Pan-India)</span>
                 </div>
               </div>
 
@@ -535,7 +535,7 @@ export default function ContactPage() {
                     lexmindsindia@gmail.com
                   </a>
                   <span className="block text-[11px] text-ink-500 dark:text-ink-400 mt-0.5">
-                    For internship programmes, publication submissions, and general inquiries.
+                    For fellowship programmes, manuscript submissions, and general inquiries.
                   </span>
                 </div>
               </div>
@@ -552,7 +552,7 @@ export default function ContactPage() {
               Authors and readers wishing to submit citation corrections, academic feedback, or inquiries may write directly to:
             </p>
             <div className="p-3.5 bg-paper dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 space-y-1 text-xs font-mono rounded-sm">
-              <div className="font-semibold text-royal-600 dark:text-royal-400">LexMinds India &bull; Student Editorial Team</div>
+              <div className="font-semibold text-royal-600 dark:text-royal-400">Lex Minds &bull; Student Editorial Team</div>
               <div className="text-ink-600 dark:text-ink-400">
                 Email:{' '}
                 <a href="mailto:lexmindsindia@gmail.com" className="text-royal-600 dark:text-royal-400 underline">

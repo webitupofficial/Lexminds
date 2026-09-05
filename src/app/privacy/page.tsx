@@ -23,8 +23,11 @@ import {
 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Privacy Policy | Lex Minds India',
-  description: 'Official Privacy Policy of Lex Minds India explaining how we collect, use, store, protect, and handle personal data across our programmes and publications.',
+  title: 'Privacy Policy | Lex Minds',
+  description: 'Privacy Policy of Lex Minds explaining how we collect, use, store, protect, and handle personal data across our programmes and publications.',
+  alternates: {
+    canonical: 'https://lexminds.in/privacy',
+  },
 };
 
 export default function PrivacyPage() {
@@ -36,15 +39,15 @@ export default function PrivacyPage() {
       <div className="space-y-3 border-b border-ink-900/15 dark:border-ink-700 pb-8">
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-sm bg-royal-50 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 text-royal-700 dark:text-royal-300 text-[11px] font-mono font-bold uppercase tracking-wider">
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>Official Transparency &amp; Governance</span>
+          <span>Governance &amp; Data Protection</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
           Privacy Policy
         </h1>
         <div className="flex flex-wrap gap-y-1 gap-x-4 text-xs font-mono text-ink-500 dark:text-ink-400">
-          <span><strong>Last Updated:</strong> 4 September 2026</span>
+          <span><strong>Last Updated:</strong> September 2026</span>
           <span>&bull;</span>
-          <span><strong>Website:</strong> Lex Minds India</span>
+          <span><strong>Platform:</strong> Lex Minds (https://lexminds.in)</span>
           <span>&bull;</span>
           <span>
             <strong>Email:</strong>{' '}
@@ -109,6 +112,15 @@ export default function PrivacyPage() {
               <p className="text-xs italic text-ink-500">
                 We will only request information reasonably necessary for the relevant purpose.
               </p>
+              
+              <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 text-xs space-y-1 rounded-sm mt-3">
+                <strong className="text-ink-950 dark:text-ink-50 font-serif font-bold block">
+                  No Collection of Resumes or Sensitive Documents:
+                </strong>
+                <p className="text-ink-600 dark:text-ink-400 leading-relaxed">
+                  Lex Minds does NOT collect, request, process, or store resumes, curriculum vitae (CVs), government identity cards (such as Aadhaar or PAN), or biometric information during programme registration, article submission, or payment checkout. Candidate assessments are conducted strictly on academic details, the Statement of Purpose (SOP), and submitted written assignments.
+                </p>
+              </div>
             </div>
 
             <div className="space-y-2 pt-2">

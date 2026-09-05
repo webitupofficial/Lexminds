@@ -178,7 +178,7 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
       orderId: 'order_session_456',
       referenceId: 'APP-SESSION-123',
       productKey: 'internship_enrollment',
-      amountPaise: 29900,
+      amountPaise: 3900,
       currency: 'INR',
       email: 'applicant@nls.ac.in',
       firebaseUid: 'uid_session_123',
@@ -196,7 +196,7 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     const infoData = await infoRes.json();
     assert.equal(infoData.success, true);
     assert.equal(infoData.referenceId, 'APP-SESSION-123');
-    assert.equal(infoData.amountPaise, 29900);
+    assert.equal(infoData.amountPaise, 3900);
     assert.equal(infoData.email, 'applicant@nls.ac.in');
   });
 
@@ -208,7 +208,7 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
       orderId: 'order_sig_test',
       referenceId: 'APP-SIG-TEST',
       productKey: 'internship_enrollment',
-      amountPaise: 29900,
+      amountPaise: 3900,
       currency: 'INR',
       email: 'sig@nls.ac.in',
       firebaseUid: 'uid_sig',
@@ -420,7 +420,7 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
           entity: {
             id: 'pay_hook_999',
             order_id: 'order_hook_999',
-            amount: 29900,
+            amount: 3900,
             status: 'captured',
           },
         },

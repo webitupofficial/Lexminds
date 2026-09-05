@@ -52,10 +52,7 @@ export default function Header() {
             
             <div className="flex items-baseline space-x-1.5">
               <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight text-ink-900 dark:text-ink-50">
-                LexMinds
-              </span>
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-royal-600 dark:text-royal-400 hidden sm:inline">
-                India
+                Lex Minds
               </span>
               <span className="w-2 h-2 rounded-full bg-royal-500 dark:bg-royal-400 inline-block" />
             </div>

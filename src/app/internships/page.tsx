@@ -41,7 +41,7 @@ export default function InternshipsPage() {
             Internship Programmes
           </h1>
           <p className="text-base text-ink-600 dark:text-ink-300 max-w-2xl leading-relaxed font-normal">
-            LexMinds India organises student-focused programmes designed to provide practical learning experiences in legal research, article drafting, case analysis, and legal media.
+            Lex Minds organises student-focused programmes designed to provide practical learning experiences in legal research, article drafting, case analysis, and legal media.
           </p>
         </div>
       </div>
@@ -125,10 +125,13 @@ export default function InternshipsPage() {
                   </div>
                   <div>
                     <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Evaluation Fee</span>
-                    <strong className="text-ink-950 dark:text-ink-50 font-semibold text-sm">₹{item.applicationFee}.00</strong>
+                    <div className="flex items-baseline space-x-1.5">
+                      <strong className="text-ink-950 dark:text-ink-50 font-semibold text-sm">₹{item.applicationFee}.00</strong>
+                      <span className="text-xs line-through text-ink-400">₹299</span>
+                    </div>
                   </div>
                   <div>
-                    <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Stipend / Honorarium</span>
+                    <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Nature / Stipend</span>
                     <strong className="text-royal-600 dark:text-royal-400 font-bold text-sm">{item.stipend}</strong>
                   </div>
                 </div>

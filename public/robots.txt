@@ -1,4 +1,4 @@
-# LexMinds Robots.txt
+# Lex Minds Robots.txt
 # https://lexminds.in
 
 User-agent: *
@@ -9,6 +9,9 @@ Allow: /publish
 Allow: /mentors
 Allow: /about
 Allow: /contact
+Allow: /terms
+Allow: /privacy
+Allow: /refund-policy
 Allow: /editorial-policy
 Allow: /llms.txt
 Disallow: /admin

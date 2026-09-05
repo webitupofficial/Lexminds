@@ -142,11 +142,11 @@ export default function PublishPage() {
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
-            Publish Your Legal Research With <span className="text-royal-500 dark:text-royal-400">LexMinds</span>
+            Publish Your Legal Research With <span className="text-royal-500 dark:text-royal-400">Lex Minds</span>
           </h1>
 
           <p className="text-base text-ink-600 dark:text-ink-300 leading-relaxed max-w-2xl font-normal">
-            Submit your research paper, case commentary, or statutory analysis to the LexMinds Law Journal. Receive structured student editorial evaluation, citation verification, and an archival publication docket upon acceptance.
+            Submit your research paper, case commentary, or statutory analysis to the Lex Minds Law Journal. Receive structured student editorial evaluation, citation verification, and an archival publication docket upon acceptance.
           </p>
         </div>
       </div>
@@ -390,7 +390,14 @@ export default function PublishPage() {
                     className="mt-0.5 text-royal-600 focus:ring-royal-500 rounded-none"
                   />
                   <span className="text-xs text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
-                    <strong>Open-Access Consent:</strong> Upon acceptance, I grant LexMinds the non-exclusive right to publish this treatise in open-access archival format with full author attribution.
+                    <strong>Open-Access Consent &amp; Policy Acceptance:</strong> Upon editorial acceptance, I grant Lex Minds the non-exclusive right to publish this treatise in open-access format with author attribution. I understand that the editorial evaluation fee (₹99, crossed from ₹399) covers peer-review triage only and does NOT guarantee publication. Lex Minds is an educational platform and not a law firm. I agree to the{' '}
+                    <Link href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                      Terms &amp; Conditions
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="/refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                      Refund Policy
+                    </Link>.
                   </span>
                 </label>
               </div>
@@ -415,7 +422,7 @@ export default function PublishPage() {
                   </>
                 ) : (
                   <>
-                    <span>Proceed to Payment (₹499.00) &amp; Submit</span>
+                    <span>Proceed to Payment (₹99.00) &amp; Submit</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}
@@ -438,16 +445,24 @@ export default function PublishPage() {
               <strong>Desk Screening:</strong> Manuscripts undergo editorial evaluation and academic originality triage upon queue intake.
             </p>
             <p>
-              <strong>Strict Standards:</strong> Only approved manuscripts that meet originality thresholds are published live in the journal.
+              <strong>Strict Standards:</strong> Only approved manuscripts that meet originality thresholds are published live in the journal. Payment does not guarantee acceptance.
             </p>
             <p>
               <strong>Author Credit:</strong> Published articles prominently display author byline, institution, bio, and standardized Bluebook / OSCOLA citations.
             </p>
           </div>
 
-          <div className="pt-4 border-t border-ink-900/10 dark:border-ink-800 text-xs font-mono text-ink-500 dark:text-ink-400 flex items-center justify-between">
-            <span>Article Processing Fee:</span>
-            <span className="font-bold text-ink-950 dark:text-ink-50">₹499.00 INR</span>
+          <div className="pt-4 border-t border-ink-900/10 dark:border-ink-800 text-xs font-mono text-ink-500 dark:text-ink-400 space-y-1">
+            <div className="flex items-center justify-between">
+              <span>Editorial Evaluation Fee:</span>
+              <div className="text-right">
+                <span className="font-bold text-ink-950 dark:text-ink-50 text-sm">₹99.00 INR</span>
+                <span className="text-xs line-through text-ink-400 ml-1.5">₹399.00</span>
+              </div>
+            </div>
+            <div className="text-[10px] text-ink-400 text-right">
+              Inclusive of all applicable taxes
+            </div>
           </div>
         </div>
 
@@ -457,7 +472,7 @@ export default function PublishPage() {
             <span>Author Security &amp; Records</span>
           </div>
           <p className="text-[11px] leading-relaxed font-normal">
-            All submissions are logged in our editorial registry. Authors do not need account dashboards; official decision notices and reviewer notes are sent directly to your registered email.
+            All submissions are logged in our editorial registry. Decision notices and reviewer notes are sent directly to your registered email.
           </p>
         </div>
       </div>

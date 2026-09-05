@@ -61,7 +61,7 @@ export default function ArticlesPage() {
               Articles, Commentaries &amp; Research
             </h1>
             <p className="text-base text-ink-600 dark:text-ink-300 max-w-2xl leading-relaxed font-normal">
-              Legal articles, case commentaries, judgment analyses, and student research published through LexMinds India.
+              Legal articles, case commentaries, judgment analyses, and student research published through Lex Minds.
             </p>
           </div>
 

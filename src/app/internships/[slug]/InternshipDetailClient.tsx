@@ -85,7 +85,7 @@ export default function InternshipDetailClient({ internship }: Props) {
                 <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">{internship.location}</span>
               </div>
               <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
-                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Honorarium</span>
+                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Nature / Stipend</span>
                 <span className="font-bold text-royal-600 dark:text-royal-400 mt-1 block">{internship.stipend}</span>
               </div>
               <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
@@ -190,11 +190,14 @@ export default function InternshipDetailClient({ internship }: Props) {
                   Inclusive of All Taxes
                 </span>
               </div>
-              <div className="text-4xl font-serif font-bold text-ink-950 dark:text-ink-50">
-                ₹{internship.applicationFee}.00
+              <div className="flex items-baseline space-x-2">
+                <span className="text-4xl font-serif font-bold text-ink-950 dark:text-ink-50">
+                  ₹{internship.applicationFee}.00
+                </span>
+                <span className="text-base line-through text-ink-400">₹299.00</span>
               </div>
               <p className="text-xs text-ink-500 dark:text-ink-400 font-mono">
-                Standard student evaluation fee for review of writing sample and statement of purpose.
+                Covers intake assessment and Statement of Purpose evaluation. Payment does not guarantee selection.
               </p>
             </div>
 
@@ -221,8 +224,14 @@ export default function InternshipDetailClient({ internship }: Props) {
               Submit Application
             </button>
 
-            <div className="text-center text-[11px] font-mono text-ink-500 dark:text-ink-400">
-              Verified Google Authentication required at submission.
+            <div className="text-center text-[11px] font-mono text-ink-500 dark:text-ink-400 space-y-1">
+              <div>Verified Google Authentication required at submission.</div>
+              <div>
+                Subject to{' '}
+                <a href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline">Terms</a>{' '}
+                and{' '}
+                <a href="/refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline">Refund Policy</a>.
+              </div>
             </div>
 
           </div>

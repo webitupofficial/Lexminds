@@ -33,7 +33,7 @@ export default function ArticleReaderClient({ article, relatedArticles }: Props)
 
   const shareArticle = (platform: 'linkedin' | 'twitter' | 'whatsapp' | 'copy') => {
     const url = typeof window !== 'undefined' ? window.location.href : `https://lexminds.in/articles/${article.slug}`;
-    const text = `${article.title} - Read on LexMinds Law Journal`;
+    const text = `${article.title} - Read on Lex Minds Law Journal`;
 
     if (platform === 'linkedin') {
       window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
@@ -299,7 +299,7 @@ export default function ArticleReaderClient({ article, relatedArticles }: Props)
             Call for Papers
           </span>
           <h4 className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
-            Submit Your Legal Research to LexMinds
+            Submit Your Legal Research to Lex Minds
           </h4>
           <p className="text-xs text-ink-600 dark:text-ink-400 leading-relaxed font-normal">
             Gain academic visibility, structured editorial feedback, and indexed publication recognition.

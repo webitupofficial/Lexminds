@@ -22,8 +22,8 @@ import {
 import { INITIAL_INTERNSHIPS, INITIAL_ARTICLES } from '@/lib/data-store';
 
 export const metadata = {
-  title: 'LexMinds India | Legal Education, Research, Writing & Media',
-  description: 'LexMinds India is a student-led platform empowering students through legal learning, research, writing, publications, and practical skills. Learn. Research. Write. Create. Grow.',
+  title: 'Lex Minds | Legal Education, Research, Writing & Media',
+  description: 'Lex Minds is a student-led platform empowering students through legal learning, research, writing, publications, and practical skills. Learn. Research. Write. Create. Grow.',
 };
 
 export default function HomePage() {
@@ -55,7 +55,7 @@ export default function HomePage() {
               </h1>
 
               <p className="text-base sm:text-lg text-ink-600 dark:text-ink-300 max-w-xl leading-relaxed font-normal">
-                Welcome to <strong className="text-ink-900 dark:text-ink-100 font-semibold">LexMinds India</strong>. We create a space where law students can learn, research, write, create, and share legal knowledge while developing practical skills that support their academic and professional growth.
+                Welcome to <strong className="text-ink-900 dark:text-ink-100 font-semibold">Lex Minds</strong>. We create a space where law students can learn, research, write, create, and share legal knowledge while developing practical skills that support their academic and professional growth.
               </p>
             </div>
 
@@ -98,7 +98,7 @@ export default function HomePage() {
                 <div className="flex items-center justify-between pb-4 border-b border-ink-900/10 dark:border-ink-800 font-mono text-[11px] text-ink-500 dark:text-ink-400">
                   <div className="flex items-center space-x-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-royal-500 dark:bg-royal-400 inline-block" />
-                    <span className="font-bold uppercase tracking-wider text-ink-900 dark:text-ink-100">LexMinds India Core Focus</span>
+                    <span className="font-bold uppercase tracking-wider text-ink-900 dark:text-ink-100">Lex Minds Core Focus</span>
                   </div>
                   <span>Practical Skills</span>
                 </div>
@@ -657,7 +657,7 @@ export default function HomePage() {
             <span>Important Note</span>
           </div>
           <p className="text-xs sm:text-sm text-ink-700 dark:text-ink-300 leading-relaxed">
-            LexMinds India is an independent, student-led platform. Unless explicitly stated otherwise through an official and verifiable affiliation, LexMinds India is not a law firm, university, government institution, or statutory authority.
+            Lex Minds is an independent, student-led platform. Unless explicitly stated otherwise through an official and verifiable affiliation, Lex Minds is not a law firm, university, government institution, or statutory authority.
           </p>
           <p className="text-xs sm:text-sm text-ink-700 dark:text-ink-300 leading-relaxed font-medium">
             The content available on the platform is intended strictly for educational and informational purposes.
@@ -677,7 +677,7 @@ export default function HomePage() {
               Learn. Research. Write. Create. Grow.
             </h2>
             <p className="text-base text-ink-600 dark:text-ink-300 max-w-xl mx-auto font-normal leading-relaxed">
-              Whether you are interested in legal research, writing, publications, or legal media, LexMinds India aims to provide a platform for learning, collaboration, and growth.
+              Whether you are interested in legal research, writing, publications, or legal media, Lex Minds aims to provide a platform for learning, collaboration, and growth.
             </p>
           </div>
 

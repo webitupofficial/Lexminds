@@ -325,7 +325,14 @@ export default function ApplicationModal({
                           className="mt-0.5 text-coral-500 focus:ring-vermilion rounded-none"
                         />
                         <span className="text-[11px] text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
-                          I confirm that all details provided are accurate. I understand that completion credentials are issued strictly upon verified completion of assigned research milestones, and this administrative fee covers evaluation and editorial coordination.
+                          I confirm that all details provided are accurate. I understand that this fee (₹39, crossed from ₹299) covers administrative application evaluation only and does not guarantee fellowship selection, enrollment, or certification. Lex Minds is an educational platform and not a law firm. I have read and agree to the{' '}
+                          <a href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                            Terms &amp; Conditions
+                          </a>{' '}
+                          and{' '}
+                          <a href="/refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                            Refund Policy
+                          </a>.
                         </span>
                       </label>
                     </div>

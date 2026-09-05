@@ -18,13 +18,13 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://lexminds.in'),
   title: {
-    default: 'LexMinds India | Legal Education, Research, Writing & Media',
-    template: '%s | LexMinds India',
+    default: 'Lex Minds | Legal Education, Research, Writing & Media',
+    template: '%s | Lex Minds',
   },
   description:
-    'LexMinds India is a student-led platform focused on legal education, research, writing, publications and legal media. Empowering students through legal learning and practical skills.',
+    'Lex Minds is a student-led platform focused on legal education, research, writing, publications and legal media. Empowering students through legal learning and practical skills.',
   keywords: [
-    'LexMinds India',
+    'Lex Minds',
     'Legal Education India',
     'Law Student Research',
     'Legal Writing and Publications',
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
     'Case Commentaries',
     'Judgment Analysis'
   ],
-  authors: [{ name: 'LexMinds India Team', url: 'https://lexminds.in' }],
-  creator: 'LexMinds India',
-  publisher: 'LexMinds India',
+  authors: [{ name: 'Lex Minds Team', url: 'https://lexminds.in' }],
+  creator: 'Lex Minds',
+  publisher: 'Lex Minds',
   robots: {
     index: true,
     follow: true,
@@ -55,22 +55,22 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     url: 'https://lexminds.in',
-    title: 'LexMinds | Legal Scholarship & Research Fellowship',
+    title: 'Lex Minds | Legal Scholarship & Research Fellowship',
     description:
       'An independent student-led legal scholarship initiative publishing analytical treatises and selective research fellowships.',
-    siteName: 'LexMinds',
+    siteName: 'Lex Minds',
     images: [
       {
         url: '/icon.svg',
         width: 1200,
         height: 630,
-        alt: 'LexMinds Legal Platform Monogram',
+        alt: 'Lex Minds Legal Platform Monogram',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'LexMinds | Legal Scholarship & Research Fellowship',
+    title: 'Lex Minds | Legal Scholarship & Research Fellowship',
     description:
       'An independent student-led legal scholarship initiative publishing analytical treatises and selective research fellowships.',
     site: '@LexMindsIn',
@@ -95,7 +95,7 @@ const orgSchema = {
     {
       '@type': 'Organization',
       '@id': 'https://lexminds.in/#organization',
-      name: 'LexMinds',
+      name: 'Lex Minds',
       url: 'https://lexminds.in',
       logo: 'https://lexminds.in/icon.svg',
       description: 'An independent student-led legal scholarship initiative and academic research publication platform.',
@@ -105,8 +105,8 @@ const orgSchema = {
       ],
       contactPoint: {
         '@type': 'ContactPoint',
-        contactType: 'Editorial & Academic Secretariat',
-        email: 'editorial@lexminds.in',
+        contactType: 'Student Editorial & Operations Support',
+        email: 'lexmindsindia@gmail.com',
         areaServed: 'IN',
         availableLanguage: ['en', 'hi']
       }
@@ -115,7 +115,7 @@ const orgSchema = {
       '@type': 'WebSite',
       '@id': 'https://lexminds.in/#website',
       url: 'https://lexminds.in',
-      name: 'LexMinds',
+      name: 'Lex Minds',
       publisher: {
         '@id': 'https://lexminds.in/#organization'
       },
