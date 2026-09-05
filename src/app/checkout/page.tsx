@@ -114,8 +114,8 @@ export default function CheckoutTestPage() {
         )}
 
         <div className="pt-4 border-t border-ink-900/10 dark:border-ink-800 flex items-center justify-between text-xs font-mono text-ink-500 dark:text-ink-400">
-          <span>Gateway: Razorpay Test Mode</span>
-          <span>Key: rzp_test_TYTDBm9wmONdO1</span>
+          <span>Gateway: Razorpay Active</span>
+          <span>Status: Standard Web Checkout Live</span>
         </div>
       </div>
     </div>

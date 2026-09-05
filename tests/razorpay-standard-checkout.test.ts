@@ -5,8 +5,8 @@ import { POST as createOrderHandler } from '../src/app/api/create-order/route';
 import { POST as verifyPaymentHandler } from '../src/app/api/verify-payment/route';
 
 // Ensure environment variables are loaded
-process.env.RAZORPAY_KEY_ID = 'rzp_test_TYTDBm9wmONdO1';
-process.env.RAZORPAY_KEY_SECRET = 'xeTOF9nst2RDRynsOFXCfNXp';
+process.env.RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_live_TYTRVvI24AB4d0';
+process.env.RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'uX4i5s9l8NhH2zVoMvS9dEvG';
 
 test('Razorpay Standard Checkout: Create Order validation (< 100 paise rejected)', async () => {
   const req = new Request('http://localhost:3000/api/create-order', {
@@ -31,14 +31,12 @@ test('Razorpay Standard Checkout: Create Order with valid amount (>= 100 paise)'
   const res = await createOrderHandler(req);
   const data = await res.json();
   
-  // If Razorpay API responds (network available), order_id will start with order_
   if (res.status === 200) {
     assert.ok(data.order_id);
     assert.equal(data.amount, 100);
     assert.equal(data.currency, 'INR');
-    assert.equal(data.key_id, 'rzp_test_TYTDBm9wmONdO1');
+    assert.equal(data.key_id, process.env.RAZORPAY_KEY_ID);
   } else {
-    // If no outbound network or key authentication fails, it handles the error gracefully
     assert.ok(data.error);
   }
 });
