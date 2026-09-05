@@ -6,6 +6,7 @@ Allow: /
 Allow: /articles
 Allow: /internships
 Allow: /publish
+Allow: /mentors
 Allow: /about
 Allow: /contact
 Allow: /editorial-policy

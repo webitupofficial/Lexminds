@@ -25,7 +25,7 @@ import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 import { google } from 'googleapis';
 
-const BASE_URL = 'https://lexminds-demo.vercel.app';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://lexminds.in';
 
 function formatPrivateKey(rawKey: string | undefined): string | null {
   if (!rawKey) return null;

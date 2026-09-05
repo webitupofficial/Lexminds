@@ -28,6 +28,7 @@ LexMinds is India's premier legal ecosystem platform dedicated to connecting law
 
 ## Key URLs
 - Home: https://lexminds.in/
+- Mentors & Faculty: https://lexminds.in/mentors
 - Internship Portal: https://lexminds.in/internships
 - Articles Archive: https://lexminds.in/articles
 - Publish With Us: https://lexminds.in/publish
