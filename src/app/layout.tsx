@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import JsonLd from '@/components/JsonLd';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import Script from 'next/script';
 import { GA_TRACKING_ID } from '@/lib/gtag';
 
 export const viewport: Viewport = {
@@ -137,24 +138,17 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark scroll-smooth" suppressHydrationWarning>
       <head>
-        {/* Google tag (gtag.js) - Verification */}
+        {/* Performance Resource Hints: Preconnect to GTM early */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+        {/* Immediate zero-blocking dataLayer & gtag stub */}
         <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
-        />
-        <script
-          id="google-tag-init"
           dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${GA_TRACKING_ID}');
-            `,
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}`,
           }}
         />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
         <JsonLd data={orgSchema} />
         <script
           dangerouslySetInnerHTML={{
@@ -186,6 +180,25 @@ export default function RootLayout({
             <Footer />
           </div>
         </ThemeProvider>
+
+        {/* Google Analytics (gtag.js) - Non-blocking lazyOnload for optimal speed & 100 Performance */}
+        <Script
+          id="google-tag-manager"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+          strategy="lazyOnload"
+        />
+        <Script
+          id="google-tag-init"
+          strategy="lazyOnload"
+          dangerouslySetInnerHTML={{
+            __html: `
+              gtag('js', new Date());
+              gtag('config', '${GA_TRACKING_ID}', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
       </body>
     </html>
   );
