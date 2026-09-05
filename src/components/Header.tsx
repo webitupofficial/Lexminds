@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { 
   Menu, 
@@ -46,8 +47,15 @@ export default function Header() {
           
           {/* Left: Brand Wordmark */}
           <Link href="/" className="flex items-center space-x-2.5 group focus:outline-none shrink-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-200 flex items-center justify-center text-royal-500 dark:text-royal-400 transition-transform duration-200 group-hover:scale-105 shadow-brutal-sm">
-              <span className="font-serif font-black text-base sm:text-lg">L</span>
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border border-ink-900/15 dark:border-white/20 bg-white flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-brutal-sm shrink-0">
+              <Image
+                src="/logo.jpg"
+                alt="Lex Minds Logo"
+                width={36}
+                height={36}
+                priority
+                className="w-full h-full object-cover"
+              />
             </div>
             
             <div className="flex items-baseline space-x-1.5">
