@@ -57,28 +57,36 @@
 }
 
 /* Authentic Wrinkled Paper Background Texture */
+/* Mobile-first: disabled on phone viewports (<=768px) to eliminate LCP delay & bandwidth waste */
 .paper-texture-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: url('/textures/wrinkled-paper.jpg');
-  background-repeat: repeat;
-  background-size: 600px 600px;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.15;
-  mix-blend-mode: multiply;
-  transition: opacity 0.25s ease;
+  display: none;
 }
 
-.dark .paper-texture-overlay {
-  opacity: 0.06;
-  mix-blend-mode: overlay;
-  filter: contrast(140%) brightness(80%);
+@media (min-width: 769px) {
+  .paper-texture-overlay {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background-image: url('/textures/wrinkled-paper.jpg');
+    background-repeat: repeat;
+    background-size: 600px 600px;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.15;
+    mix-blend-mode: multiply;
+    transition: opacity 0.25s ease;
+  }
+
+  .dark .paper-texture-overlay {
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    filter: contrast(140%) brightness(80%);
+  }
 }
 
 @layer base {

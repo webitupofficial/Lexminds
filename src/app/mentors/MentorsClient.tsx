@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { Search, X, User, ExternalLink } from 'lucide-react';
 import { Mentor, MENTORS_DATA } from '@/lib/mentors-data';
 
@@ -81,9 +82,12 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
                   {/* Photo / Avatar Placeholder */}
                   <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-sm bg-paper-200 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 shrink-0 overflow-hidden flex items-center justify-center relative">
                     {mentor.imageUrl ? (
-                      <img
+                      <Image
                         src={mentor.imageUrl}
                         alt={mentor.name}
+                        width={80}
+                        height={80}
+                        unoptimized
                         className="w-full h-full object-cover"
                       />
                     ) : (

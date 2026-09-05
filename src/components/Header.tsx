@@ -54,6 +54,7 @@ export default function Header() {
                 width={36}
                 height={36}
                 className="w-full h-full object-cover"
+                priority
               />
             </div>
             
