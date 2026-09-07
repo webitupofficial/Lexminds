@@ -357,6 +357,9 @@ export default function HomePage() {
                   <span className="px-3 py-1 bg-paper-200 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-mono text-xs border border-ink-900/10 dark:border-ink-700">
                     {flagshipInternship.mode} &bull; {flagshipInternship.duration}
                   </span>
+                  <span className="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-semibold border border-emerald-200 dark:border-emerald-800">
+                    September 2026 Batch
+                  </span>
                 </div>
 
                 <div className="space-y-2">
@@ -364,7 +367,7 @@ export default function HomePage() {
                     {flagshipInternship.title}
                   </h3>
                   <p className="text-sm font-mono text-coral font-semibold uppercase tracking-wide">
-                    {flagshipInternship.organization} &bull; {flagshipInternship.location}
+                    {flagshipInternship.organization} &bull; Mode: {flagshipInternship.mode}
                   </p>
                 </div>
 
@@ -375,24 +378,24 @@ export default function HomePage() {
                 {/* Practical Activities List */}
                 <div className="space-y-2 pt-1">
                   <span className="text-xs font-mono font-bold uppercase tracking-wider text-ink-500 dark:text-ink-400 block">
-                    Programme Activities Include:
+                    What You’ll Learn:
                   </span>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-ink-700 dark:text-ink-300">
                     <div className="flex items-center space-x-2">
                       <Check className="w-4 h-4 text-royal-500 shrink-0" />
-                      <span>Legal research &amp; legal writing</span>
+                      <span>Legal content writing and research</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Check className="w-4 h-4 text-royal-500 shrink-0" />
-                      <span>Article &amp; case commentary drafting</span>
+                      <span>Creating informative legal posts and videos</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Check className="w-4 h-4 text-royal-500 shrink-0" />
-                      <span>Judgment analysis &amp; blog writing</span>
+                      <span>Basics of legal media and communication</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Check className="w-4 h-4 text-royal-500 shrink-0" />
-                      <span>Legal media &amp; awareness initiatives</span>
+                      <span>Presenting legal topics in a simple &amp; engaging manner</span>
                     </div>
                   </div>
                 </div>
@@ -404,28 +407,32 @@ export default function HomePage() {
                 
                 <div className="space-y-1">
                   <span className="text-[11px] font-mono uppercase tracking-wider text-ink-500 dark:text-ink-400 block">
-                    Administrative Evaluation Fee
+                    Registration Fee
                   </span>
                   <div className="text-3xl font-serif font-bold text-ink-950 dark:text-ink-50">
                     ₹{flagshipInternship.applicationFee}.00
                   </div>
                   <span className="text-[11px] font-mono text-ink-500 dark:text-ink-400 block">
-                    Covers evaluation, coordination &amp; certification
+                    Covers registration, learning modules &amp; certificate
                   </span>
                 </div>
 
                 <div className="border-t border-ink-900/10 dark:border-ink-800 pt-4 space-y-3 text-xs font-mono">
                   <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
+                    <span>Month / Batch:</span>
+                    <strong className="text-royal-600 dark:text-royal-400 font-semibold">September 2026</strong>
+                  </div>
+                  <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
                     <span>Duration:</span>
                     <strong className="text-ink-900 dark:text-ink-100 font-semibold">{flagshipInternship.duration}</strong>
                   </div>
                   <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
-                    <span>Cohort Size:</span>
-                    <strong className="text-ink-900 dark:text-ink-100 font-semibold">{flagshipInternship.seats} Participants</strong>
+                    <span>Mode:</span>
+                    <strong className="text-ink-900 dark:text-ink-100 font-semibold">{flagshipInternship.mode}</strong>
                   </div>
                   <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
-                    <span>Deadline:</span>
-                    <strong className="text-coral font-bold">{flagshipInternship.deadline}</strong>
+                    <span>Registrations:</span>
+                    <strong className="text-coral font-bold">Limited Registrations Open</strong>
                   </div>
                 </div>
 
@@ -434,7 +441,7 @@ export default function HomePage() {
                     href={`/internships/${flagshipInternship.slug}`}
                     className="w-full py-3.5 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center block"
                   >
-                    View Details &amp; Apply
+                    View Details &amp; Register
                   </Link>
                   <Link
                     href="/internships"

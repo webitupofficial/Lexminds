@@ -261,26 +261,30 @@ export default function ApplicationModal({
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                          Current Year of Study <span className="text-coral-500">*</span>
+                          Year of Study / Eligibility <span className="text-coral-500">*</span>
                         </label>
                         <select
                           name="yearOfStudy"
                           value={formData.yearOfStudy}
                           onChange={handleChange}
-                          className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 text-xs rounded-none"
+                          className="w-full px-3 py-2.5 tactile-control text-ink-900 dark:text-ink-100 text-xs rounded-none bg-paper dark:bg-ink-800"
                         >
-                          <option>1st Year (5-Year B.A. LL.B / B.B.A. LL.B)</option>
-                          <option>2nd Year (5-Year B.A. LL.B / B.B.A. LL.B)</option>
-                          <option>3rd Year (3-Year or 5-Year LL.B)</option>
-                          <option>4th Year (5-Year Integrated LL.B)</option>
-                          <option>5th Year (Final Year Scholar)</option>
-                          <option>LL.M / Postgraduate Scholar</option>
+                          <option>1st Year (3-Year LL.B)</option>
+                          <option>2nd Year (3-Year LL.B)</option>
+                          <option>3rd Year (3-Year LL.B)</option>
+                          <option>1st Year (5-Year Integrated)</option>
+                          <option>2nd Year (5-Year Integrated)</option>
+                          <option>3rd Year (5-Year Integrated)</option>
+                          <option>4th Year (5-Year Integrated)</option>
+                          <option>5th Year (5-Year Integrated)</option>
+                          <option>LL.M Candidate</option>
+                          <option>Student Interested in Legal Media</option>
+                          <option>Recent Graduate / Other</option>
                         </select>
                       </div>
-
                       <div>
                         <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                          Academic Score / CGPA / Grade <span className="text-coral-500">*</span>
+                          Current CGPA / Percentage <span className="text-coral-500">*</span>
                         </label>
                         <input
                           type="text"
@@ -300,14 +304,14 @@ export default function ApplicationModal({
                   <div className="space-y-4 animate-editorial-reveal">
                     <div>
                       <label className="block text-xs font-mono text-ink-700 dark:text-ink-300 mb-1 uppercase tracking-wider">
-                        Statement of Purpose &amp; Research Focus (Min 30 chars) <span className="text-coral-500">*</span>
+                        Statement of Purpose / Motivation (Min 30 chars) <span className="text-coral-500">*</span>
                       </label>
                       <textarea
                         name="sop"
                         rows={4}
                         value={formData.sop}
                         onChange={handleChange}
-                        placeholder="Detail your research focus, prior academic publications, or areas of jurisprudence you wish to specialize in during this fellowship..."
+                        placeholder="Briefly share your interest in law, legal content creation, or digital media and what you hope to achieve during this 2-week internship..."
                         className="w-full px-3.5 py-2.5 tactile-control text-ink-900 dark:text-ink-100 placeholder-ink-400 text-xs rounded-none"
                       />
                       <p className="text-[10px] text-ink-400 font-mono text-right mt-0.5">

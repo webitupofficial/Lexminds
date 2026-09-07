@@ -52,6 +52,7 @@ export const internshipSchema = {
           'Cyber & AI Governance',
           'Criminal & Constitutional Law',
           'Arbitration & Banking',
+          'Legal Media & Content Creation',
         ],
       },
       validation: (Rule: any) => Rule.required(),
@@ -60,16 +61,16 @@ export const internshipSchema = {
       name: 'location',
       title: 'Location',
       type: 'string',
-      initialValue: 'Remote (Pan-India)',
+      initialValue: 'Online',
     },
     {
       name: 'mode',
       title: 'Mode',
       type: 'string',
       options: {
-        list: ['Remote', 'On-site', 'Hybrid'],
+        list: ['Remote', 'On-site', 'Hybrid', 'Online'],
       },
-      initialValue: 'Remote',
+      initialValue: 'Online',
     },
     {
       name: 'duration',

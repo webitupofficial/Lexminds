@@ -165,9 +165,10 @@ export interface Internship {
     | 'IPR & Tech Law'
     | 'Cyber & AI Governance'
     | 'Criminal & Constitutional Law'
-    | 'Arbitration & Banking';
+    | 'Arbitration & Banking'
+    | 'Legal Media & Content Creation';
   location: string;
-  mode: 'Remote' | 'On-site' | 'Hybrid';
+  mode: 'Remote' | 'On-site' | 'Hybrid' | 'Online';
   duration: string;
   stipend: string;
   applicationFee: number; // in INR

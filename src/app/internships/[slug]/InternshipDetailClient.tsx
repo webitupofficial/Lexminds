@@ -56,6 +56,10 @@ export default function InternshipDetailClient({ internship }: Props) {
                 <span className="text-ink-700 dark:text-ink-300">
                   {internship.orgType}
                 </span>
+                <span className="text-ink-400">&bull;</span>
+                <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800 text-[10px]">
+                  September 2026 Batch
+                </span>
               </div>
 
               <button
@@ -67,6 +71,17 @@ export default function InternshipDetailClient({ internship }: Props) {
               </button>
             </div>
 
+            {/* Registration Open Banner */}
+            <div className="p-3.5 bg-royal-50/70 dark:bg-royal-950/30 border border-royal-200 dark:border-royal-800 text-xs font-mono flex flex-wrap items-center justify-between gap-2">
+              <span className="text-royal-800 dark:text-royal-200 font-semibold flex items-center gap-1.5">
+                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Registrations are currently open for the September batch
+              </span>
+              <span className="text-coral font-bold uppercase tracking-wider text-[11px]">
+                Limited registrations available
+              </span>
+            </div>
+
             {/* Title */}
             <div className="space-y-2">
               <h1 className="text-3xl sm:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-tight">
@@ -74,27 +89,27 @@ export default function InternshipDetailClient({ internship }: Props) {
               </h1>
               <p className="text-sm text-coral font-mono uppercase tracking-wider flex items-center space-x-2 font-semibold">
                 <Building className="w-4 h-4 shrink-0" />
-                <span>{internship.organization} &bull; {internship.location}</span>
+                <span>{internship.organization} &bull; Mode: {internship.mode}</span>
               </p>
             </div>
 
             {/* Quick Facts Ledger Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-ink-900/10 dark:border-ink-800 text-xs font-mono">
               <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
-                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Location</span>
-                <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">{internship.location}</span>
-              </div>
-              <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
-                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Nature / Stipend</span>
-                <span className="font-bold text-royal-600 dark:text-royal-400 mt-1 block">{internship.stipend}</span>
-              </div>
-              <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
-                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Term</span>
+                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Duration</span>
                 <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">{internship.duration}</span>
               </div>
               <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
-                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Deadline</span>
-                <span className="font-bold text-coral mt-1 block">{internship.deadline}</span>
+                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Month / Batch</span>
+                <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">September 2026</span>
+              </div>
+              <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
+                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Mode</span>
+                <span className="font-bold text-royal-600 dark:text-royal-400 mt-1 block">{internship.mode}</span>
+              </div>
+              <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
+                <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Registration Fee</span>
+                <span className="font-bold text-coral mt-1 block">₹{internship.applicationFee}</span>
               </div>
             </div>
 
@@ -104,18 +119,18 @@ export default function InternshipDetailClient({ internship }: Props) {
           <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-4 shadow-brutal">
             <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
               <Scale className="w-5 h-5 text-royal-500 dark:text-royal-400" />
-              <span>Chamber &amp; Role Overview</span>
+              <span>Programme &amp; Internship Overview</span>
             </h2>
             <p className="text-ink-600 dark:text-ink-300 text-sm leading-relaxed font-normal">
               {internship.description}
             </p>
           </div>
 
-          {/* Responsibilities */}
+          {/* What You'll Learn */}
           <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-5 shadow-brutal">
             <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
               <Briefcase className="w-5 h-5 text-royal-500 dark:text-royal-400" />
-              <span>Core Research Responsibilities</span>
+              <span>What You’ll Learn</span>
             </h2>
             <ul className="space-y-3 text-sm text-ink-700 dark:text-ink-300">
               {internship.responsibilities.map((resp, i) => (
@@ -133,7 +148,7 @@ export default function InternshipDetailClient({ internship }: Props) {
           <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-5 shadow-brutal">
             <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
               <GraduationCap className="w-5 h-5 text-royal-500 dark:text-royal-400" />
-              <span>Eligibility &amp; Academic Criteria</span>
+              <span>Eligibility</span>
             </h2>
             <ul className="space-y-3 text-sm text-ink-700 dark:text-ink-300">
               {internship.eligibility.map((el, i) => (
@@ -145,11 +160,11 @@ export default function InternshipDetailClient({ internship }: Props) {
             </ul>
           </div>
 
-          {/* Learning Outcomes */}
+          {/* Internship Benefits */}
           <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-5 shadow-brutal">
             <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
               <Award className="w-5 h-5 text-royal-500 dark:text-royal-400" />
-              <span>Learning Outcomes &amp; Academic Output</span>
+              <span>Internship Benefits</span>
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {internship.learningOutcomes.map((out, i) => (
@@ -165,7 +180,7 @@ export default function InternshipDetailClient({ internship }: Props) {
           <div className="p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-4 shadow-brutal">
             <h2 className="text-2xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5">
               <ShieldCheck className="w-5 h-5 text-royal-500 dark:text-royal-400" />
-              <span>Evaluation &amp; Selection Process</span>
+              <span>Registration &amp; Onboarding Steps</span>
             </h2>
             <div className="space-y-3 font-mono text-xs">
               {internship.selectionProcess.map((proc, i) => (
@@ -185,7 +200,7 @@ export default function InternshipDetailClient({ internship }: Props) {
             
             <div className="space-y-1.5">
               <div className="flex items-center justify-between font-mono text-xs">
-                <span className="uppercase text-ink-500 dark:text-ink-400">Evaluation Fee</span>
+                <span className="uppercase text-ink-500 dark:text-ink-400">Registration Fee</span>
                 <span className="text-[11px] text-royal-600 dark:text-royal-400 font-semibold">
                   Inclusive of All Taxes
                 </span>
@@ -197,22 +212,26 @@ export default function InternshipDetailClient({ internship }: Props) {
                 <span className="text-base line-through text-ink-400">₹299.00</span>
               </div>
               <p className="text-xs text-ink-500 dark:text-ink-400 font-mono">
-                Covers intake assessment and Statement of Purpose evaluation. Payment does not guarantee selection.
+                Covers registration, learning modules, mentorship, and certificate issuance upon completion.
               </p>
             </div>
 
             <div className="border-t border-ink-900/10 dark:border-ink-800 pt-4 space-y-3 text-xs font-mono">
               <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
-                <span>Available Seats:</span>
-                <strong className="text-ink-950 dark:text-ink-50 font-semibold">{internship.seats} Fellows</strong>
+                <span>Month / Cohort:</span>
+                <strong className="text-royal-600 dark:text-royal-400 font-semibold">September 2026 Batch</strong>
+              </div>
+              <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
+                <span>Duration:</span>
+                <strong className="text-ink-950 dark:text-ink-50 font-semibold">{internship.duration}</strong>
               </div>
               <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
                 <span>Mode:</span>
                 <strong className="text-ink-950 dark:text-ink-50 font-semibold">{internship.mode}</strong>
               </div>
               <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
-                <span>Deadline:</span>
-                <strong className="text-coral font-bold">{internship.deadline}</strong>
+                <span>Registrations:</span>
+                <strong className="text-coral font-bold">Limited Registrations Open</strong>
               </div>
             </div>
 
@@ -221,7 +240,7 @@ export default function InternshipDetailClient({ internship }: Props) {
               onClick={() => setIsApplyModalOpen(true)}
               className="w-full py-4 px-4 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center block"
             >
-              Submit Application
+              Register for Internship
             </button>
 
             <div className="text-center text-[11px] font-mono text-ink-500 dark:text-ink-400 space-y-1">

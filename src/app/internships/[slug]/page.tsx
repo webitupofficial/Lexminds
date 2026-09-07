@@ -27,19 +27,33 @@ interface Props {
   };
 }
 
+function getInternship(slug: string) {
+  return (
+    INITIAL_INTERNSHIPS.find((i) => i.slug === slug) ||
+    (slug === 'legal-research-editorial-fellowship' || slug === 'legal-media-internship'
+      ? INITIAL_INTERNSHIPS[0]
+      : undefined)
+  );
+}
+
 export async function generateStaticParams() {
-  return INITIAL_INTERNSHIPS.map((internship) => ({
+  const baseParams = INITIAL_INTERNSHIPS.map((internship) => ({
     slug: internship.slug,
   }));
+  return [
+    ...baseParams,
+    { slug: 'legal-research-editorial-fellowship' },
+    { slug: 'legal-media-internship' },
+  ];
 }
 
 export async function generateMetadata({ params }: Props) {
-  const internship = INITIAL_INTERNSHIPS.find((i) => i.slug === params.slug);
+  const internship = getInternship(params.slug);
   if (!internship) return { title: 'Internship Not Found' };
 
   return {
     title: `${internship.title} - ${internship.organization}`,
-    description: `Apply for ${internship.title} at ${internship.organization}. Stipend: ${internship.stipend}. Location: ${internship.location}. Verified via LexMinds.`,
+    description: `Apply for ${internship.title} at ${internship.organization}. Duration: ${internship.duration}. Mode: ${internship.mode}. Registration Fee: ₹${internship.applicationFee}. Verified via LexMinds.`,
     alternates: {
       canonical: `https://lexminds.in/internships/${internship.slug}`,
     },
@@ -53,7 +67,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default function InternshipDetailPage({ params }: Props) {
-  const internship = INITIAL_INTERNSHIPS.find((i) => i.slug === params.slug);
+  const internship = getInternship(params.slug);
 
   if (!internship) {
     notFound();

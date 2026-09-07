@@ -41,7 +41,7 @@ export default function InternshipsPage() {
             Internship Programmes
           </h1>
           <p className="text-base text-ink-600 dark:text-ink-300 max-w-2xl leading-relaxed font-normal">
-            Lex Minds organises student-focused programmes designed to provide practical learning experiences in legal research, article drafting, case analysis, and legal media.
+            Lex Minds organises student-focused programmes designed to provide practical learning experiences in law, legal content creation, digital media, and research.
           </p>
         </div>
       </div>
@@ -64,7 +64,7 @@ export default function InternshipsPage() {
       <div className="space-y-8">
         <div className="flex items-center justify-between text-xs font-mono text-ink-500 dark:text-ink-400 border-b border-ink-900/10 dark:border-ink-800 pb-2">
           <span>{filteredInternships.length} Opportunity Available</span>
-          <span>Merit-Based Student Evaluation</span>
+          <span className="text-emerald-600 dark:text-emerald-400 font-semibold">September 2026 Batch Registrations Open</span>
         </div>
 
         {filteredInternships.length > 0 ? (
@@ -82,9 +82,13 @@ export default function InternshipsPage() {
                   <span className="text-ink-700 dark:text-ink-300">
                     {item.mode} &bull; {item.duration}
                   </span>
+                  <span className="text-ink-400">&bull;</span>
+                  <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800 text-[10px]">
+                    September 2026
+                  </span>
                 </div>
-                <span className="text-coral font-bold">
-                  Deadline: {item.deadline}
+                <span className="text-coral font-bold text-xs uppercase tracking-wider">
+                  Limited Registrations Available
                 </span>
               </div>
 
@@ -93,7 +97,7 @@ export default function InternshipsPage() {
                   {item.title}
                 </h2>
                 <p className="text-sm font-mono text-coral mt-1.5 uppercase tracking-wider font-semibold">
-                  {item.organization} &bull; {item.location}
+                  {item.organization} &bull; Mode: {item.mode}
                 </p>
               </div>
 
@@ -101,13 +105,13 @@ export default function InternshipsPage() {
                 {item.description}
               </p>
 
-              {/* Responsibilities Preview */}
+              {/* What You'll Learn Preview */}
               <div className="space-y-3 pt-2">
                 <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-900 dark:text-ink-100">
-                  Key Research Deliverables:
+                  What You’ll Learn:
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-ink-700 dark:text-ink-300">
-                  {item.responsibilities.slice(0, 4).map((resp, idx) => (
+                  {item.responsibilities.slice(0, 5).map((resp, idx) => (
                     <div key={idx} className="flex items-start space-x-2.5">
                       <CheckCircle2 className="w-4 h-4 text-royal-500 dark:text-royal-400 shrink-0 mt-0.5" />
                       <span className="leading-snug">{resp}</span>
@@ -120,19 +124,19 @@ export default function InternshipsPage() {
               <div className="pt-6 border-t border-ink-900/10 dark:border-ink-800 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
                 <div className="flex flex-wrap items-center gap-8 text-xs font-mono text-ink-700 dark:text-ink-300">
                   <div>
-                    <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Cohort Seats</span>
-                    <strong className="text-ink-950 dark:text-ink-50 font-semibold text-sm">{item.seats} Fellows</strong>
+                    <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Batch / Cohort</span>
+                    <strong className="text-ink-950 dark:text-ink-50 font-semibold text-sm">September 2026</strong>
                   </div>
                   <div>
-                    <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Evaluation Fee</span>
+                    <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Registration Fee</span>
                     <div className="flex items-baseline space-x-1.5">
                       <strong className="text-ink-950 dark:text-ink-50 font-semibold text-sm">₹{item.applicationFee}.00</strong>
                       <span className="text-xs line-through text-ink-400">₹299</span>
                     </div>
                   </div>
                   <div>
-                    <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Nature / Stipend</span>
-                    <strong className="text-royal-600 dark:text-royal-400 font-bold text-sm">{item.stipend}</strong>
+                    <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Benefits</span>
+                    <strong className="text-royal-600 dark:text-royal-400 font-bold text-sm">Certificate &amp; Mentorship</strong>
                   </div>
                 </div>
 
@@ -140,7 +144,7 @@ export default function InternshipsPage() {
                   href={`/internships/${item.slug}`}
                   className="px-6 py-3.5 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center self-start sm:self-auto flex items-center space-x-2"
                 >
-                  <span>Examine Docket &amp; Apply</span>
+                  <span>View Details &amp; Register</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>

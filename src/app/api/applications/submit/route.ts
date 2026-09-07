@@ -51,10 +51,10 @@ export async function POST(req: Request) {
         applicantName: fullName.trim(),
         phone: phone.trim(),
         institution: collegeName.trim(),
-        yearOfStudy: yearOfStudy || '4th Year (5-Year B.A. LL.B)',
+        yearOfStudy: yearOfStudy || 'Law Student / Legal Media',
         academicScore: academicScore || '',
         sop: sop.trim(),
-        internshipKey: internshipKey || 'legal-research-fellowship',
+        internshipKey: internshipKey || 'september-two-week-legal-media-internship',
       },
     });
 
