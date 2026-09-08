@@ -34,8 +34,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Institution/college name is required.' }, { status: 400 });
     }
 
-    if (!sop || typeof sop !== 'string' || sop.trim().length < 30) {
-      return NextResponse.json({ error: 'Statement of purpose must be at least 30 characters.' }, { status: 400 });
+    if (!sop || typeof sop !== 'string' || sop.trim().length < 20) {
+      return NextResponse.json({ error: 'Statement of purpose must be at least 20 characters.' }, { status: 400 });
     }
 
     if (!declaration) {

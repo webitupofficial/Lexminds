@@ -217,19 +217,19 @@ export default function PaymentClient() {
     const isInternship = session.productKey === 'internship_enrollment';
 
     return (
-      <div className="max-w-2xl mx-auto my-12 p-8 sm:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-8 animate-editorial-reveal">
+      <div className="max-w-2xl mx-auto my-8 sm:my-12 p-5 sm:p-8 md:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-6 sm:space-y-8 animate-editorial-reveal">
         <div className="text-center space-y-3">
-          <div className="w-14 h-14 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto rounded-sm">
-            <CheckCircle2 className="w-7 h-7" />
+          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-500/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto rounded-sm">
+            <CheckCircle2 className="w-6 h-6 sm:w-7 sm:h-7" />
           </div>
           <div className="inline-flex items-center space-x-2 px-3 py-1 bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-mono font-bold uppercase tracking-wider border border-emerald-500/30">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Payment Verified &bull; Record Active</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50">
             {isInternship ? 'Enrollment Record Confirmed' : 'Manuscript Submitted For Review'}
           </h1>
-          <p className="text-sm text-ink-600 dark:text-ink-300 max-w-lg mx-auto font-normal">
+          <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 max-w-lg mx-auto font-normal">
             Your transaction has been securely reconciled with our central database.
           </p>
         </div>
@@ -311,7 +311,7 @@ export default function PaymentClient() {
         ]}
       />
 
-      <div className="p-8 sm:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-8">
+      <div className="p-5 sm:p-8 md:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-6 sm:space-y-8">
         
         {/* Header */}
         <div className="space-y-3 pb-6 border-b border-ink-900/15 dark:border-ink-700">
@@ -320,17 +320,17 @@ export default function PaymentClient() {
             <span>Secure SSL Payment Checkout</span>
           </div>
 
-          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
             Complete Submission Fee
           </h1>
 
-          <p className="text-sm text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+          <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
             Your application record has been logged with <span className="font-mono font-semibold text-royal-600 dark:text-royal-400">payment pending</span> status. Please complete the administrative evaluation fee to finalize your docket.
           </p>
         </div>
 
         {/* Order Details Breakdown */}
-        <div className="p-6 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-4 rounded-sm">
+        <div className="p-4 sm:p-6 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-4 rounded-sm">
           <div className="flex justify-between items-start">
             <div className="space-y-0.5">
               <span className="text-xs text-ink-500 dark:text-ink-400 font-mono uppercase font-semibold">
