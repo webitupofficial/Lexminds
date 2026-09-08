@@ -2,7 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { Search, X, User, ExternalLink } from 'lucide-react';
+import Link from 'next/link';
+import { Search, X, User, ExternalLink, GraduationCap, Sparkles } from 'lucide-react';
 import { Mentor, MENTORS_DATA } from '@/lib/mentors-data';
 
 interface MentorsClientProps {
@@ -20,13 +21,14 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
         mentor.name.toLowerCase().includes(query) ||
         mentor.designation.toLowerCase().includes(query) ||
         (mentor.organization && mentor.organization.toLowerCase().includes(query)) ||
+        (mentor.qualifications && mentor.qualifications.toLowerCase().includes(query)) ||
         mentor.expertise.some((e) => e.toLowerCase().includes(query))
       );
     });
   }, [initialMentors, searchQuery]);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       {/* Search Bar */}
       <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center justify-between">
         <div className="relative flex-1 max-w-md">
@@ -58,7 +60,7 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
 
       {/* Clean Cards Grid */}
       {filteredMentors.length === 0 ? (
-        <div className="p-12 text-center rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900/15 dark:border-ink-700 space-y-2">
+        <div className="p-12 text-center rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900/15 dark:border-ink-700 space-y-2 shadow-brutal">
           <p className="text-sm font-medium text-ink-900 dark:text-ink-100">
             No mentors found matching &ldquo;{searchQuery}&rdquo;
           </p>
@@ -70,25 +72,25 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {filteredMentors.map((mentor) => (
             <div
               key={mentor.id}
-              className="p-6 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal flex flex-col justify-between space-y-5 transition-all duration-200 hover:-translate-y-0.5"
+              className="p-6 sm:p-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal flex flex-col justify-between space-y-6 transition-all duration-200 hover:-translate-y-0.5"
             >
               <div className="space-y-4">
                 {/* Photo & Identity Header */}
-                <div className="flex items-start space-x-4">
-                  {/* Photo / Avatar Placeholder */}
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-sm bg-paper-200 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 shrink-0 overflow-hidden flex items-center justify-center relative">
+                <div className="flex items-start space-x-5">
+                  {/* Photo / Avatar */}
+                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-sm bg-paper-200 dark:bg-ink-850 border border-ink-900/20 dark:border-ink-700 shrink-0 overflow-hidden flex items-center justify-center relative shadow-sm">
                     {mentor.imageUrl ? (
                       <Image
                         src={mentor.imageUrl}
                         alt={mentor.name}
-                        width={80}
-                        height={80}
+                        width={96}
+                        height={96}
                         unoptimized
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover object-top"
                       />
                     ) : (
                       <div className="flex flex-col items-center justify-center text-ink-400 dark:text-ink-600">
@@ -98,9 +100,9 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
                   </div>
 
                   {/* Name, Designation & Organization */}
-                  <div className="space-y-1 flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-base sm:text-lg font-serif font-bold text-ink-950 dark:text-ink-50 leading-snug truncate">
+                  <div className="space-y-1.5 flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="text-lg sm:text-xl font-serif font-bold text-ink-950 dark:text-ink-50 leading-snug">
                         {mentor.name}
                       </h3>
                       {mentor.linkedinUrl && (
@@ -108,37 +110,46 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
                           href={mentor.linkedinUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-ink-400 hover:text-royal-600 dark:hover:text-royal-400 transition-colors ml-1 shrink-0"
+                          className="text-ink-400 hover:text-royal-600 dark:hover:text-royal-400 transition-colors shrink-0 p-1"
                           title="LinkedIn Profile"
                         >
-                          <ExternalLink className="w-3.5 h-3.5" />
+                          <ExternalLink className="w-4 h-4" />
                         </a>
                       )}
                     </div>
 
-                    <p className="text-xs font-mono font-medium text-royal-600 dark:text-royal-400">
+                    <p className="text-xs font-mono font-bold text-royal-600 dark:text-royal-400 uppercase tracking-wider">
                       {mentor.designation}
                     </p>
+
                     {mentor.organization && (
-                      <p className="text-xs text-ink-500 dark:text-ink-400 leading-tight truncate">
+                      <p className="text-xs text-ink-600 dark:text-ink-300 font-medium leading-tight">
                         {mentor.organization}
                       </p>
+                    )}
+
+                    {/* Academic Credentials & Qualifications Badge */}
+                    {mentor.qualifications && (
+                      <div className="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-sm bg-amber-50 dark:bg-amber-950/40 border border-amber-300/80 dark:border-amber-800/60 text-amber-900 dark:text-amber-200 text-[11px] font-mono font-semibold max-w-full">
+                        <GraduationCap className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                        <span className="truncate">{mentor.qualifications}</span>
+                      </div>
                     )}
                   </div>
                 </div>
 
-                {/* Bio (if provided) */}
+                {/* Detailed Bio */}
                 {mentor.bio && (
-                  <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed line-clamp-3">
+                  <p className="text-xs sm:text-sm text-ink-700 dark:text-ink-300 leading-relaxed font-normal pt-1">
                     {mentor.bio}
                   </p>
                 )}
               </div>
 
               {/* Expertise in Specific Topics */}
-              <div className="pt-3 border-t border-ink-900/10 dark:border-ink-800 space-y-2">
+              <div className="pt-4 border-t border-ink-900/10 dark:border-ink-800 space-y-2">
                 <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-500 dark:text-ink-400">
-                  Expertise
+                  Areas of Practice &amp; Mentorship
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {mentor.expertise.map((topic, i) => (
@@ -155,6 +166,28 @@ export default function MentorsClient({ initialMentors = MENTORS_DATA }: Mentors
           ))}
         </div>
       )}
+
+      {/* Institutional Advisory Invitation Banner */}
+      <div className="p-6 sm:p-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+        <div className="space-y-1.5 max-w-2xl">
+          <div className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold uppercase tracking-wider text-royal-600 dark:text-royal-400">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Faculty &amp; Practice Outreach</span>
+          </div>
+          <h4 className="font-serif font-bold text-base sm:text-lg text-ink-950 dark:text-ink-50">
+            Join the Lex Minds Mentorship &amp; Advisory Council
+          </h4>
+          <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed">
+            Are you a practicing advocate, legal academic, or industry specialist passionate about guiding law students through analytical research, legal drafting, and courtroom jurisprudence? Connect with our Academic Desk.
+          </p>
+        </div>
+        <Link
+          href="/contact"
+          className="px-5 py-3 btn-brand-primary text-xs font-semibold uppercase tracking-wider shrink-0 self-start sm:self-auto"
+        >
+          Express Interest
+        </Link>
+      </div>
     </div>
   );
 }

@@ -59,6 +59,8 @@ export default function MentorsPage() {
             }
           : undefined,
         description: mentor.bio,
+        image: mentor.imageUrl ? `https://lexminds.in${mentor.imageUrl}` : undefined,
+        sameAs: mentor.linkedinUrl ? [mentor.linkedinUrl] : undefined,
       },
     })),
   };

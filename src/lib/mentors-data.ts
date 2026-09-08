@@ -3,6 +3,7 @@ export interface Mentor {
   name: string;
   designation: string;
   organization?: string;
+  qualifications?: string;
   expertise: string[];
   imageUrl?: string;
   bio?: string;
@@ -11,35 +12,36 @@ export interface Mentor {
 
 export const MENTORS_DATA: Mentor[] = [
   {
-    id: 'mentor-1',
-    name: 'Adv. Mentor Name',
-    designation: 'Senior Advocate / Legal Counsel',
-    organization: 'Supreme Court & High Courts',
-    expertise: ['Constitutional Law', 'Appellate Litigation', 'Public Law'],
-    imageUrl: '', // Add mentor photo URL here
+    id: 'mentor-trisha-duggal',
+    name: 'Adv. Trisha Duggal',
+    designation: 'Advocate & Legal Educator',
+    organization: 'Punjab & Haryana High Court | Kanoonshala | Ostello',
+    qualifications: 'LL.M., LL.B., B.Sc. (Med) • UGC-NET (Law) Qualified',
+    expertise: [
+      'High Court Litigation',
+      'Legal Research & Drafting',
+      'Academic Writing & Publications',
+      'Case Handling & Court Advocacy',
+      'Legal Education & Mentorship',
+    ],
+    imageUrl: '/mentors/adv-trisha-duggal.jpeg',
+    bio: 'Advocate practicing before the Punjab and Haryana High Court with extensive experience in litigation, case handling, and academic research. UGC-NET (Law) qualified scholar and legal educator associated with Kanoonshala and Ostello, dedicated to mentoring law students in practical litigation and legal writing.',
   },
   {
-    id: 'mentor-2',
-    name: 'Mentor Name',
-    designation: 'Partner / Corporate Counsel',
-    organization: 'Corporate & Commercial Practice',
-    expertise: ['Corporate Law & M&A', 'Regulatory Compliance', 'Commercial Arbitration'],
-    imageUrl: '',
-  },
-  {
-    id: 'mentor-3',
-    name: 'Dr. Mentor Name',
-    designation: 'Professor & Academic Scholar',
-    organization: 'Faculty of Law',
-    expertise: ['Criminal Jurisprudence', 'Procedural Law', 'Legal Research & Writing'],
-    imageUrl: '',
-  },
-  {
-    id: 'mentor-4',
-    name: 'Mentor Name',
-    designation: 'Technology & Privacy Counsel',
-    organization: 'IP & Data Governance Practice',
-    expertise: ['Data Privacy (DPDP Act)', 'Intellectual Property', 'Cyber Jurisprudence'],
-    imageUrl: '',
+    id: 'mentor-drishti-naqab',
+    name: 'Adv. Drishti Naqab',
+    designation: 'Legal Associate',
+    organization: 'Law Firm Practice (Mohali, Punjab)',
+    qualifications: 'B.A. LL.B, LL.M. (Criminology)',
+    expertise: [
+      'Criminal Jurisprudence',
+      'Criminology',
+      'Legal Research & Writing',
+      'Procedural Drafting',
+      'Case Analysis',
+    ],
+    imageUrl: '/mentors/adv-drishti-naqab.jpeg',
+    bio: 'Legal Associate based in Mohali, Punjab with advanced academic credentials in Criminal Jurisprudence and Criminology. Specializes in procedural drafting, case handling, and guiding students in structured legal analysis and practical research.',
+    linkedinUrl: 'https://www.linkedin.com/in/drishti-naqab-87a48a289',
   },
 ];
