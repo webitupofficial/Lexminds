@@ -53,6 +53,7 @@ export interface Associate {
   degree?: string;
   skills: string[];
   imageUrl?: string;
+  bio?: string;
 }
 
 export const ASSOCIATES_DATA: Associate[] = [
@@ -62,6 +63,7 @@ export const ASSOCIATES_DATA: Associate[] = [
     role: 'Founder',
     skills: ['Leadership', 'Entrepreneurship', 'Legal', 'Research', 'Project Management', 'Team Management'],
     imageUrl: '/associates/Aditya.jpeg',
+    bio: 'Spearheading Lex Minds with a mission to bridge courtroom practice with academic research, empowering law students across India through practical drafting, publication fellowships, and transformative legal mentorship.',
   },
   {
     id: 'assoc-sohani-sharma',
@@ -94,6 +96,13 @@ export const ASSOCIATES_DATA: Associate[] = [
     degree: 'B.A. LL.B',
     skills: ['Tech', 'Drafting'],
     imageUrl: '/associates/Prem.jpg',
+  },
+  {
+    id: 'assoc-nayeem-ahmed',
+    name: 'Nayeem Ahmed',
+    role: 'Associate',
+    degree: 'B.A. LL.B',
+    skills: ['Public Speaking', 'Research'],
   },
 ];
 

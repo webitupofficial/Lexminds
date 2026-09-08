@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Search, X, User, ExternalLink, GraduationCap, Sparkles, Scale, Award, Briefcase } from 'lucide-react';
+import { Search, X, User, ExternalLink, GraduationCap, Sparkles, Scale, Award, Briefcase, Crown } from 'lucide-react';
 import { Mentor, MENTORS_DATA, Associate, ASSOCIATES_DATA } from '@/lib/mentors-data';
 
 interface MentorsClientProps {
@@ -43,6 +43,14 @@ export default function MentorsClient({
       );
     });
   }, [initialAssociates, searchQuery]);
+
+  const founder = useMemo(() => {
+    return filteredAssociates.find((a) => a.role.toLowerCase() === 'founder');
+  }, [filteredAssociates]);
+
+  const teamAssociates = useMemo(() => {
+    return filteredAssociates.filter((a) => a.role.toLowerCase() !== 'founder');
+  }, [filteredAssociates]);
 
   const totalResults = filteredMentors.length + filteredAssociates.length;
 
@@ -205,129 +213,201 @@ export default function MentorsClient({
             </div>
           )}
 
-          {/* SECTION 2: ASSOCIATES & CORE TEAM (GLASS EFFECT + HOVER) */}
+          {/* SECTION 2: ASSOCIATES & CORE TEAM (FOUNDER SPOTLIGHT + ASSOCIATES GRID) */}
           {filteredAssociates.length > 0 && (
-            <div className="space-y-6 pt-6">
+            <div className="space-y-8 pt-8 border-t border-ink-900/10 dark:border-ink-800">
               <div className="flex items-center justify-between pb-3 border-b border-ink-900/10 dark:border-ink-800">
                 <div className="space-y-1">
                   <div className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold uppercase tracking-wider text-royal-600 dark:text-royal-400">
                     <Briefcase className="w-3.5 h-3.5" />
-                    <span>Research &amp; Operations</span>
+                    <span>Research, Leadership &amp; Operations</span>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-serif font-bold text-ink-950 dark:text-ink-50">
                     Associates &amp; Core Team
                   </h2>
                 </div>
                 <span className="text-xs font-mono text-ink-500 dark:text-ink-400">
-                  {filteredAssociates.length} {filteredAssociates.length === 1 ? 'Associate' : 'Associates'}
+                  {filteredAssociates.length} {filteredAssociates.length === 1 ? 'Member' : 'Members'}
                 </span>
               </div>
 
-              {/* Glass Cards Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredAssociates.map((assoc) => {
-                  const isFounder = assoc.role.toLowerCase() === 'founder';
-                  
-                  // Compute initials for sleek monogram badge
-                  const initials = assoc.name
-                    .split(' ')
-                    .map((n) => n[0])
-                    .join('')
-                    .toUpperCase()
-                    .slice(0, 2);
+              {/* FOUNDER SPOTLIGHT CARD */}
+              {founder && (
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
+                    <Crown className="w-4 h-4 text-amber-500" />
+                    <span>Leadership &amp; Founder Spotlight</span>
+                  </div>
 
-                  return (
-                    <div
-                      key={assoc.id}
-                      className={`relative group rounded-md p-6 flex flex-col justify-between space-y-5 transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-xl ${
-                        isFounder
-                          ? 'bg-gradient-to-br from-amber-50/80 via-white/70 to-royal-50/60 dark:from-amber-950/30 dark:via-ink-900/70 dark:to-royal-950/30 border-2 border-amber-400/50 dark:border-amber-500/40 shadow-[0_8px_30px_rgba(217,119,6,0.12)] hover:shadow-[0_14px_38px_rgba(217,119,6,0.22)] sm:col-span-2 lg:col-span-3'
-                          : 'bg-white/70 dark:bg-ink-900/70 border border-white/80 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.35)] hover:shadow-[0_12px_36px_rgba(30,58,138,0.14)] hover:border-royal-400/50 dark:hover:border-royal-400/40'
-                      }`}
-                    >
-                      <div className="space-y-4">
-                        {/* Header: Monogram Avatar + Name + Badges */}
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center space-x-3.5 min-w-0">
-                            <div
-                              className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden shrink-0 shadow-md border-2 transition-transform duration-300 group-hover:scale-105 flex items-center justify-center relative ${
-                                isFounder
-                                  ? 'border-amber-400 dark:border-amber-500 shadow-amber-500/20'
-                                  : 'border-white/80 dark:border-white/20'
-                              }`}
-                            >
-                              {assoc.imageUrl ? (
-                                <Image
-                                  src={assoc.imageUrl}
-                                  alt={assoc.name}
-                                  width={64}
-                                  height={64}
-                                  unoptimized
-                                  className="w-full h-full object-cover object-top"
-                                />
-                              ) : (
-                                <div
-                                  className={`w-full h-full flex items-center justify-center font-serif font-bold text-sm ${
-                                    isFounder
-                                      ? 'bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950'
-                                      : 'bg-royal-50 dark:bg-royal-950/60 text-royal-700 dark:text-royal-300'
-                                  }`}
-                                >
-                                  {initials}
-                                </div>
-                              )}
-                            </div>
-                            <div className="min-w-0">
-                              <h3 className="font-serif font-bold text-base sm:text-lg text-ink-950 dark:text-ink-50 truncate leading-snug">
-                                {assoc.name}
-                              </h3>
-                              <div className="flex items-center space-x-2 mt-0.5">
-                                {isFounder ? (
-                                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-400/50">
-                                    ★ Founder
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-royal-50 dark:bg-royal-950/70 text-royal-700 dark:text-royal-300 border border-royal-200 dark:border-royal-800">
-                                    Associate
-                                  </span>
-                                )}
+                  <div className="relative group overflow-hidden rounded-2xl border-2 border-amber-400/50 dark:border-amber-500/30 bg-gradient-to-br from-amber-50/95 via-white/85 to-amber-100/40 dark:from-ink-900/90 dark:via-ink-950/95 dark:to-amber-950/30 backdrop-blur-2xl shadow-[0_12px_45px_rgba(217,119,6,0.15)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)] p-6 sm:p-8 md:p-10 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(217,119,6,0.25)] hover:border-amber-400/80">
+                    {/* Ambient backlight accents */}
+                    <div className="absolute -top-24 -right-24 w-80 h-80 bg-gradient-to-br from-amber-400/25 via-amber-300/10 to-transparent dark:from-amber-500/20 dark:via-amber-400/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
+                    <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gradient-to-tr from-royal-600/15 via-royal-500/10 to-transparent dark:from-royal-600/20 dark:via-royal-700/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
 
-                                {assoc.degree && (
-                                  <span className="inline-flex items-center space-x-1 text-[11px] font-mono text-ink-600 dark:text-ink-400 font-medium">
-                                    <GraduationCap className="w-3 h-3 text-royal-500 shrink-0" />
-                                    <span>{assoc.degree}</span>
-                                  </span>
-                                )}
+                    <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 md:gap-10">
+                      {/* Portrait Frame with Crown Insignia */}
+                      <div className="relative group shrink-0">
+                        <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-2xl p-1.5 bg-gradient-to-tr from-amber-400 via-amber-200 to-royal-600 dark:from-amber-500 dark:via-amber-300 dark:to-royal-400 shadow-2xl ring-4 ring-amber-400/25 dark:ring-amber-500/25 transition-transform duration-500 group-hover:scale-[1.02]">
+                          <div className="w-full h-full rounded-xl overflow-hidden relative bg-ink-900 shadow-inner">
+                            {founder.imageUrl ? (
+                              <Image
+                                src={founder.imageUrl}
+                                alt={founder.name}
+                                width={200}
+                                height={200}
+                                unoptimized
+                                className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center font-serif font-bold text-3xl bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950">
+                                AS
                               </div>
-                            </div>
+                            )}
                           </div>
                         </div>
+                        {/* Insignia crown badge on photo */}
+                        <div
+                          className="absolute -bottom-2 -right-2 bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950 p-2 rounded-xl shadow-lg border-2 border-white dark:border-ink-900 flex items-center justify-center"
+                          title="Founder of Lex Minds"
+                        >
+                          <Crown className="w-4 h-4 fill-ink-950 text-ink-950" />
+                        </div>
+                      </div>
 
-                        {/* Skills ledger */}
-                        <div className="space-y-2 pt-2 border-t border-ink-900/10 dark:border-ink-800">
-                          <span className="text-[10px] font-mono uppercase tracking-wider text-ink-500 dark:text-ink-400 font-semibold block">
-                            Core Competencies &amp; Skills
-                          </span>
-                          <div className="flex flex-wrap gap-1.5">
-                            {assoc.skills.map((skill, sIdx) => (
+                      {/* Founder Info & Leadership Vision */}
+                      <div className="flex-1 text-center md:text-left space-y-4">
+                        <div className="space-y-2">
+                          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider uppercase bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700/80 shadow-sm">
+                            <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                            <span>Founder &bull; Lex Minds</span>
+                          </div>
+
+                          <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-none">
+                            {founder.name}
+                          </h3>
+
+                          <p className="text-xs sm:text-sm font-mono font-semibold text-royal-700 dark:text-royal-300 tracking-wide uppercase">
+                            Founder &bull; Legal Research &amp; Platform Director
+                          </p>
+                        </div>
+
+                        {/* Vision / Bio Quote */}
+                        {founder.bio && (
+                          <p className="text-xs sm:text-sm md:text-base text-ink-700 dark:text-ink-200 leading-relaxed max-w-3xl font-normal pt-1 italic">
+                            &ldquo;{founder.bio}&rdquo;
+                          </p>
+                        )}
+
+                        {/* Core Executive Competencies */}
+                        <div className="pt-3 border-t border-amber-400/30 dark:border-amber-500/20 space-y-2.5">
+                          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-600 dark:text-ink-400">
+                            Leadership &amp; Executive Competencies
+                          </div>
+                          <div className="flex flex-wrap justify-center md:justify-start gap-2">
+                            {founder.skills.map((skill, sIdx) => (
                               <span
                                 key={sIdx}
-                                className={`px-2.5 py-1 text-xs font-mono rounded-md backdrop-blur-sm transition-colors ${
-                                  isFounder
-                                    ? 'bg-amber-100/60 dark:bg-amber-950/40 border border-amber-300/60 dark:border-amber-700/50 text-amber-950 dark:text-amber-200 group-hover:border-amber-400'
-                                    : 'bg-paper-100/90 dark:bg-ink-800/80 border border-ink-900/10 dark:border-white/10 text-ink-800 dark:text-ink-200 group-hover:border-royal-500/40 group-hover:text-royal-700 dark:group-hover:text-royal-300'
-                                }`}
+                                className="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-white/90 dark:bg-ink-900/90 border border-amber-300/80 dark:border-amber-600/40 text-amber-950 dark:text-amber-200 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md"
                               >
-                                {skill}
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                                <span>{skill}</span>
                               </span>
                             ))}
                           </div>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                </div>
+              )}
+
+              {/* STUDENT ASSOCIATES DESK */}
+              {teamAssociates.length > 0 && (
+                <div className="space-y-4 pt-4">
+                  <div className="flex items-center justify-between">
+                    <div className="text-xs font-mono font-bold uppercase tracking-wider text-royal-600 dark:text-royal-400">
+                      <span>Research &amp; Drafting Associates</span>
+                    </div>
+                    <span className="text-xs font-mono text-ink-500 dark:text-ink-400">
+                      {teamAssociates.length} {teamAssociates.length === 1 ? 'Associate' : 'Associates'}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {teamAssociates.map((assoc) => {
+                      const initials = assoc.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2);
+
+                      return (
+                        <div
+                          key={assoc.id}
+                          className="relative group rounded-xl p-6 flex flex-col justify-between space-y-5 transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-xl bg-white/75 dark:bg-ink-900/75 border border-white/80 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.35)] hover:shadow-[0_14px_38px_rgba(30,58,138,0.14)] hover:border-royal-400/50 dark:hover:border-royal-400/40"
+                        >
+                          <div className="space-y-4">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="flex items-center space-x-3.5 min-w-0">
+                                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden shrink-0 shadow-md border-2 border-white/90 dark:border-white/20 transition-transform duration-300 group-hover:scale-105 flex items-center justify-center relative">
+                                  {assoc.imageUrl ? (
+                                    <Image
+                                      src={assoc.imageUrl}
+                                      alt={assoc.name}
+                                      width={64}
+                                      height={64}
+                                      unoptimized
+                                      className="w-full h-full object-cover object-top"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full flex items-center justify-center font-serif font-bold text-sm bg-gradient-to-br from-royal-600 to-royal-800 text-white shadow-inner">
+                                      {initials}
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="min-w-0">
+                                  <h3 className="font-serif font-bold text-base sm:text-lg text-ink-950 dark:text-ink-50 truncate leading-snug">
+                                    {assoc.name}
+                                  </h3>
+                                  <div className="flex items-center space-x-2 mt-1">
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-royal-50 dark:bg-royal-950/70 text-royal-700 dark:text-royal-300 border border-royal-200 dark:border-royal-800">
+                                      Associate
+                                    </span>
+                                    {assoc.degree && (
+                                      <span className="inline-flex items-center space-x-1 text-[11px] font-mono text-ink-600 dark:text-ink-400 font-medium">
+                                        <GraduationCap className="w-3 h-3 text-royal-500 shrink-0" />
+                                        <span>{assoc.degree}</span>
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Skills ledger */}
+                            <div className="space-y-2 pt-2 border-t border-ink-900/10 dark:border-ink-800">
+                              <span className="text-[10px] font-mono uppercase tracking-wider text-ink-500 dark:text-ink-400 font-semibold block">
+                                Core Skills &amp; Practice Areas
+                              </span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {assoc.skills.map((skill, sIdx) => (
+                                  <span
+                                    key={sIdx}
+                                    className="px-2.5 py-1 text-xs font-mono rounded-md backdrop-blur-sm transition-colors bg-paper-100/90 dark:bg-ink-800/80 border border-ink-900/10 dark:border-white/10 text-ink-800 dark:text-ink-200 group-hover:border-royal-500/40 group-hover:text-royal-700 dark:group-hover:text-royal-300"
+                                  >
+                                    {skill}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </>
