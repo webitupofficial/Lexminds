@@ -11,7 +11,7 @@ export const PRODUCT_CATALOG: Record<
   { name: string; amountPaise: number; currency: string }
 > = {
   internship_enrollment: {
-    name: 'Internship & Fellowship Application Evaluation Fee',
+    name: 'September Two-Week Legal Media Internship',
     amountPaise: 3900, // ₹39.00 (discounted from ₹299.00)
     currency: 'INR',
   },

@@ -201,8 +201,8 @@ export default function InternshipDetailClient({ internship }: Props) {
             <div className="space-y-1.5">
               <div className="flex items-center justify-between font-mono text-xs">
                 <span className="uppercase text-ink-500 dark:text-ink-400">Registration Fee</span>
-                <span className="text-[11px] text-royal-600 dark:text-royal-400 font-semibold">
-                  Inclusive of All Taxes
+                <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
+                  Verified Program
                 </span>
               </div>
               <div className="flex items-baseline space-x-2">

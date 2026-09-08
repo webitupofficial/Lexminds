@@ -295,6 +295,12 @@ export default function PaymentClient() {
 
   // Render Checkout Order View
   const feeRupees = (session.amountPaise / 100).toFixed(2);
+  const isInternship = session.productKey === 'internship_enrollment';
+  const displayProductName = isInternship
+    ? (session.productName && !session.productName.includes('Evaluation Fee')
+        ? session.productName
+        : 'September Two-Week Legal Media Internship')
+    : session.productName;
 
   return (
     <div className="max-w-2xl mx-auto my-10 sm:my-16 px-4 space-y-8">
@@ -327,13 +333,12 @@ export default function PaymentClient() {
         <div className="p-6 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-4 rounded-sm">
           <div className="flex justify-between items-start">
             <div className="space-y-0.5">
-              <span className="text-xs text-ink-500 dark:text-ink-400 font-mono uppercase">Designated Service</span>
-              <h3 className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
-                {session.productName}
-              </h3>
-              <span className="text-[11px] font-mono text-ink-500 block">
-                Inclusive of all applicable taxes
+              <span className="text-xs text-ink-500 dark:text-ink-400 font-mono uppercase font-semibold">
+                {isInternship ? 'Internship Programme' : 'Designated Service'}
               </span>
+              <h3 className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
+                {displayProductName}
+              </h3>
             </div>
             <div className="text-right">
               <div className="flex items-baseline space-x-2 justify-end">
@@ -369,27 +374,42 @@ export default function PaymentClient() {
           </div>
         </div>
 
-        {/* Non-Guarantee & Compliance Disclosure */}
-        <div className="p-4 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-500/30 text-xs text-amber-900 dark:text-amber-200 rounded-sm space-y-1.5 leading-relaxed font-normal">
-          <strong className="block font-serif text-sm text-ink-950 dark:text-ink-50">
-            Mandatory Evaluation Disclosure:
-          </strong>
-          <p>
-            Payment covers operational evaluation, academic intake triage, and peer-review coordination. <strong>Payment does not guarantee fellowship selection, article publication, or certificate issuance.</strong> Lex Minds is an educational platform and is not a law firm; we do not provide legal advice or representation.
+        {/* Pay Action Button (Prominently placed in lieu of evaluation disclosure) */}
+        <div className="space-y-3">
+          <button
+            onClick={handleLaunchPayment}
+            disabled={paying}
+            className="w-full py-4 px-6 btn-brand-primary text-sm uppercase font-semibold tracking-wider flex items-center justify-center space-x-2 disabled:opacity-50 shadow-md hover:shadow-lg transition-all cursor-pointer"
+          >
+            {paying ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Processing Payment...</span>
+              </>
+            ) : (
+              <>
+                <CreditCard className="w-5 h-5" />
+                <span>Pay ₹{feeRupees} via Razorpay</span>
+              </>
+            )}
+          </button>
+
+          <p className="text-xs font-mono text-center text-ink-500 dark:text-ink-400">
+            Secure checkout &bull; Instant reconciliation with docket {session.referenceId}
           </p>
         </div>
 
         {/* Security Guarantees & Policy Links */}
-        <div className="space-y-2 text-xs text-ink-500 dark:text-ink-400 font-mono">
+        <div className="space-y-2.5 text-xs text-ink-500 dark:text-ink-400 font-mono pt-2 border-t border-ink-900/10 dark:border-ink-800">
           <div className="flex items-center space-x-2">
-            <ShieldCheck className="w-4 h-4 text-royal-500 shrink-0" />
-            <span>Encrypted checkout processed directly via Razorpay. Card/UPI credentials are never stored on Lex Minds servers.</span>
+            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>Encrypted 256-bit SSL checkout processed directly via Razorpay. UPI, Cards &amp; NetBanking supported.</span>
           </div>
           <div className="flex items-center space-x-2">
             <Lock className="w-4 h-4 text-royal-500 shrink-0" />
-            <span>This payment session link is valid for 30 minutes from form submission.</span>
+            <span>Card/UPI credentials are never stored on Lex Minds servers. Session valid for 30 minutes.</span>
           </div>
-          <div className="pt-2 border-t border-ink-900/10 dark:border-ink-800 text-[11px] text-ink-600 dark:text-ink-400">
+          <div className="pt-2 text-[11px] text-ink-600 dark:text-ink-400">
             By proceeding with payment, you acknowledge that you have read and agree to our{' '}
             <Link href="/terms" className="text-royal-600 dark:text-royal-400 underline font-bold" target="_blank">
               Terms &amp; Conditions
@@ -401,31 +421,6 @@ export default function PaymentClient() {
               Cancellation &amp; Refund Policy
             </Link>.
           </div>
-        </div>
-
-        {/* Action Button */}
-        <div className="pt-2 space-y-3">
-          <button
-            onClick={handleLaunchPayment}
-            disabled={paying}
-            className="w-full py-4 px-6 btn-brand-primary text-xs uppercase font-semibold tracking-wider flex items-center justify-center space-x-2 disabled:opacity-50"
-          >
-            {paying ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Processing Payment...</span>
-              </>
-            ) : (
-              <>
-                <CreditCard className="w-4 h-4" />
-                <span>Pay ₹{feeRupees} via Razorpay</span>
-              </>
-            )}
-          </button>
-
-          <p className="text-xs font-mono text-center text-ink-500 dark:text-ink-400">
-            Reconciles submission with docket {session.referenceId}.
-          </p>
         </div>
 
       </div>

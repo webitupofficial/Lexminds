@@ -354,8 +354,7 @@ export default function TermsPage() {
               <div className="text-xs font-mono font-bold uppercase text-royal-600 dark:text-royal-400">Paid Product 01</div>
               <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm">Internship / Fellowship Application Evaluation Fee</h4>
               <div className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
-                ₹39.00 INR <span className="text-xs line-through text-ink-400 font-normal">₹299.00</span>{' '}
-                <span className="text-[11px] font-mono text-ink-500 font-normal">(Inclusive of all applicable taxes)</span>
+                ₹39.00 INR <span className="text-xs line-through text-ink-400 font-normal">₹299.00</span>
               </div>
               <p className="text-xs text-ink-600 dark:text-ink-400">
                 Covers administrative intake, academic eligibility screening, Statement of Purpose (SOP) evaluation, and docket creation.
@@ -366,8 +365,7 @@ export default function TermsPage() {
               <div className="text-xs font-mono font-bold uppercase text-royal-600 dark:text-royal-400">Paid Product 02</div>
               <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm">Article Manuscript Editorial Evaluation Fee</h4>
               <div className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
-                ₹99.00 INR <span className="text-xs line-through text-ink-400 font-normal">₹399.00</span>{' '}
-                <span className="text-[11px] font-mono text-ink-500 font-normal">(Inclusive of all applicable taxes)</span>
+                ₹99.00 INR <span className="text-xs line-through text-ink-400 font-normal">₹399.00</span>
               </div>
               <p className="text-xs text-ink-600 dark:text-ink-400">
                 Covers intake screening, originality/anti-plagiarism screening, peer-review coordination, and editorial formatting review.

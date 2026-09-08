@@ -485,9 +485,6 @@ export default function PublishClient() {
                 <span className="text-xs line-through text-ink-400 ml-1.5">₹399.00</span>
               </div>
             </div>
-            <div className="text-[10px] text-ink-400 text-right">
-              Inclusive of all applicable taxes
-            </div>
           </div>
         </div>
 
