@@ -14,23 +14,39 @@ import {
 const projectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'lex-minds';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '',
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyDummyKeyForBuildPrerender12345',
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || `${projectId}.firebaseapp.com`,
   projectId: projectId,
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || `${projectId}.appspot.com`,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '',
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '',
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || '123456789012',
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || '1:123456789012:web:abcdef123456',
 };
 
-// Singleton Firebase App instance
+// Singleton Firebase App instance with safe initialization for SSR/SSG
 let app: FirebaseApp;
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApp();
+try {
+  if (!getApps().length) {
+    app = initializeApp(firebaseConfig);
+  } else {
+    app = getApp();
+  }
+} catch {
+  const existingApps = getApps();
+  if (existingApps.length > 0) {
+    app = existingApps[0];
+  } else {
+    app = initializeApp(firebaseConfig, 'lexminds-app');
+  }
 }
 
-export const auth: Auth = getAuth(app);
+let authInstance: Auth;
+try {
+  authInstance = getAuth(app);
+} catch {
+  authInstance = {} as Auth;
+}
+
+export const auth: Auth = authInstance;
 export const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: 'select_account'
@@ -46,7 +62,8 @@ export interface GoogleAuthResult {
  * Triggers native Google Sign-in popup via Firebase Auth
  */
 export async function signInWithGoogle(): Promise<GoogleAuthResult> {
-  if (!process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+  const rawKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+  if (!rawKey || rawKey.includes('DummyKey')) {
     return {
       user: null,
       idToken: null,

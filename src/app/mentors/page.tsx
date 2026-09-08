@@ -3,20 +3,20 @@ import type { Metadata } from 'next';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
 import MentorsClient from './MentorsClient';
-import { MENTORS_DATA } from '@/lib/mentors-data';
+import { MENTORS_DATA, ASSOCIATES_DATA } from '@/lib/mentors-data';
 import { Users } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Mentors & Faculty Advisory Council | Lex Minds',
+  title: 'Mentors, Faculty & Editorial Associates | Lex Minds',
   description:
-    'Connect with experienced legal mentors, advocates, and academic scholars for guidance in legal research, analytical writing, and practical legal jurisprudence.',
+    'Meet the mentors, advisors, and student associates driving legal research, analytical writing, and practical legal jurisprudence at Lex Minds.',
   alternates: {
     canonical: 'https://lexminds.in/mentors',
   },
   openGraph: {
-    title: 'Mentors & Faculty Advisory Council | Lex Minds',
+    title: 'Mentors, Faculty & Editorial Associates | Lex Minds',
     description:
-      'Distinguished legal mentors and scholars providing guidance for law students and researchers.',
+      'Distinguished legal mentors, advisors, and student associates at Lex Minds.',
     url: 'https://lexminds.in/mentors',
     siteName: 'Lex Minds',
     images: [
@@ -30,9 +30,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'Mentors & Faculty Advisory Council | Lex Minds',
+    title: 'Mentors, Faculty & Editorial Associates | Lex Minds',
     description:
-      'Distinguished legal mentors and scholars providing guidance for law students and researchers.',
+      'Distinguished legal mentors, advisors, and student associates at Lex Minds.',
     images: ['/icon.svg'],
   },
 };
@@ -41,28 +41,40 @@ export default function MentorsPage() {
   const jsonLdData = {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'Lex Minds Mentors & Faculty Advisory Council',
-    description: 'Distinguished legal mentors and advisors at Lex Minds.',
+    name: 'Lex Minds Mentors, Faculty & Editorial Associates',
+    description: 'Distinguished legal mentors, advisors, and associates at Lex Minds.',
     url: 'https://lexminds.in/mentors',
-    numberOfItems: MENTORS_DATA.length,
-    itemListElement: MENTORS_DATA.map((mentor, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      item: {
-        '@type': 'Person',
-        name: mentor.name,
-        jobTitle: mentor.designation,
-        worksFor: mentor.organization
-          ? {
-              '@type': 'Organization',
-              name: mentor.organization,
-            }
-          : undefined,
-        description: mentor.bio,
-        image: mentor.imageUrl ? `https://lexminds.in${mentor.imageUrl}` : undefined,
-        sameAs: mentor.linkedinUrl ? [mentor.linkedinUrl] : undefined,
-      },
-    })),
+    numberOfItems: MENTORS_DATA.length + ASSOCIATES_DATA.length,
+    itemListElement: [
+      ...MENTORS_DATA.map((mentor, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        item: {
+          '@type': 'Person',
+          name: mentor.name,
+          jobTitle: mentor.designation,
+          worksFor: mentor.organization
+            ? {
+                '@type': 'Organization',
+                name: mentor.organization,
+              }
+            : undefined,
+          description: mentor.bio,
+          image: mentor.imageUrl ? `https://lexminds.in${mentor.imageUrl}` : undefined,
+          sameAs: mentor.linkedinUrl ? [mentor.linkedinUrl] : undefined,
+        },
+      })),
+      ...ASSOCIATES_DATA.map((assoc, index) => ({
+        '@type': 'ListItem',
+        position: MENTORS_DATA.length + index + 1,
+        item: {
+          '@type': 'Person',
+          name: assoc.name,
+          jobTitle: assoc.role,
+          description: `${assoc.role} at Lex Minds specializing in ${assoc.skills.join(', ')}`,
+        },
+      })),
+    ],
   };
 
   return (

@@ -45,3 +45,55 @@ export const MENTORS_DATA: Mentor[] = [
     linkedinUrl: 'https://www.linkedin.com/in/drishti-naqab-87a48a289',
   },
 ];
+
+export interface Associate {
+  id: string;
+  name: string;
+  role: string;
+  degree?: string;
+  skills: string[];
+  imageUrl?: string;
+}
+
+export const ASSOCIATES_DATA: Associate[] = [
+  {
+    id: 'assoc-aditya-sharma',
+    name: 'Aditya Sharma',
+    role: 'Founder',
+    skills: ['Leadership', 'Entrepreneurship', 'Legal', 'Research', 'Project Management', 'Team Management'],
+    imageUrl: '/associates/Aditya.jpeg',
+  },
+  {
+    id: 'assoc-sohani-sharma',
+    name: 'Sohani Sharma',
+    role: 'Associate',
+    degree: 'B.A. LL.B',
+    skills: ['Research', 'Drafting'],
+    imageUrl: '/associates/Sohani.jpeg',
+  },
+  {
+    id: 'assoc-nargis-parveen',
+    name: 'Nargis Parveen',
+    role: 'Associate',
+    degree: 'B.A. LL.B',
+    skills: ['Legal Writing'],
+    imageUrl: '/associates/Nargi.jpeg',
+  },
+  {
+    id: 'assoc-tanyia-bhagat',
+    name: 'Tanyia Bhagat',
+    role: 'Associate',
+    degree: 'B.A. LL.B',
+    skills: ['Legal Research'],
+    imageUrl: '/associates/Tanyia.jpeg',
+  },
+  {
+    id: 'assoc-prem-singh',
+    name: 'Prem Singh',
+    role: 'Associate',
+    degree: 'B.A. LL.B',
+    skills: ['Tech', 'Drafting'],
+    imageUrl: '/associates/Prem.jpg',
+  },
+];
+

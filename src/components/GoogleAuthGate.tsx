@@ -40,24 +40,32 @@ export default function GoogleAuthGate({
   const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        try {
-          const token = await user.getIdToken();
-          setCurrentToken(token);
-          if (onAuthStateChange) onAuthStateChange(user, token);
-        } catch (e) {
-          console.error('Failed to get user token:', e);
-        }
-      } else {
-        setCurrentToken(null);
-        if (onAuthStateChange) onAuthStateChange(null, null);
-      }
+    if (!auth || typeof onAuthStateChanged !== 'function') {
       setLoading(false);
-    });
+      return;
+    }
+    try {
+      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        setCurrentUser(user);
+        if (user) {
+          try {
+            const token = await user.getIdToken();
+            setCurrentToken(token);
+            if (onAuthStateChange) onAuthStateChange(user, token);
+          } catch (e) {
+            console.error('Failed to get user token:', e);
+          }
+        } else {
+          setCurrentToken(null);
+          if (onAuthStateChange) onAuthStateChange(null, null);
+        }
+        setLoading(false);
+      });
 
-    return () => unsubscribe();
+      return () => unsubscribe();
+    } catch {
+      setLoading(false);
+    }
   }, [onAuthStateChange]);
 
   const handleSignIn = async () => {
