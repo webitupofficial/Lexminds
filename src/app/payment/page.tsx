@@ -4,8 +4,16 @@ import PaymentClient from './PaymentClient';
 import { Loader2 } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Secure Payment Checkout | LexMinds',
-  description: 'Complete verified processing fee checkout for LexMinds fellowships or manuscript peer reviews.',
+  title: 'Secure Payment Checkout | Lex Minds',
+  description: 'Complete verified processing fee checkout for Lex Minds fellowships or manuscript peer reviews.',
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
 };
 
 export default function PaymentPage() {

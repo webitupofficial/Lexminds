@@ -33,9 +33,17 @@ export const metadata: Metadata = {
     'Legal Media',
     'Student Law Review',
     'Legal Internships India',
+    'Law Student Internship 2026',
+    'Legal Research Fellowship',
     'Case Commentaries',
-    'Judgment Analysis'
+    'Judgment Analysis',
+    'DPDP Act 2023 Analysis',
+    'Bharatiya Nyaya Sanhita Commentary',
+    'Online Law Internship India',
   ],
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+  },
   authors: [{ name: 'Lex Minds Team', url: 'https://lexminds.in' }],
   creator: 'Lex Minds',
   publisher: 'Lex Minds',
@@ -57,27 +65,18 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     url: 'https://lexminds.in',
-    title: 'Lex Minds | Legal Scholarship & Research Fellowship',
+    title: 'Lex Minds | Legal Education, Research, Writing & Media',
     description:
-      'An independent student-led legal scholarship initiative publishing analytical treatises and selective research fellowships.',
+      'Lex Minds is an independent student-led platform empowering law students through practical legal learning, research fellowships, and student law publications.',
     siteName: 'Lex Minds',
-    images: [
-      {
-        url: '/icon.svg',
-        width: 1200,
-        height: 630,
-        alt: 'Lex Minds Legal Platform Monogram',
-      },
-    ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Lex Minds | Legal Scholarship & Research Fellowship',
+    title: 'Lex Minds | Legal Education, Research, Writing & Media',
     description:
-      'An independent student-led legal scholarship initiative publishing analytical treatises and selective research fellowships.',
+      'Lex Minds is an independent student-led platform empowering law students through practical legal learning, research fellowships, and student law publications.',
     site: '@LexMindsIn',
     creator: '@LexMindsIn',
-    images: ['/icon.svg'],
   },
   icons: {
     icon: [

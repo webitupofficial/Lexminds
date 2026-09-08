@@ -18,12 +18,19 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   const schemaData = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
-    itemListElement: allItems.map((item, index) => ({
-      '@type': 'ListItem',
-      position: index + 1,
-      name: item.name,
-      item: item.href ? `https://lexminds.in${item.href}` : 'https://lexminds.in',
-    })),
+    itemListElement: allItems.map((item, index) => {
+      const entry: Record<string, any> = {
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+      };
+      if (item.href) {
+        entry.item = item.href.startsWith('http')
+          ? item.href
+          : `https://lexminds.in${item.href}`;
+      }
+      return entry;
+    }),
   };
 
   return (

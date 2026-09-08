@@ -4,16 +4,20 @@
 User-agent: *
 Allow: /
 Allow: /articles
+Allow: /articles/*
 Allow: /internships
+Allow: /internships/*
 Allow: /publish
 Allow: /mentors
 Allow: /about
 Allow: /contact
+Allow: /editorial-policy
 Allow: /terms
 Allow: /privacy
 Allow: /refund-policy
-Allow: /editorial-policy
 Allow: /llms.txt
+Disallow: /checkout
+Disallow: /payment
 Disallow: /admin
 Disallow: /api/
 Disallow: /_next/
@@ -22,14 +26,23 @@ Disallow: /_next/
 User-agent: GPTBot
 Allow: /
 Allow: /llms.txt
+Disallow: /checkout
+Disallow: /payment
+Disallow: /api/
 
 User-agent: ClaudeBot
 Allow: /
 Allow: /llms.txt
+Disallow: /checkout
+Disallow: /payment
+Disallow: /api/
 
 User-agent: PerplexityBot
 Allow: /
 Allow: /llms.txt
+Disallow: /checkout
+Disallow: /payment
+Disallow: /api/
 
 User-agent: Google-Extended
 Allow: /

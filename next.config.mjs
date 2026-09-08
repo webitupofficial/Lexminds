@@ -30,6 +30,20 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/cancellation-and-refund-policy',
+        destination: '/refund-policy',
+        permanent: true,
+      },
+      {
+        source: '/cancellation-refund-policy',
+        destination: '/refund-policy',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

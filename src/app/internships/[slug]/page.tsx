@@ -73,24 +73,26 @@ export default function InternshipDetailPage({ params }: Props) {
     notFound();
   }
 
-  // Schema.org JobPosting format
-  const jobPostingSchema = {
+  // Schema.org JobPosting format compliant with Google Jobs guidelines
+  const jobPostingSchema: Record<string, any> = {
     '@context': 'https://schema.org',
     '@type': 'JobPosting',
     title: internship.title,
     description: internship.description,
     identifier: {
       '@type': 'PropertyValue',
-      name: 'LexMinds Docket',
+      name: 'Lex Minds Docket',
       value: internship.id,
     },
     datePosted: `${internship.postedDate}T00:00:00+05:30`,
     validThrough: `${internship.deadline}T23:59:59+05:30`,
     employmentType: 'INTERN',
+    directApply: true,
     hiringOrganization: {
       '@type': 'Organization',
       name: internship.organization,
       sameAs: 'https://lexminds.in',
+      logo: 'https://lexminds.in/icon.svg',
     },
     jobLocation: {
       '@type': 'Place',
@@ -100,15 +102,15 @@ export default function InternshipDetailPage({ params }: Props) {
         addressCountry: 'IN',
       },
     },
-    baseSalary: {
-      '@type': 'MonetaryAmount',
-      currency: 'INR',
-      value: {
-        '@type': 'QuantitativeValue',
-        value: internship.stipend,
-        unitText: 'MONTH',
-      },
-    },
+    ...(internship.mode.toLowerCase().includes('online') || internship.location.toLowerCase().includes('online')
+      ? {
+          jobLocationType: 'TELECOMMUTE',
+          applicantLocationRequirements: {
+            '@type': 'Country',
+            name: 'India',
+          },
+        }
+      : {}),
   };
 
   return (
