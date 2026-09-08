@@ -26,6 +26,10 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  if (pathname?.startsWith('/studio')) {
+    return null;
+  }
+
   const navLinks = [
     { name: 'Mentors', href: '/mentors' },
     { name: 'Internships', href: '/internships' },

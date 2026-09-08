@@ -20,6 +20,7 @@ Disallow: /checkout
 Disallow: /payment
 Disallow: /admin
 Disallow: /api/
+Disallow: /studio
 
 # AI Crawlers & LLM Indexing
 User-agent: GPTBot

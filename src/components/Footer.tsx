@@ -2,9 +2,14 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Mail } from 'lucide-react';
 
 export default function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith('/studio')) {
+    return null;
+  }
   return (
     <footer className="bg-paper dark:bg-ink-950 border-t border-ink-900/15 dark:border-ink-800 text-ink-600 dark:text-ink-400 text-xs transition-colors duration-200">
       
