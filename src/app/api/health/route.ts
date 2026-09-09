@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import crypto from 'crypto';
 import { getTabRows } from '@/lib/google-sheets';
 import { validateRazorpayCredentials } from '@/lib/payment-service';
 import { verifyFirebaseIdToken, lastVerificationError } from '@/lib/firebase-admin';
@@ -6,9 +7,34 @@ import { verifyFirebaseIdToken, lastVerificationError } from '@/lib/firebase-adm
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
+function isPrivilegedDiagnosticRequest(req: Request): boolean {
+  if (process.env.APP_ENV === 'test') return true;
+
+  const serverSecret = process.env.CRON_SECRET;
+  if (!serverSecret) return false;
+
+  const cronHeader = req.headers.get('x-cron-secret');
+  const authHeader = req.headers.get('authorization');
+
+  let provided = '';
+  if (cronHeader) {
+    provided = cronHeader.trim();
+  } else if (authHeader && authHeader.startsWith('Bearer ')) {
+    provided = authHeader.slice(7).trim();
+  }
+
+  if (!provided || provided.length !== serverSecret.length) return false;
+  try {
+    return crypto.timingSafeEqual(Buffer.from(provided, 'utf8'), Buffer.from(serverSecret, 'utf8'));
+  } catch {
+    return false;
+  }
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const testToken = searchParams.get('testToken');
+  const isPrivileged = isPrivilegedDiagnosticRequest(req);
 
   const diagnostics: Record<string, any> = {
     status: 'ok',
@@ -23,23 +49,23 @@ export async function GET(req: Request) {
     const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
     const hasKey = Boolean(process.env.GOOGLE_PRIVATE_KEY);
 
-    diagnostics.checks.googleSheets = {
-      sheetIdConfigured: Boolean(sheetId),
-      serviceAccountConfigured: Boolean(email),
-      privateKeyConfigured: hasKey,
-    };
-
     if (sheetId && email && hasKey) {
-      // Test read from Payments tab
       const rows = await getTabRows('Payments');
-      diagnostics.checks.googleSheets.liveConnection = 'connected';
-      diagnostics.checks.googleSheets.paymentsRowCount = rows.length;
+      diagnostics.checks.googleSheets = {
+        status: 'connected',
+        ...(isPrivileged ? { paymentsRowCount: rows.length, configured: true } : {}),
+      };
+    } else {
+      diagnostics.status = 'degraded';
+      diagnostics.checks.googleSheets = {
+        status: 'misconfigured',
+      };
     }
   } catch (err: any) {
     diagnostics.status = 'degraded';
     diagnostics.checks.googleSheets = {
-      liveConnection: 'failed',
-      error: err.message || String(err),
+      status: 'failed',
+      ...(isPrivileged ? { error: err.message || String(err) } : {}),
     };
   }
 
@@ -49,27 +75,35 @@ export async function GET(req: Request) {
     const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
     const hasKey = Boolean(process.env.FIREBASE_PRIVATE_KEY);
 
-    const rawKey = process.env.FIREBASE_PRIVATE_KEY || '';
-    diagnostics.checks.firebaseAdmin = {
-      projectId: projId || 'missing',
-      clientEmailConfigured: Boolean(clientEmail),
-      privateKeyConfigured: hasKey,
-      keyLength: rawKey.length,
-      keyHasBegin: rawKey.includes('BEGIN PRIVATE KEY'),
-      keyHasEscapedN: rawKey.includes('\\n'),
-      keyHasLiteralN: rawKey.includes('\n'),
-    };
+    if (projId && clientEmail && hasKey) {
+      diagnostics.checks.firebaseAdmin = {
+        status: 'ready',
+        ...(isPrivileged
+          ? {
+              projectId: projId,
+              clientEmailConfigured: true,
+              privateKeyConfigured: true,
+            }
+          : {}),
+      };
+    } else {
+      diagnostics.status = 'degraded';
+      diagnostics.checks.firebaseAdmin = {
+        status: 'misconfigured',
+      };
+    }
 
     if (testToken) {
       const user = await verifyFirebaseIdToken(testToken);
       diagnostics.checks.firebaseAdmin.tokenTest = user
         ? { verified: true, email: user.email }
-        : { verified: false, error: lastVerificationError };
+        : { verified: false, ...(isPrivileged ? { error: lastVerificationError } : {}) };
     }
   } catch (err: any) {
     diagnostics.status = 'degraded';
     diagnostics.checks.firebaseAdmin = {
-      error: err.message || String(err),
+      status: 'failed',
+      ...(isPrivileged ? { error: err.message || String(err) } : {}),
     };
   }
 
@@ -77,16 +111,19 @@ export async function GET(req: Request) {
   try {
     const { keyId } = validateRazorpayCredentials();
     diagnostics.checks.razorpay = {
-      keyIdPrefix: keyId.slice(0, 8),
+      status: 'ready',
       configured: true,
+      ...(isPrivileged ? { keyIdPrefix: keyId.slice(0, 8) } : {}),
     };
   } catch (err: any) {
     diagnostics.status = 'degraded';
     diagnostics.checks.razorpay = {
+      status: 'failed',
       configured: false,
-      error: err.message || String(err),
+      ...(isPrivileged ? { error: err.message || String(err) } : {}),
     };
   }
 
-  return NextResponse.json(diagnostics, { status: 200 });
+  return NextResponse.json(diagnostics, { status: diagnostics.status === 'ok' ? 200 : 503 });
 }
+

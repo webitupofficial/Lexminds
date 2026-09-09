@@ -16,14 +16,26 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const { amount, currency = 'INR', receipt, notes } = body;
+    const { amount, currency = 'INR', receipt, notes, honeypot, hp_website } = body;
+
+    // Anti-bot honeypot check
+    if (honeypot || hp_website) {
+      return NextResponse.json({ error: 'Automated request rejected.' }, { status: 400 });
+    }
 
     const parsedAmount = Number(amount);
 
-    // Minimum amount validation: 100 paise (₹1.00)
+    // Amount validation: 100 paise (₹1.00) minimum, 1000000 paise (₹10,000.00) maximum
     if (isNaN(parsedAmount) || parsedAmount < 100) {
       return NextResponse.json(
         { error: 'Invalid amount. Minimum amount is 100 paise (₹1.00).' },
+        { status: 400 }
+      );
+    }
+
+    if (parsedAmount > 1000000) {
+      return NextResponse.json(
+        { error: 'Invalid amount. Amount exceeds maximum allowable limit.' },
         { status: 400 }
       );
     }

@@ -61,7 +61,10 @@ export function verifyRazorpaySignature(
   const expected = generateRazorpayHmac(payload, keySecret);
 
   try {
-    return crypto.timingSafeEqual(Buffer.from(signature, 'utf8'), Buffer.from(expected, 'utf8'));
+    const sigBuf = Buffer.from(signature, 'utf8');
+    const expBuf = Buffer.from(expected, 'utf8');
+    if (sigBuf.length !== expBuf.length) return false;
+    return crypto.timingSafeEqual(sigBuf, expBuf);
   } catch {
     return false;
   }
@@ -443,7 +446,7 @@ export async function reconcilePaymentAndFulfill(params: {
       );
     }
 
-    if (isDestinationPaid) {
+    if (isDestinationPaid && recordedPaymentId && recordedPaymentId !== params.paymentId) {
       console.error(
         `[CRITICAL PAYMENT CONFLICT ALERT]: Reference ${internalReference} in ${destinationTab} is already marked as paid. Conflicting verification attempt with Payment ID "${params.paymentId}" rejected.`
       );
@@ -545,10 +548,9 @@ export async function processRazorpayWebhook(
 
   if (webhookSecret && signatureHeader) {
     const expectedSig = crypto.createHmac('sha256', webhookSecret).update(rawBody).digest('hex');
-    const isValid = crypto.timingSafeEqual(
-      Buffer.from(signatureHeader, 'utf8'),
-      Buffer.from(expectedSig, 'utf8')
-    );
+    const sigBuf = Buffer.from(signatureHeader, 'utf8');
+    const expBuf = Buffer.from(expectedSig, 'utf8');
+    const isValid = sigBuf.length === expBuf.length && crypto.timingSafeEqual(sigBuf, expBuf);
     if (!isValid) {
       throw new Error('Invalid Razorpay webhook signature.');
     }
@@ -619,7 +621,7 @@ export async function processRazorpayWebhook(
         );
       }
 
-      if (isDestinationPaid) {
+      if (isDestinationPaid && recordedPaymentId && recordedPaymentId !== paymentId) {
         console.error(
           `[CRITICAL WEBHOOK CONFLICT ALERT]: Reference ${internalReference} in ${targetTab} is already marked as paid.`
         );
@@ -686,3 +688,120 @@ export async function processRazorpayWebhook(
 
   return { success: true, event, message: `Webhook processed successfully for ${event}.` };
 }
+
+/**
+ * Authoritatively verifies and reconciles an order directly with the Razorpay API.
+ * Useful for catching dropped client callbacks, handling mobile UPI returns,
+ * and automated background reconciliation.
+ */
+export async function reconcileOrderFromGateway(orderId: string): Promise<{
+  verified: boolean;
+  paymentRecordId?: string;
+  referenceId?: string;
+  paymentId?: string;
+  alreadyProcessed?: boolean;
+}> {
+  if (!orderId) return { verified: false };
+
+  // 1. Locate existing Payments row
+  const record = await findRowById('Payments', 5, orderId);
+  if (!record) {
+    return { verified: false };
+  }
+
+  const [
+    paymentRecordId,
+    productKey,
+    internalReference,
+    firebaseUid,
+    verifiedEmail,
+    ,
+    recordedPaymentId,
+    amountPaiseStr,
+    currency,
+    currentStatus,
+  ] = record.row;
+
+  // If already verified with payment ID, return success immediately
+  if (currentStatus === 'verified' && recordedPaymentId) {
+    return {
+      verified: true,
+      paymentRecordId,
+      referenceId: internalReference,
+      paymentId: recordedPaymentId,
+      alreadyProcessed: true,
+    };
+  }
+
+  // 2. Fetch authoritative order from Razorpay gateway
+  const { keyId, keySecret } = validateRazorpayCredentials();
+  const authHeader = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+
+  const orderRes = await fetch(`https://api.razorpay.com/v1/orders/${orderId}`, {
+    headers: { Authorization: `Basic ${authHeader}` },
+  });
+  if (!orderRes.ok) {
+    return { verified: false };
+  }
+  const orderData = await orderRes.json();
+
+  if (orderData.status !== 'paid' && Number(orderData.amount_paid) <= 0) {
+    return { verified: false };
+  }
+
+  // 3. Fetch captured payment from Razorpay gateway
+  const paymentsRes = await fetch(`https://api.razorpay.com/v1/orders/${orderId}/payments`, {
+    headers: { Authorization: `Basic ${authHeader}` },
+  });
+  if (!paymentsRes.ok) {
+    return { verified: false };
+  }
+  const paymentsData = await paymentsRes.json();
+  const capturedPayment = (paymentsData.items || []).find(
+    (p: any) => p.status === 'captured'
+  );
+
+  if (!capturedPayment || !capturedPayment.id) {
+    return { verified: false };
+  }
+
+  const now = capturedPayment.created_at
+    ? new Date(capturedPayment.created_at * 1000).toISOString()
+    : new Date().toISOString();
+
+  // 4. Update destination row
+  const targetTab: SheetTabName =
+    productKey === 'internship_enrollment' ? 'Applications' : 'ArticleSubmissions';
+  const destinationRecord = await findRowById(targetTab, 0, internalReference);
+
+  if (destinationRecord) {
+    if (targetTab === 'Applications') {
+      const appRow = [...destinationRecord.row];
+      appRow[9] = 'paid';
+      appRow[10] = paymentRecordId;
+      appRow[13] = now;
+      await updateRowById('Applications', 0, internalReference, appRow);
+    } else if (targetTab === 'ArticleSubmissions') {
+      const subRow = [...destinationRecord.row];
+      subRow[15] = paymentRecordId;
+      subRow[16] = 'paid_submitted';
+      await updateRowById('ArticleSubmissions', 0, internalReference, subRow);
+    }
+  }
+
+  // 5. Update Payments row in Google Sheets
+  const updatedRow = [...record.row];
+  updatedRow[6] = capturedPayment.id;
+  updatedRow[9] = 'verified';
+  updatedRow[13] = updatedRow[13] || now;
+  await updateRowById('Payments', 5, orderId, updatedRow);
+
+  return {
+    verified: true,
+    paymentRecordId,
+    referenceId: internalReference,
+    paymentId: capturedPayment.id,
+    alreadyProcessed: false,
+  };
+}
+

@@ -27,6 +27,8 @@ interface SessionInfo {
   currency: string;
   email: string;
   keyId: string;
+  alreadyPaid?: boolean;
+  paymentId?: string;
 }
 
 export default function PaymentClient() {
@@ -66,6 +68,13 @@ export default function PaymentClient() {
           setError(data.error || 'The payment session has expired or is invalid. Please restart your submission.');
         } else {
           setSession(data);
+          if (data.alreadyPaid && data.paymentId) {
+            setSuccessData({
+              referenceId: data.referenceId,
+              paymentId: data.paymentId,
+              alreadyProcessed: true,
+            });
+          }
         }
       } catch (err: any) {
         setError(err.message || 'Unable to connect to payment server.');
@@ -123,8 +132,26 @@ export default function PaymentClient() {
         color: '#5B3DF5',
       },
       modal: {
-        ondismiss: () => {
+        ondismiss: async () => {
           setPaying(false);
+          // Check if user completed payment via external UPI app / redirect
+          try {
+            const checkRes = await fetch('/api/payment/session-info', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orderId, token }),
+            });
+            const checkData = await checkRes.json();
+            if (checkRes.ok && checkData.alreadyPaid && checkData.paymentId) {
+              setSuccessData({
+                referenceId: checkData.referenceId,
+                paymentId: checkData.paymentId,
+                alreadyProcessed: true,
+              });
+            }
+          } catch {
+            // Non-blocking fallback
+          }
         },
       },
       handler: async function (response: any) {

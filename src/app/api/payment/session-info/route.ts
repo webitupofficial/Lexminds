@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { verifyPaymentSessionToken } from '@/lib/payment-token';
-import { PRODUCT_CATALOG } from '@/lib/payment-service';
+import { PRODUCT_CATALOG, reconcileOrderFromGateway } from '@/lib/payment-service';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -28,6 +28,20 @@ export async function POST(req: Request) {
 
     const product = PRODUCT_CATALOG[payload.productKey];
 
+    // Check if order is already paid or can be authoritatively reconciled from gateway
+    let alreadyPaid = false;
+    let paymentId = '';
+
+    try {
+      const recon = await reconcileOrderFromGateway(payload.orderId);
+      if (recon.verified && recon.paymentId) {
+        alreadyPaid = true;
+        paymentId = recon.paymentId;
+      }
+    } catch (e) {
+      // Non-blocking gateway check
+    }
+
     return NextResponse.json({
       success: true,
       orderId: payload.orderId,
@@ -38,6 +52,8 @@ export async function POST(req: Request) {
       currency: payload.currency,
       email: payload.email,
       keyId: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || '',
+      alreadyPaid,
+      paymentId,
     });
   } catch (err: any) {
     return NextResponse.json(
@@ -46,3 +62,4 @@ export async function POST(req: Request) {
     );
   }
 }
+

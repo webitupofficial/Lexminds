@@ -209,6 +209,24 @@ async function ensureHeadersInitialized(tabName: SheetTabName): Promise<void> {
 }
 
 /**
+ * Sanitizes cell values before writing to Google Sheets.
+ * Neutralizes Formula / CSV Injection (CWE-1236) by prepending a single quote
+ * if a string starts with formula triggers (=, @, \t, \r) or formula operators
+ * preceding alphabetic formula identifiers (+cmd, -HYPERLINK, etc.).
+ */
+export function sanitizeCellForSheets(value: any): string {
+  if (value === undefined || value === null) return '';
+  if (typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+  const str = String(value);
+  if (/^[\=\@\t\r]/.test(str) || /^[\+\-][a-zA-Z\=\@]/.test(str)) {
+    return `'${str}`;
+  }
+  return str;
+}
+
+/**
  * Appends a row to a tab.
  * Fails closed in production if credentials are not configured.
  */
@@ -216,7 +234,7 @@ export async function appendToSheet(
   tabName: SheetTabName,
   rowValues: (string | number | boolean | null | undefined)[]
 ): Promise<{ success: boolean }> {
-  const sanitizedRow = rowValues.map((v) => (v === undefined || v === null ? '' : String(v)));
+  const sanitizedRow = rowValues.map(sanitizeCellForSheets);
 
   if (process.env.APP_ENV === 'test') {
     testStore[tabName].push(sanitizedRow);
@@ -311,7 +329,7 @@ export async function updateRowById(
   idValue: string,
   updatedValues: (string | number | boolean | null | undefined)[]
 ): Promise<boolean> {
-  const sanitized = updatedValues.map((v) => (v === undefined || v === null ? '' : String(v)));
+  const sanitized = updatedValues.map(sanitizeCellForSheets);
 
   if (process.env.APP_ENV === 'test') {
     const rows = testStore[tabName];
