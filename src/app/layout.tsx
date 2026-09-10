@@ -6,6 +6,7 @@ import JsonLd from '@/components/JsonLd';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import Script from 'next/script';
 import { GA_TRACKING_ID } from '@/lib/gtag';
+import { Analytics } from '@vercel/analytics/next';
 
 export const viewport: Viewport = {
   themeColor: [
@@ -198,6 +199,7 @@ export default function RootLayout({
             `,
           }}
         />
+        <Analytics />
       </body>
     </html>
   );
