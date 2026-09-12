@@ -62,7 +62,7 @@ export const ASSOCIATES_DATA: Associate[] = [
     name: 'Aditya Sharma',
     role: 'Founder',
     skills: ['Leadership', 'Entrepreneurship', 'Legal', 'Research', 'Project Management', 'Team Management'],
-    imageUrl: '/associates/Aditya.jpeg',
+    imageUrl: '/associates/Aditya1.jpeg',
     bio: 'Spearheading Lex Minds with a mission to bridge courtroom practice with academic research, empowering law students across India through practical drafting, publication fellowships, and transformative legal mentorship.',
   },
   {
