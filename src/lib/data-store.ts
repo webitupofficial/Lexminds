@@ -19,7 +19,8 @@ export const INITIAL_INTERNSHIPS: Internship[] = [
     seats: 50,
     deadline: '2026-09-30',
     featured: true,
-    description: 'Lex Minds India is conducting a Two-Week Legal Media Internship for students interested in law, legal content creation, and digital media. Registrations are currently open for the September batch with limited registrations available.',
+    isClosed: true,
+    description: 'Lex Minds India is conducting a Two-Week Legal Media Internship for students interested in law, legal content creation, and digital media. Registrations for the September batch are now closed.',
     responsibilities: [
       'Legal content writing and research',
       'Creating informative legal posts and videos',

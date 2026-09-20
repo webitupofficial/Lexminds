@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { verifyUserAuth } from '@/lib/firebase-admin';
 import { createPendingSubmissionOrder } from '@/lib/payment-service';
+import { INITIAL_INTERNSHIPS } from '@/lib/data-store';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -21,7 +22,23 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { fullName, phone, collegeName, yearOfStudy, academicScore, sop, declaration, internshipKey } = body;
 
-    // 2. Validate Required Applicant Fields
+    // 2. Validate Internship Registration Status
+    const targetInternship = INITIAL_INTERNSHIPS.find(
+      (i) => i.slug === internshipKey || i.id === internshipKey
+    ) || INITIAL_INTERNSHIPS[0];
+
+    if (
+      targetInternship &&
+      (targetInternship.isClosed ||
+        (targetInternship.deadline && new Date(targetInternship.deadline) < new Date(new Date().toDateString())))
+    ) {
+      return NextResponse.json(
+        { error: 'Registrations for this internship cohort are now closed.' },
+        { status: 400 }
+      );
+    }
+
+    // 3. Validate Required Applicant Fields
     if (!fullName || typeof fullName !== 'string' || !fullName.trim()) {
       return NextResponse.json({ error: 'Full name is required.' }, { status: 400 });
     }

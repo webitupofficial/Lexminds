@@ -23,6 +23,11 @@ export default function InternshipDetailClient({ internship }: Props) {
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
+  const isClosed = Boolean(
+    internship.isClosed ||
+    (internship.deadline && new Date(internship.deadline) < new Date(new Date().toDateString()))
+  );
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -41,8 +46,8 @@ export default function InternshipDetailClient({ internship }: Props) {
       <div className="space-y-1.5">
         <div className="flex items-center justify-between font-mono text-xs">
           <span className="uppercase text-ink-500 dark:text-ink-400">Registration Fee</span>
-          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold">
-            Verified Program
+          <span className={`text-[11px] font-semibold ${isClosed ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+            {isClosed ? 'Registrations Closed' : 'Verified Program'}
           </span>
         </div>
         <div className="flex items-baseline space-x-2">
@@ -71,20 +76,39 @@ export default function InternshipDetailClient({ internship }: Props) {
         </div>
         <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
           <span>Registrations:</span>
-          <strong className="text-coral font-bold">Limited Registrations Open</strong>
+          {isClosed ? (
+            <strong className="text-rose-600 dark:text-rose-400 font-bold">Closed</strong>
+          ) : (
+            <strong className="text-coral font-bold">Limited Registrations Open</strong>
+          )}
         </div>
       </div>
 
       {/* Single Primary CTA */}
-      <button
-        onClick={() => setIsApplyModalOpen(true)}
-        className="w-full py-3.5 sm:py-4 px-4 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center block cursor-pointer"
-      >
-        Register for Internship
-      </button>
+      {isClosed ? (
+        <button
+          disabled
+          type="button"
+          aria-disabled="true"
+          className="w-full py-3.5 sm:py-4 px-4 bg-ink-200 dark:bg-ink-800 text-ink-500 dark:text-ink-400 text-xs font-bold uppercase tracking-wider text-center block cursor-not-allowed border border-ink-300 dark:border-ink-700 rounded-sm select-none"
+        >
+          Closed
+        </button>
+      ) : (
+        <button
+          onClick={() => setIsApplyModalOpen(true)}
+          className="w-full py-3.5 sm:py-4 px-4 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center block cursor-pointer"
+        >
+          Register for Internship
+        </button>
+      )}
 
       <div className="text-center text-[11px] font-mono text-ink-500 dark:text-ink-400 space-y-1">
-        <div>Verified Google Authentication required at submission.</div>
+        {isClosed ? (
+          <div>Applications for this batch are currently closed.</div>
+        ) : (
+          <div>Verified Google Authentication required at submission.</div>
+        )}
         <div>
           Subject to{' '}
           <a href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline">Terms</a>,{' '}
@@ -116,7 +140,7 @@ export default function InternshipDetailClient({ internship }: Props) {
                   {internship.orgType}
                 </span>
                 <span className="text-ink-400">&bull;</span>
-                <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-semibold border border-emerald-200 dark:border-emerald-800 text-[10px]">
+                <span className="px-2 py-0.5 bg-paper dark:bg-ink-850 text-ink-700 dark:text-ink-300 font-semibold border border-ink-300 dark:border-ink-700 text-[10px]">
                   September 2026 Batch
                 </span>
               </div>
@@ -131,15 +155,27 @@ export default function InternshipDetailClient({ internship }: Props) {
             </div>
 
             {/* Status Ledger Flag */}
-            <div className="p-3.5 bg-royal-50/70 dark:bg-royal-950/30 border border-royal-200 dark:border-royal-800 text-xs font-mono flex flex-wrap items-center justify-between gap-2">
-              <span className="text-royal-800 dark:text-royal-200 font-semibold flex items-center gap-1.5">
-                <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                Registrations are currently open for the September batch
-              </span>
-              <span className="text-coral font-bold uppercase tracking-wider text-[11px]">
-                Limited registrations available
-              </span>
-            </div>
+            {isClosed ? (
+              <div className="p-3.5 bg-rose-50/70 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 text-xs font-mono flex flex-wrap items-center justify-between gap-2">
+                <span className="text-rose-800 dark:text-rose-300 font-semibold flex items-center gap-1.5">
+                  <span className="inline-block w-2 h-2 rounded-full bg-rose-500"></span>
+                  Registrations are now closed for the September batch
+                </span>
+                <span className="text-rose-600 dark:text-rose-400 font-bold uppercase tracking-wider text-[11px]">
+                  Closed
+                </span>
+              </div>
+            ) : (
+              <div className="p-3.5 bg-royal-50/70 dark:bg-royal-950/30 border border-royal-200 dark:border-royal-800 text-xs font-mono flex flex-wrap items-center justify-between gap-2">
+                <span className="text-royal-800 dark:text-royal-200 font-semibold flex items-center gap-1.5">
+                  <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Registrations are currently open for the September batch
+                </span>
+                <span className="text-coral font-bold uppercase tracking-wider text-[11px]">
+                  Limited registrations available
+                </span>
+              </div>
+            )}
 
             {/* Title */}
             <div className="space-y-2">

@@ -175,6 +175,7 @@ export interface Internship {
   seats: number;
   deadline: string;
   featured: boolean;
+  isClosed?: boolean;
   description: string;
   responsibilities: string[];
   eligibility: string[];

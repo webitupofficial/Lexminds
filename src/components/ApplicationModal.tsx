@@ -50,8 +50,11 @@ export default function ApplicationModal({
 
   if (!isOpen) return null;
 
-  // Deadline check
-  const isDeadlinePassed = new Date(internship.deadline) < new Date(new Date().toDateString());
+  // Deadline or Closed check
+  const isDeadlinePassed = Boolean(
+    internship.isClosed ||
+    (internship.deadline && new Date(internship.deadline) < new Date(new Date().toDateString()))
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -161,10 +164,10 @@ export default function ApplicationModal({
                   <AlertCircle className="w-6 h-6" />
                 </div>
                 <h4 className="text-lg font-serif font-bold text-ink-950 dark:text-white">
-                  Applications Closed
+                  Registrations Closed
                 </h4>
                 <p className="text-xs text-ink-600 dark:text-ink-400 max-w-md mx-auto">
-                  The application deadline for this research fellowship closed on {internship.deadline}. Please explore our other upcoming cohorts.
+                  Registrations for this internship cohort are now closed. Please explore our other upcoming cohorts and publications.
                 </p>
               </div>
             ) : (
