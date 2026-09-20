@@ -12,7 +12,7 @@ export const PRODUCT_CATALOG: Record<
 > = {
   internship_enrollment: {
     name: 'September Two-Week Legal Media Internship',
-    amountPaise: 3900, // ₹39.00 (discounted from ₹299.00)
+    amountPaise: 5900, // ₹59.00 (₹39.00 base fee + ₹20.00 late fee, discounted from ₹299.00)
     currency: 'INR',
   },
   article_submission: {

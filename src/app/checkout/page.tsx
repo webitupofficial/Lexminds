@@ -39,7 +39,7 @@ export default function CheckoutTestPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {[
               { label: '₹1.00 (Test Minimum)', paise: 100 },
-              { label: '₹39.00 (Internship)', paise: 3900 },
+              { label: '₹59.00 (Internship + Late Fee)', paise: 5900 },
               { label: '₹99.00 (Publication)', paise: 9900 },
             ].map((option) => (
               <button

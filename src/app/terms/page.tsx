@@ -354,7 +354,7 @@ export default function TermsPage() {
               <div className="text-xs font-mono font-bold uppercase text-royal-600 dark:text-royal-400">Paid Product 01</div>
               <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm">Internship / Fellowship Application Evaluation Fee</h4>
               <div className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
-                ₹39.00 INR <span className="text-xs line-through text-ink-400 font-normal">₹299.00</span>
+                ₹59.00 INR <span className="text-xs text-ink-500 dark:text-ink-400 font-mono font-normal">(₹39.00 standard + ₹20.00 late fee)</span> <span className="text-xs line-through text-ink-400 font-normal">₹299.00</span>
               </div>
               <p className="text-xs text-ink-600 dark:text-ink-400">
                 Covers administrative intake, academic eligibility screening, Statement of Purpose (SOP) evaluation, and docket creation.

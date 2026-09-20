@@ -409,11 +409,21 @@ export default function HomePage() {
                   <span className="text-[11px] font-mono uppercase tracking-wider text-ink-500 dark:text-ink-400 block">
                     Registration Fee
                   </span>
-                  <div className="text-3xl font-serif font-bold text-ink-950 dark:text-ink-50">
-                    ₹{flagshipInternship.applicationFee}.00
+                  <div className="flex items-baseline space-x-2">
+                    <div className="text-3xl font-serif font-bold text-ink-950 dark:text-ink-50">
+                      ₹{flagshipInternship.applicationFee}.00
+                    </div>
+                    <span className="text-xs line-through text-ink-400">₹299.00</span>
+                    {flagshipInternship.lateFee ? (
+                      <span className="text-[10px] font-mono font-semibold text-coral bg-coral-500/10 px-1.5 py-0.5 border border-coral/30 rounded-xs">
+                        Incl. ₹{flagshipInternship.lateFee} Late Fee
+                      </span>
+                    ) : null}
                   </div>
                   <span className="text-[11px] font-mono text-ink-500 dark:text-ink-400 block">
-                    Covers registration, learning modules &amp; certificate
+                    {flagshipInternship.lateFee
+                      ? `₹${flagshipInternship.applicationFee - flagshipInternship.lateFee} standard + ₹${flagshipInternship.lateFee} late fee. Covers learning modules & certificate.`
+                      : 'Covers registration, learning modules & certificate'}
                   </span>
                 </div>
 

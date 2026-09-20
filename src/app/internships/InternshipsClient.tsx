@@ -148,6 +148,11 @@ export default function InternshipsClient() {
                       <div className="flex items-baseline space-x-1.5">
                         <strong className="text-ink-950 dark:text-ink-50 font-semibold text-sm">₹{item.applicationFee}.00</strong>
                         <span className="text-xs line-through text-ink-400">₹299</span>
+                        {item.lateFee ? (
+                          <span className="text-[10px] font-semibold text-coral bg-coral-500/10 px-1 py-0.5 border border-coral/30 rounded-xs">
+                            Incl. ₹{item.lateFee} Late Fee
+                          </span>
+                        ) : null}
                       </div>
                     </div>
                     <div>

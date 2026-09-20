@@ -172,6 +172,7 @@ export interface Internship {
   duration: string;
   stipend: string;
   applicationFee: number; // in INR
+  lateFee?: number; // in INR
   seats: number;
   deadline: string;
   featured: boolean;

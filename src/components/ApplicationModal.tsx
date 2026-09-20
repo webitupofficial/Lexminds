@@ -144,7 +144,9 @@ export default function ApplicationModal({
                   <Building2 className="w-3.5 h-3.5 text-royal-500 shrink-0" />
                   <span className="truncate">{internship.organization}</span>
                   <span>&bull;</span>
-                  <span className="text-coral font-semibold shrink-0">Fee: ₹{internship.applicationFee}.00</span>
+                  <span className="text-coral font-semibold shrink-0">
+                    Fee: ₹{internship.applicationFee}.00{internship.lateFee ? ` (₹${internship.applicationFee - internship.lateFee} + ₹${internship.lateFee} Late Fee)` : ''}
+                  </span>
                 </p>
               </div>
             </div>

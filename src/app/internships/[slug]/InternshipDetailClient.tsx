@@ -55,9 +55,16 @@ export default function InternshipDetailClient({ internship }: Props) {
             ₹{internship.applicationFee}.00
           </span>
           <span className="text-sm line-through text-ink-400">₹299.00</span>
+          {internship.lateFee ? (
+            <span className="text-xs font-mono font-semibold text-coral bg-coral-500/10 px-2 py-0.5 border border-coral/30 rounded-xs">
+              Incl. ₹{internship.lateFee} Late Fee
+            </span>
+          ) : null}
         </div>
         <p className="text-xs text-ink-500 dark:text-ink-400 font-mono">
-          Covers registration, learning modules, mentorship, and certificate issuance upon completion.
+          {internship.lateFee
+            ? `Standard registration (₹${internship.applicationFee - internship.lateFee}) + late fee (₹${internship.lateFee}). Covers modules, mentorship, and certificate.`
+            : 'Covers registration, learning modules, mentorship, and certificate issuance upon completion.'}
         </p>
       </div>
 
