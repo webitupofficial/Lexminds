@@ -39,17 +39,18 @@ export default function MentorsClient({
         assoc.name.toLowerCase().includes(query) ||
         assoc.role.toLowerCase().includes(query) ||
         (assoc.degree && assoc.degree.toLowerCase().includes(query)) ||
+        (assoc.bio && assoc.bio.toLowerCase().includes(query)) ||
         assoc.skills.some((s) => s.toLowerCase().includes(query))
       );
     });
   }, [initialAssociates, searchQuery]);
 
-  const founder = useMemo(() => {
-    return filteredAssociates.find((a) => a.role.toLowerCase() === 'founder');
+  const leadershipAssociates = useMemo(() => {
+    return filteredAssociates.filter((a) => a.role.toLowerCase().includes('founder'));
   }, [filteredAssociates]);
 
   const teamAssociates = useMemo(() => {
-    return filteredAssociates.filter((a) => a.role.toLowerCase() !== 'founder');
+    return filteredAssociates.filter((a) => !a.role.toLowerCase().includes('founder'));
   }, [filteredAssociates]);
 
   const totalResults = filteredMentors.length + filteredAssociates.length;
@@ -231,92 +232,121 @@ export default function MentorsClient({
                 </span>
               </div>
 
-              {/* FOUNDER SPOTLIGHT CARD */}
-              {founder && (
-                <div className="space-y-3">
+              {/* LEADERSHIP & FOUNDERS SPOTLIGHT */}
+              {leadershipAssociates.length > 0 && (
+                <div className="space-y-4">
                   <div className="flex items-center space-x-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-700 dark:text-amber-400">
                     <Crown className="w-4 h-4 text-amber-500" />
-                    <span>Leadership &amp; Founder Spotlight</span>
+                    <span>
+                      {leadershipAssociates.length > 1
+                        ? 'Leadership & Founders Spotlight'
+                        : 'Leadership & Founder Spotlight'}
+                    </span>
                   </div>
 
-                  <div className="relative group overflow-hidden rounded-2xl border-2 border-amber-400/50 dark:border-amber-500/30 bg-gradient-to-br from-amber-50/95 via-white/85 to-amber-100/40 dark:from-ink-900/90 dark:via-ink-950/95 dark:to-amber-950/30 backdrop-blur-2xl shadow-[0_12px_45px_rgba(217,119,6,0.15)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)] p-6 sm:p-8 md:p-10 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(217,119,6,0.25)] hover:border-amber-400/80">
-                    {/* Ambient backlight accents */}
-                    <div className="absolute -top-24 -right-24 w-80 h-80 bg-gradient-to-br from-amber-400/25 via-amber-300/10 to-transparent dark:from-amber-500/20 dark:via-amber-400/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
-                    <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gradient-to-tr from-royal-600/15 via-royal-500/10 to-transparent dark:from-royal-600/20 dark:via-royal-700/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
+                  <div className="space-y-8">
+                    {leadershipAssociates.map((leader) => {
+                      const leaderInitials = leader.name
+                        .split(' ')
+                        .map((n) => n[0])
+                        .join('')
+                        .toUpperCase()
+                        .slice(0, 2);
 
-                    <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 md:gap-10">
-                      {/* Portrait Frame with Crown Insignia */}
-                      <div className="relative group shrink-0">
-                        <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-2xl p-1.5 bg-gradient-to-tr from-amber-400 via-amber-200 to-royal-600 dark:from-amber-500 dark:via-amber-300 dark:to-royal-400 shadow-2xl ring-4 ring-amber-400/25 dark:ring-amber-500/25 transition-transform duration-500 group-hover:scale-[1.02]">
-                          <div className="w-full h-full rounded-xl overflow-hidden relative bg-ink-900 shadow-inner">
-                            {founder.imageUrl ? (
-                              <Image
-                                src={founder.imageUrl}
-                                alt={founder.name}
-                                width={200}
-                                height={200}
-                                unoptimized
-                                className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center font-serif font-bold text-3xl bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950">
-                                AS
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        {/* Insignia crown badge on photo */}
+                      return (
                         <div
-                          className="absolute -bottom-2 -right-2 bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950 p-2 rounded-xl shadow-lg border-2 border-white dark:border-ink-900 flex items-center justify-center"
-                          title="Founder of Lex Minds"
+                          key={leader.id}
+                          className="relative group overflow-hidden rounded-2xl border-2 border-amber-400/50 dark:border-amber-500/30 bg-gradient-to-br from-amber-50/95 via-white/85 to-amber-100/40 dark:from-ink-900/90 dark:via-ink-950/95 dark:to-amber-950/30 backdrop-blur-2xl shadow-[0_12px_45px_rgba(217,119,6,0.15)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)] p-6 sm:p-8 md:p-10 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(217,119,6,0.25)] hover:border-amber-400/80"
                         >
-                          <Crown className="w-4 h-4 fill-ink-950 text-ink-950" />
-                        </div>
-                      </div>
+                          {/* Ambient backlight accents */}
+                          <div className="absolute -top-24 -right-24 w-80 h-80 bg-gradient-to-br from-amber-400/25 via-amber-300/10 to-transparent dark:from-amber-500/20 dark:via-amber-400/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
+                          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gradient-to-tr from-royal-600/15 via-royal-500/10 to-transparent dark:from-royal-600/20 dark:via-royal-700/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
 
-                      {/* Founder Info & Leadership Vision */}
-                      <div className="flex-1 text-center md:text-left space-y-4">
-                        <div className="space-y-2">
-                          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider uppercase bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700/80 shadow-sm">
-                            <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-                            <span>Founder &bull; Lex Minds</span>
-                          </div>
-
-                          <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-none">
-                            {founder.name}
-                          </h3>
-
-                          <p className="text-xs sm:text-sm font-mono font-semibold text-royal-700 dark:text-royal-300 tracking-wide uppercase">
-                            Founder &bull; Legal Research &amp; Platform Director
-                          </p>
-                        </div>
-
-                        {/* Vision / Bio Quote */}
-                        {founder.bio && (
-                          <p className="text-xs sm:text-sm md:text-base text-ink-700 dark:text-ink-200 leading-relaxed max-w-3xl font-normal pt-1 italic">
-                            &ldquo;{founder.bio}&rdquo;
-                          </p>
-                        )}
-
-                        {/* Core Executive Competencies */}
-                        <div className="pt-3 border-t border-amber-400/30 dark:border-amber-500/20 space-y-2.5">
-                          <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-600 dark:text-ink-400">
-                            Leadership &amp; Executive Competencies
-                          </div>
-                          <div className="flex flex-wrap justify-center md:justify-start gap-2">
-                            {founder.skills.map((skill, sIdx) => (
-                              <span
-                                key={sIdx}
-                                className="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-white/90 dark:bg-ink-900/90 border border-amber-300/80 dark:border-amber-600/40 text-amber-950 dark:text-amber-200 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md"
+                          <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 md:gap-10">
+                            {/* Portrait Frame with Crown Insignia */}
+                            <div className="relative group shrink-0">
+                              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-2xl p-1.5 bg-gradient-to-tr from-amber-400 via-amber-200 to-royal-600 dark:from-amber-500 dark:via-amber-300 dark:to-royal-400 shadow-2xl ring-4 ring-amber-400/25 dark:ring-amber-500/25 transition-transform duration-500 group-hover:scale-[1.02]">
+                                <div className="w-full h-full rounded-xl overflow-hidden relative bg-ink-900 shadow-inner">
+                                  {leader.imageUrl ? (
+                                    <Image
+                                      src={leader.imageUrl}
+                                      alt={leader.name}
+                                      width={200}
+                                      height={200}
+                                      unoptimized
+                                      className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                                    />
+                                  ) : (
+                                    <div className="w-full h-full flex items-center justify-center font-serif font-bold text-3xl bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950">
+                                      {leaderInitials}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                              {/* Insignia crown badge on photo */}
+                              <div
+                                className="absolute -bottom-2 -right-2 bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950 p-2 rounded-xl shadow-lg border-2 border-white dark:border-ink-900 flex items-center justify-center"
+                                title={`${leader.role} of Lex Minds`}
                               >
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
-                                <span>{skill}</span>
-                              </span>
-                            ))}
+                                <Crown className="w-4 h-4 fill-ink-950 text-ink-950" />
+                              </div>
+                            </div>
+
+                            {/* Leader Info & Leadership Vision */}
+                            <div className="flex-1 text-center md:text-left space-y-4">
+                              <div className="space-y-2">
+                                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
+                                  <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider uppercase bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700/80 shadow-sm">
+                                    <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                                    <span>{leader.role} &bull; Lex Minds</span>
+                                  </div>
+
+                                  {leader.degree && (
+                                    <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-royal-50 dark:bg-royal-950/60 text-royal-700 dark:text-royal-300 border border-royal-200 dark:border-royal-800 shadow-sm">
+                                      <GraduationCap className="w-3.5 h-3.5 text-royal-500 shrink-0" />
+                                      <span>{leader.degree}</span>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-none">
+                                  {leader.name}
+                                </h3>
+
+                                <p className="text-xs sm:text-sm font-mono font-semibold text-royal-700 dark:text-royal-300 tracking-wide uppercase">
+                                  {leader.subtitle || `${leader.role} • Lex Minds`}
+                                </p>
+                              </div>
+
+                              {/* Vision / Bio Quote */}
+                              {leader.bio && (
+                                <p className="text-xs sm:text-sm md:text-base text-ink-700 dark:text-ink-200 leading-relaxed max-w-3xl font-normal pt-1 italic">
+                                  &ldquo;{leader.bio}&rdquo;
+                                </p>
+                              )}
+
+                              {/* Core Executive Competencies */}
+                              <div className="pt-3 border-t border-amber-400/30 dark:border-amber-500/20 space-y-2.5">
+                                <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-600 dark:text-ink-400">
+                                  Leadership &amp; Executive Competencies
+                                </div>
+                                <div className="flex flex-wrap justify-center md:justify-start gap-2">
+                                  {leader.skills.map((skill, sIdx) => (
+                                    <span
+                                      key={sIdx}
+                                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-white/90 dark:bg-ink-900/90 border border-amber-300/80 dark:border-amber-600/40 text-amber-950 dark:text-amber-200 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md"
+                                    >
+                                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
+                                      <span>{skill}</span>
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

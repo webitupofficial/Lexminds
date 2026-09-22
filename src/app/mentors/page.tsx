@@ -107,7 +107,7 @@ export default function MentorsPage() {
       </div>
 
       {/* Main Clean Mentors Grid */}
-      <MentorsClient initialMentors={MENTORS_DATA} />
+      <MentorsClient initialMentors={MENTORS_DATA} initialAssociates={ASSOCIATES_DATA} />
 
     </div>
   );

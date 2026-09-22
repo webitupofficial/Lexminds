@@ -50,6 +50,7 @@ export interface Associate {
   id: string;
   name: string;
   role: string;
+  subtitle?: string;
   degree?: string;
   skills: string[];
   imageUrl?: string;
@@ -61,9 +62,20 @@ export const ASSOCIATES_DATA: Associate[] = [
     id: 'assoc-aditya-sharma',
     name: 'Aditya Sharma',
     role: 'Founder',
+    subtitle: 'Founder • Legal Research & Platform Director',
     skills: ['Leadership', 'Entrepreneurship', 'Legal', 'Research', 'Project Management', 'Team Management'],
     imageUrl: '/associates/Aditya1.jpeg',
     bio: 'Spearheading Lex Minds with a mission to bridge courtroom practice with academic research, empowering law students across India through practical drafting, publication fellowships, and transformative legal mentorship.',
+  },
+  {
+    id: 'assoc-prem-singh',
+    name: 'Prem Singh',
+    role: 'Co-Founder',
+    degree: 'B.A. LL.B',
+    subtitle: 'Co-Founder • Legal Tech & Platform Operations',
+    skills: ['Legal Tech', 'Operations', 'Research', 'Platform Strategy', 'Drafting', 'Team Management'],
+    imageUrl: '/associates/Prem.jpg',
+    bio: 'Championing innovation and technological integration at Lex Minds, dedicated to building cutting-edge research systems, practical drafting workflows, and empowering legal minds across the nation.',
   },
   {
     id: 'assoc-sohani-sharma',
@@ -88,14 +100,6 @@ export const ASSOCIATES_DATA: Associate[] = [
     degree: 'B.A. LL.B',
     skills: ['Legal Research'],
     imageUrl: '/associates/Tanyia.jpeg',
-  },
-  {
-    id: 'assoc-prem-singh',
-    name: 'Prem Singh',
-    role: 'Associate',
-    degree: 'B.A. LL.B',
-    skills: ['Tech', 'Drafting'],
-    imageUrl: '/associates/Prem.jpg',
   },
   {
     id: 'assoc-nayeem-ahmed',
