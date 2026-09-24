@@ -23,9 +23,9 @@ export async function POST(req: Request) {
     const { fullName, phone, collegeName, yearOfStudy, academicScore, sop, declaration, internshipKey } = body;
 
     // 2. Validate Internship Registration Status
-    const targetInternship = INITIAL_INTERNSHIPS.find(
-      (i) => i.slug === internshipKey || i.id === internshipKey
-    ) || INITIAL_INTERNSHIPS[0];
+    const targetInternship = internshipKey
+      ? INITIAL_INTERNSHIPS.find((i) => i.slug === internshipKey || i.id === internshipKey)
+      : INITIAL_INTERNSHIPS[0];
 
     if (
       targetInternship &&

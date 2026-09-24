@@ -33,6 +33,10 @@ export default async function HomePage() {
     fetchInternshipsFromCMS().catch(() => INITIAL_INTERNSHIPS),
   ]);
   const flagshipInternship = internships[0] || INITIAL_INTERNSHIPS[0];
+  const isFlagshipClosed = Boolean(
+    flagshipInternship?.isClosed ||
+    (flagshipInternship?.deadline && new Date(flagshipInternship.deadline) < new Date(new Date().toDateString()))
+  );
 
   return (
     <div className="space-y-24 sm:space-y-36 pb-24">
@@ -354,13 +358,19 @@ export default async function HomePage() {
               <div className="lg:col-span-8 space-y-6">
                 
                 <div className="flex flex-wrap items-center gap-2.5">
-                  <span className="px-3 py-1 bg-royal-50 dark:bg-royal-950/40 text-royal-600 dark:text-royal-400 font-mono text-xs font-bold uppercase tracking-wider border border-royal-200 dark:border-royal-800">
-                    Active Internship Programme
-                  </span>
+                  {isFlagshipClosed ? (
+                    <span className="px-3 py-1 bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 font-mono text-xs font-bold uppercase tracking-wider border border-rose-200 dark:border-rose-900">
+                      Registrations Closed
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 bg-royal-50 dark:bg-royal-950/40 text-royal-600 dark:text-royal-400 font-mono text-xs font-bold uppercase tracking-wider border border-royal-200 dark:border-royal-800">
+                      Active Internship Programme
+                    </span>
+                  )}
                   <span className="px-3 py-1 bg-paper-200 dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-mono text-xs border border-ink-900/10 dark:border-ink-700">
                     {flagshipInternship.mode} &bull; {flagshipInternship.duration}
                   </span>
-                  <span className="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 font-mono text-xs font-semibold border border-emerald-200 dark:border-emerald-800">
+                  <span className="px-2.5 py-1 bg-paper dark:bg-ink-850 text-ink-700 dark:text-ink-300 font-mono text-xs font-semibold border border-ink-300 dark:border-ink-700">
                     September 2026 Batch
                   </span>
                 </div>
@@ -445,16 +455,24 @@ export default async function HomePage() {
                   </div>
                   <div className="flex justify-between items-center text-ink-700 dark:text-ink-300">
                     <span>Registrations:</span>
-                    <strong className="text-coral font-bold">Limited Registrations Open</strong>
+                    {isFlagshipClosed ? (
+                      <strong className="text-rose-600 dark:text-rose-400 font-bold">Closed</strong>
+                    ) : (
+                      <strong className="text-coral font-bold">Limited Registrations Open</strong>
+                    )}
                   </div>
                 </div>
 
                 <div className="pt-2 space-y-2">
                   <Link
                     href={`/internships/${flagshipInternship.slug}`}
-                    className="w-full py-3.5 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center block"
+                    className={`w-full py-3.5 text-xs font-semibold uppercase tracking-wider text-center block rounded-sm ${
+                      isFlagshipClosed
+                        ? 'bg-ink-200 dark:bg-ink-800 hover:bg-ink-300 dark:hover:bg-ink-700 text-ink-800 dark:text-ink-200 border border-ink-300 dark:border-ink-700'
+                        : 'btn-brand-primary'
+                    }`}
                   >
-                    View Details &amp; Register
+                    {isFlagshipClosed ? 'View Details (Closed)' : 'View Details & Register'}
                   </Link>
                   <Link
                     href="/internships"
