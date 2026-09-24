@@ -1,40 +1,19 @@
 {
-  "name": "lexminds",
+  "name": "lex-minds-monorepo",
   "version": "1.0.0",
   "private": true,
+  "workspaces": [
+    "web",
+    "studio"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "test": "tsx --test tests/mvp-security-pipeline.test.ts"
-  },
-  "dependencies": {
-    "@sanity/client": "^8.5.0",
-    "@sanity/image-url": "^2.1.1",
-    "clsx": "^2.1.1",
-    "firebase": "^12.18.0",
-    "firebase-admin": "13.10.0",
-    "googleapis": "^178.0.0",
-    "lucide-react": "^0.468.0",
-    "next": "14.2.18",
-    "next-sanity": "^9.12.3",
-    "razorpay": "^2.9.8",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "sanity": "^3.99.0",
-    "tailwind-merge": "^2.5.5"
-  },
-  "devDependencies": {
-    "@types/node": "^20.17.9",
-    "@types/react": "^18.3.12",
-    "@types/react-dom": "^18.3.1",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^8.57.1",
-    "eslint-config-next": "^14.2.18",
-    "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.16",
-    "tsx": "^4.23.13",
-    "typescript": "^5.7.2"
+    "dev": "npm run dev --workspace=web",
+    "dev:web": "npm run dev --workspace=web",
+    "dev:studio": "npm run dev --workspace=studio",
+    "build": "npm run build --workspace=web",
+    "build:web": "npm run build --workspace=web",
+    "build:studio": "npm run build --workspace=studio",
+    "test": "npm run test --workspace=web",
+    "typegen": "npm run typegen --workspace=studio"
   }
 }

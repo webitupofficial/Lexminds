@@ -26,6 +26,14 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+web/.env*.local
+web/.env
+
+# sanity studio
+/studio/dist/
+/studio/.sanity/
+.sanity/
+dist/
 
 # vercel
 .vercel
@@ -36,4 +44,5 @@ next-env.d.ts
 
 # nested skill repo
 ui-ux-pro-max-skill/
+lex-minds/
 
