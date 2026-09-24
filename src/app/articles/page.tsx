@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Metadata } from 'next';
 import ArticlesClient from './ArticlesClient';
+import { fetchArticlesFromCMS, INITIAL_ARTICLES } from '@/lib/data-store';
 
 export const metadata: Metadata = {
   title: 'Legal Articles, Treatises & Student Law Review',
@@ -33,6 +34,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ArticlesPage() {
-  return <ArticlesClient />;
+export default async function ArticlesPage() {
+  const articles = await fetchArticlesFromCMS().catch(() => INITIAL_ARTICLES);
+  return <ArticlesClient initialArticles={articles} />;
 }

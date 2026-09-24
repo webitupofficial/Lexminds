@@ -264,17 +264,28 @@ let livePublishedArticles: Article[] = [...INITIAL_ARTICLES];
  * Serves as the clean abstraction layer for Sanity Headless CMS.
  */
 export async function fetchArticlesFromCMS(): Promise<Article[]> {
-  const sanityArticles = await fetchSanityArticles();
-  if (sanityArticles && sanityArticles.length > 0) {
-    return sanityArticles;
+  try {
+    const sanityArticles = await fetchSanityArticles();
+    if (sanityArticles && sanityArticles.length > 0) {
+      const sanitySlugs = new Set(sanityArticles.map((a) => a.slug));
+      const remainingDefaults = livePublishedArticles
+        .filter((a) => a.status === 'published' && !sanitySlugs.has(a.slug));
+      return [...sanityArticles, ...remainingDefaults];
+    }
+  } catch (err) {
+    console.warn('[DataStore]: Failed to fetch Sanity articles, using local defaults', err);
   }
   return livePublishedArticles.filter((a) => a.status === 'published');
 }
 
 export async function fetchArticleBySlugFromCMS(slug: string): Promise<Article | undefined> {
-  const sanityArticle = await fetchSanityArticleBySlug(slug);
-  if (sanityArticle) {
-    return sanityArticle;
+  try {
+    const sanityArticle = await fetchSanityArticleBySlug(slug);
+    if (sanityArticle) {
+      return sanityArticle;
+    }
+  } catch (err) {
+    console.warn(`[DataStore]: Failed to fetch Sanity article "${slug}", using local fallback`, err);
   }
   return livePublishedArticles.find((a) => a.slug === slug && a.status === 'published');
 }

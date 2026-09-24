@@ -19,17 +19,20 @@ import {
   Mail,
   Compass
 } from 'lucide-react';
-import { INITIAL_INTERNSHIPS, INITIAL_ARTICLES } from '@/lib/data-store';
+import { INITIAL_INTERNSHIPS, INITIAL_ARTICLES, fetchArticlesFromCMS, fetchInternshipsFromCMS } from '@/lib/data-store';
+import HomeArticleSection from '@/components/HomeArticleSection';
 
 export const metadata = {
   title: 'Lex Minds | Legal Education, Research, Writing & Media',
   description: 'Lex Minds is a student-led platform empowering students through legal learning, research, writing, publications, and practical skills. Learn. Research. Write. Create. Grow.',
 };
 
-export default function HomePage() {
-  const flagshipInternship = INITIAL_INTERNSHIPS[0];
-  const leadArticle = INITIAL_ARTICLES[0];
-  const recentArticles = INITIAL_ARTICLES.slice(1, 4);
+export default async function HomePage() {
+  const [articles, internships] = await Promise.all([
+    fetchArticlesFromCMS().catch(() => INITIAL_ARTICLES),
+    fetchInternshipsFromCMS().catch(() => INITIAL_INTERNSHIPS),
+  ]);
+  const flagshipInternship = internships[0] || INITIAL_INTERNSHIPS[0];
 
   return (
     <div className="space-y-24 sm:space-y-36 pb-24">
@@ -557,114 +560,8 @@ export default function HomePage() {
 
       </section>
 
-      {/* 6. JOURNAL SPOTLIGHT: 1 DOMINANT ARTICLE + SHORT RECENT INDEX */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-ink-900/15 dark:border-ink-700 pb-4">
-          <div className="space-y-1">
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-royal-500 dark:text-royal-400">
-              Publications &amp; Writing
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
-              Selected Legal Articles &amp; Commentaries
-            </h2>
-          </div>
-          <Link
-            href="/articles"
-            className="text-sm font-semibold text-royal-600 dark:text-royal-400 hover:underline flex items-center space-x-1"
-          >
-            <span>Explore all publications</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
-          {/* Dominant Lead Treatise (7 cols) */}
-          {leadArticle && (
-            <div className="lg:col-span-7 p-8 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-5 shadow-brutal">
-              
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="px-2.5 py-0.5 bg-royal-50 dark:bg-royal-950/40 text-royal-600 dark:text-royal-400 font-bold uppercase tracking-wider text-[11px] border border-royal-200 dark:border-royal-800">
-                  {leadArticle.category}
-                </span>
-                <span className="text-ink-500 dark:text-ink-400 flex items-center space-x-1">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>{leadArticle.readTime}</span>
-                </span>
-              </div>
-
-              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-ink-950 dark:text-ink-50 leading-snug">
-                <Link href={`/articles/${leadArticle.slug}`} className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
-                  {leadArticle.title}
-                </Link>
-              </h3>
-
-              <p className="text-sm text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
-                {leadArticle.abstract}
-              </p>
-
-              <div className="pt-4 border-t border-ink-900/10 dark:border-ink-800 flex items-center justify-between text-xs">
-                <div>
-                  <span className="font-semibold text-ink-950 dark:text-ink-50 block">{leadArticle.author.name}</span>
-                  <span className="text-[11px] text-ink-500 dark:text-ink-400 font-mono block">{leadArticle.author.institution}</span>
-                </div>
-                <Link
-                  href={`/articles/${leadArticle.slug}`}
-                  className="px-4 py-2 btn-brand-secondary text-xs font-semibold uppercase tracking-wider flex items-center space-x-1"
-                >
-                  <span>Read Article</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-
-            </div>
-          )}
-
-          {/* Simple Recent Articles Ledger (5 cols) */}
-          <div className="lg:col-span-5 space-y-3">
-            <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-ink-500 dark:text-ink-400 pb-2 border-b border-ink-900/10 dark:border-ink-800">
-              Recent Student Submissions
-            </h4>
-
-            <div className="divide-y divide-ink-900/10 dark:divide-ink-800">
-              {recentArticles.map((article) => (
-                <article key={article.id} className="py-4 space-y-1.5 group">
-                  <div className="flex items-center justify-between text-[11px] font-mono text-ink-400">
-                    <span className="text-royal-600 dark:text-royal-400 font-semibold uppercase">
-                      {article.category}
-                    </span>
-                    <span>{article.publishedAt}</span>
-                  </div>
-
-                  <h4 className="font-serif text-lg font-bold text-ink-950 dark:text-ink-50 group-hover:text-royal-500 dark:group-hover:text-royal-400 transition-colors leading-snug">
-                    <Link href={`/articles/${article.slug}`}>
-                      {article.title}
-                    </Link>
-                  </h4>
-
-                  <div className="flex items-center justify-between text-xs text-ink-600 dark:text-ink-400 pt-1 font-mono">
-                    <span>By {article.author.name}</span>
-                    <span>{article.readTime}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            <div className="pt-2">
-              <Link
-                href="/publish"
-                className="w-full py-3 px-4 text-center block btn-brand-secondary text-xs font-semibold uppercase tracking-wider"
-              >
-                Submit Your Article for Publication &rarr;
-              </Link>
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
+      {/* 6. JOURNAL SPOTLIGHT: INTERACTIVE HIGH-CRAFT ARTICLE SECTION */}
+      <HomeArticleSection articles={articles} />
 
       {/* 7. IMPORTANT NOTE (TRANSPARENCY & TRUST) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

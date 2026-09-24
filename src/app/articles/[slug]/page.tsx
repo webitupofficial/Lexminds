@@ -2,7 +2,11 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import JsonLd from '@/components/JsonLd';
-import { INITIAL_ARTICLES } from '@/lib/data-store';
+import { 
+  fetchArticleBySlugFromCMS, 
+  fetchArticlesFromCMS, 
+  INITIAL_ARTICLES 
+} from '@/lib/data-store';
 import ArticleReaderClient from './ArticleReaderClient';
 
 interface Props {
@@ -12,14 +16,15 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  return INITIAL_ARTICLES.map((article) => ({
+  const articles = await fetchArticlesFromCMS().catch(() => INITIAL_ARTICLES);
+  return articles.map((article) => ({
     slug: article.slug,
   }));
 }
 
 export async function generateMetadata({ params }: Props) {
-  const article = INITIAL_ARTICLES.find((a) => a.slug === params.slug);
-  if (!article) return { title: 'Article Not Found' };
+  const article = await fetchArticleBySlugFromCMS(params.slug);
+  if (!article) return { title: 'Article Not Found | Lex Minds Law Review' };
 
   return {
     title: `${article.title} | Lex Minds Law Review`,
@@ -37,11 +42,19 @@ export async function generateMetadata({ params }: Props) {
       authors: [article.author.name],
       siteName: 'Lex Minds Law Review',
     },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.title,
+      description: article.abstract,
+    },
   };
 }
 
-export default function ArticleDetailPage({ params }: Props) {
-  const article = INITIAL_ARTICLES.find((a) => a.slug === params.slug);
+export default async function ArticleDetailPage({ params }: Props) {
+  const [article, allArticles] = await Promise.all([
+    fetchArticleBySlugFromCMS(params.slug),
+    fetchArticlesFromCMS().catch(() => INITIAL_ARTICLES),
+  ]);
 
   if (!article) {
     notFound();
@@ -77,16 +90,21 @@ export default function ArticleDetailPage({ params }: Props) {
     keywords: article.keywords.join(', '),
   };
 
-  const relatedArticles = INITIAL_ARTICLES.filter((a) => a.id !== article.id).slice(0, 2);
+  // Find related articles by matching category first, then others
+  const relatedArticles = allArticles
+    .filter((a) => a.id !== article.id)
+    .sort((a, b) => (a.category === article.category ? -1 : 1))
+    .slice(0, 3);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8">
       <JsonLd data={articleSchema} />
 
       {/* Breadcrumbs */}
       <Breadcrumbs
         items={[
-          { name: 'Legal Articles', href: '/articles' },
+          { name: 'Publications & Articles', href: '/articles' },
+          { name: article.category, href: `/articles` },
           { name: article.title },
         ]}
       />

@@ -1,7 +1,12 @@
 import { MetadataRoute } from 'next';
-import { INITIAL_ARTICLES, INITIAL_INTERNSHIPS } from '@/lib/data-store';
+import { 
+  INITIAL_ARTICLES, 
+  INITIAL_INTERNSHIPS, 
+  fetchArticlesFromCMS, 
+  fetchInternshipsFromCMS 
+} from '@/lib/data-store';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://lexminds.in';
   const now = new Date();
 
@@ -75,8 +80,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
+  const [articles, internships] = await Promise.all([
+    fetchArticlesFromCMS().catch(() => INITIAL_ARTICLES),
+    fetchInternshipsFromCMS().catch(() => INITIAL_INTERNSHIPS),
+  ]);
+
   // Dynamic published legal articles
-  const articlePages: MetadataRoute.Sitemap = INITIAL_ARTICLES.map((article) => ({
+  const articlePages: MetadataRoute.Sitemap = articles.map((article) => ({
     url: `${baseUrl}/articles/${article.slug}`,
     lastModified: new Date(`${article.publishedAt}T00:00:00+05:30`),
     changeFrequency: 'monthly',
@@ -84,7 +94,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   // Dynamic active internships and fellowships
-  const internshipPages: MetadataRoute.Sitemap = INITIAL_INTERNSHIPS.map((internship) => ({
+  const internshipPages: MetadataRoute.Sitemap = internships.map((internship) => ({
     url: `${baseUrl}/internships/${internship.slug}`,
     lastModified: new Date(`${internship.postedDate}T00:00:00+05:30`),
     changeFrequency: 'weekly',
