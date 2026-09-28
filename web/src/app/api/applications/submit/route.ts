@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Full name is required.' }, { status: 400 });
     }
 
-    if (!phone || typeof phone !== 'string' || phone.trim().length < 10) {
+    if (!phone || typeof phone !== 'string' || phone.trim().replace(/\D/g, '').length < 10) {
       return NextResponse.json({ error: 'A valid 10-digit phone number is required.' }, { status: 400 });
     }
 

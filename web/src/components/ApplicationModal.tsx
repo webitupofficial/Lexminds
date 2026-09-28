@@ -66,7 +66,7 @@ export default function ApplicationModal({
   };
 
   const validateStep1 = () => {
-    return formData.fullName.trim() !== '' && formData.phone.trim().length >= 10;
+    return formData.fullName.trim() !== '' && formData.phone.trim().replace(/\D/g, '').length >= 10;
   };
 
   const validateStep2 = () => {

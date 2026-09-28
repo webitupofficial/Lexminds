@@ -22,8 +22,6 @@ export async function POST(req: Request) {
     const body = await req.json();
     const {
       authorName,
-      designation,
-      institution,
       authorBio,
       signatureLine,
       title,
@@ -34,6 +32,9 @@ export async function POST(req: Request) {
       originalityDeclaration,
       consentToPublish,
     } = body;
+
+    const institution = body.institution || body.authorInstitution;
+    const designation = body.designation || body.authorDesignation;
 
     // 2. Validate Required Manuscript Fields
     if (!authorName || typeof authorName !== 'string' || !authorName.trim()) {

@@ -100,7 +100,9 @@ export default function PublishClient() {
         body: JSON.stringify({
           authorName: formData.authorName,
           authorDesignation: formData.authorDesignation,
+          designation: formData.authorDesignation,
           authorInstitution: formData.authorInstitution,
+          institution: formData.authorInstitution,
           authorBio: formData.authorBio,
           signatureLine: formData.signatureLine,
           title: formData.title,

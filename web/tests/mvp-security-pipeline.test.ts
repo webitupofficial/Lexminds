@@ -811,4 +811,83 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     assert.equal(updatedPayRow.row[6], paymentId);
     assert.equal(updatedPayRow.row[9], 'verified');
   });
+
+  // ---------------------------------------------------------------------------
+  // 21. Publication Form Field Mapping & Sanitization Compatibility
+  // ---------------------------------------------------------------------------
+  test('21. Publication submission accepts authorInstitution / authorDesignation from form payload', async () => {
+    const authHeader = 'Bearer test_token_author@lexminds.in';
+
+    const publishReq = new Request('http://localhost:3000/api/publish/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader,
+      },
+      body: JSON.stringify({
+        authorName: 'Dr. Siddharth Roy',
+        authorDesignation: 'Assistant Professor of Law',
+        authorInstitution: 'Symbiosis Law School, Pune',
+        authorBio: 'Specializing in Intellectual Property and Artificial Intelligence Governance.',
+        signatureLine: 'Dr. Siddharth Roy, Symbiosis Pune',
+        title: 'Algorithmic Copyright: Authorship in the Age of Generative AI',
+        category: 'Intellectual Property',
+        abstract: 'This treatise evaluates the jurisprudential benchmarks for copyright protection in AI-generated artistic and literary works under Indian and international statutory frameworks.',
+        content: 'https://docs.google.com/document/d/1234567890abcdef/edit',
+        keywords: ['Artificial Intelligence', 'Copyright', 'Indian Copyright Act'],
+        originalityDeclaration: true,
+        aiReviewConsent: true,
+        consentToPublish: true,
+      }),
+    });
+
+    const publishRes = await submitPublishRoute(publishReq);
+    assert.equal(publishRes.status, 200);
+
+    const publishData = await publishRes.json();
+    assert.equal(publishData.success, true);
+    assert.ok(publishData.referenceId.startsWith('SUB-'));
+    assert.ok(publishData.sessionToken);
+
+    // Verify row was stored in ArticleSubmissions
+    const pubRow = await findRowById('ArticleSubmissions', 0, publishData.referenceId);
+    assert.ok(pubRow);
+    assert.equal(pubRow.row[3], 'Dr. Siddharth Roy');
+    assert.equal(pubRow.row[4], 'Assistant Professor of Law');
+    assert.equal(pubRow.row[5], 'Symbiosis Law School, Pune');
+    assert.equal(pubRow.row[16], 'payment_pending');
+  });
+
+  // ---------------------------------------------------------------------------
+  // 22. Phone Number Formatting Resilience Across All Registration Forms
+  // ---------------------------------------------------------------------------
+  test('22. Form submission accepts formatted phone numbers (+91, spaces, dashes) correctly', async () => {
+    const authHeader = 'Bearer test_token_scholar@nls.ac.in';
+
+    // Formatted phone: "+91 98300-12345" (contains space and dash)
+    const quizReq = new Request('http://localhost:3000/api/quiz/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: authHeader,
+      },
+      body: JSON.stringify({
+        fullName: 'Ananya Sen',
+        phone: '+91 98300-12345',
+        collegeName: 'National University of Juridical Sciences (NUJS)',
+        yearOfStudy: '2nd Year (5-Year Integrated)',
+        declaration: true,
+      }),
+    });
+
+    const quizRes = await submitQuizRoute(quizReq);
+    assert.equal(quizRes.status, 200);
+
+    const quizData = await quizRes.json();
+    assert.equal(quizData.success, true);
+
+    const quizRow = await findRowById('QuizRegistrations', 0, quizData.referenceId);
+    assert.ok(quizRow);
+    assert.equal(quizRow.row[4], '+91 98300-12345');
+  });
 });
