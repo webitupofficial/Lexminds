@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import JsonLd from '@/components/JsonLd';
 import { ThemeProvider } from '@/components/ThemeProvider';
+import WhatsAppCommunityWidget from '@/components/WhatsAppCommunityWidget';
 import Script from 'next/script';
 import { GA_TRACKING_ID } from '@/lib/gtag';
 
@@ -177,6 +178,7 @@ export default function RootLayout({
             <Header />
             <main className="flex-1">{children}</main>
             <Footer />
+            <WhatsAppCommunityWidget />
           </div>
         </ThemeProvider>
 

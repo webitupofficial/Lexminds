@@ -34,8 +34,7 @@ export default async function HomePage() {
   ]);
   const flagshipInternship = internships[0] || INITIAL_INTERNSHIPS[0];
   const isFlagshipClosed = Boolean(
-    flagshipInternship?.isClosed ||
-    (flagshipInternship?.deadline && new Date(flagshipInternship.deadline) < new Date(new Date().toDateString()))
+    flagshipInternship?.isClosed !== false && (flagshipInternship?.isClosed ?? true)
   );
 
   return (

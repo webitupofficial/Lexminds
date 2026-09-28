@@ -24,8 +24,7 @@ export default function InternshipDetailClient({ internship }: Props) {
   const [copiedLink, setCopiedLink] = useState(false);
 
   const isClosed = Boolean(
-    internship.isClosed ||
-    (internship.deadline && new Date(internship.deadline) < new Date(new Date().toDateString()))
+    internship.isClosed !== false && (internship.isClosed ?? true)
   );
 
   const handleShare = () => {
@@ -99,7 +98,7 @@ export default function InternshipDetailClient({ internship }: Props) {
           aria-disabled="true"
           className="w-full py-3.5 sm:py-4 px-4 bg-ink-200 dark:bg-ink-800 text-ink-500 dark:text-ink-400 text-xs font-bold uppercase tracking-wider text-center block cursor-not-allowed border border-ink-300 dark:border-ink-700 rounded-sm select-none"
         >
-          Closed
+          Registrations Closed
         </button>
       ) : (
         <button

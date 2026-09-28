@@ -39,14 +39,28 @@ export default function Footer() {
               Learn &bull; Research &bull; Write &bull; Create &bull; Grow
             </div>
 
-            <div className="pt-2 text-xs text-ink-500 dark:text-ink-400 flex items-center space-x-2 font-mono">
-              <Mail className="w-3.5 h-3.5 text-royal-500 shrink-0" />
-              <span>
-                Contact Us:{' '}
-                <a href="mailto:lexmindsindia@gmail.com" className="hover:text-royal-600 dark:hover:text-royal-400 underline">
-                  lexmindsindia@gmail.com
+            <div className="pt-2 text-xs text-ink-500 dark:text-ink-400 flex flex-col sm:flex-row sm:items-center gap-2 font-mono">
+              <div className="flex items-center space-x-2">
+                <Mail className="w-3.5 h-3.5 text-royal-500 shrink-0" />
+                <span>
+                  Contact Us:{' '}
+                  <a href="mailto:lexmindsindia@gmail.com" className="hover:text-royal-600 dark:hover:text-royal-400 underline">
+                    lexmindsindia@gmail.com
+                  </a>
+                </span>
+              </div>
+              <span className="hidden sm:inline text-ink-300 dark:text-ink-700">&bull;</span>
+              <div>
+                <a
+                  href="https://whatsapp.com/channel/0029Vb8i43gEgGfQD6ZnNE31"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 hover:underline font-semibold"
+                >
+                  <span className="w-2 h-2 rounded-full bg-[#25D366] inline-block"></span>
+                  <span>WhatsApp Community Channel &rarr;</span>
                 </a>
-              </span>
+              </div>
             </div>
           </div>
 

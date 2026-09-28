@@ -122,7 +122,7 @@ export const internshipType = defineType({
       name: 'isClosed',
       title: 'Applications Closed',
       type: 'boolean',
-      initialValue: false,
+      initialValue: true,
     }),
     defineField({
       name: 'description',

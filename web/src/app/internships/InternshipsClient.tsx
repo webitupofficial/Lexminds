@@ -64,7 +64,7 @@ export default function InternshipsClient() {
       <div className="space-y-8">
         <div className="flex items-center justify-between text-xs font-mono text-ink-500 dark:text-ink-400 border-b border-ink-900/10 dark:border-ink-800 pb-2">
           <span>{filteredInternships.length} Opportunity Available</span>
-          {filteredInternships.every((i) => i.isClosed) ? (
+          {filteredInternships.every((i) => i.isClosed !== false) ? (
             <span className="text-rose-600 dark:text-rose-400 font-semibold">September 2026 Batch Registrations Closed</span>
           ) : (
             <span className="text-emerald-600 dark:text-emerald-400 font-semibold">September 2026 Batch Registrations Open</span>
@@ -74,8 +74,7 @@ export default function InternshipsClient() {
         {filteredInternships.length > 0 ? (
           filteredInternships.map((item) => {
             const isItemClosed = Boolean(
-              item.isClosed ||
-              (item.deadline && new Date(item.deadline) < new Date(new Date().toDateString()))
+              item.isClosed !== false && (item.isClosed ?? true)
             );
 
             return (

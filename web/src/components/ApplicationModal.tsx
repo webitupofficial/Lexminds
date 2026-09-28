@@ -52,8 +52,7 @@ export default function ApplicationModal({
 
   // Deadline or Closed check
   const isDeadlinePassed = Boolean(
-    internship.isClosed ||
-    (internship.deadline && new Date(internship.deadline) < new Date(new Date().toDateString()))
+    internship.isClosed !== false && (internship.isClosed ?? true)
   );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -127,7 +126,7 @@ export default function ApplicationModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-40 flex items-center justify-center p-3 sm:p-4 bg-ink-950/75 backdrop-blur-sm animate-fade-in">
+      <div className="fixed inset-0 z-[60] flex items-center justify-center p-3 sm:p-4 bg-ink-950/75 backdrop-blur-sm animate-fade-in">
         <div className="relative w-full max-w-2xl rounded-sm bg-white dark:bg-ink-850 border border-ink-200 dark:border-ink-800 shadow-2xl overflow-hidden max-h-[92vh] flex flex-col transition-colors">
           
           {/* Header */}
