@@ -43,6 +43,7 @@ import { POST as webhookRoute } from '../src/app/api/webhooks/razorpay/route';
 import { GET as publicArticlesRoute } from '../src/app/api/articles/route';
 import { POST as maintenanceCleanupRoute } from '../src/app/api/maintenance/cleanup-abandoned/route';
 import { POST as submitContactRoute } from '../src/app/api/contact/submit/route';
+import { POST as submitQuizRoute } from '../src/app/api/quiz/submit/route';
 
 describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => {
   beforeEach(() => {
@@ -658,5 +659,156 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     assert.equal(contactRows[0][4], 'National Law School of India University');
     assert.equal(contactRows[0][5], '[Internship & Research Fellowship] Spring Fellowship Timeline');
     assert.equal(contactRows[0][7], 'new');
+  });
+
+  // ---------------------------------------------------------------------------
+  // 19. Quiz Registration Security & Validation
+  // ---------------------------------------------------------------------------
+  test('19. Quiz registration enforces Firebase auth, field validation, and declaration check', async () => {
+    // 1. Unauthenticated request must return 401
+    const unauthReq = new Request('http://localhost:3000/api/quiz/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fullName: 'Devansh Roy',
+        phone: '9876543210',
+        collegeName: 'NALSAR Hyderabad',
+        yearOfStudy: '3rd Year (5-Year Integrated)',
+        declaration: true,
+      }),
+    });
+    const unauthRes = await submitQuizRoute(unauthReq);
+    assert.equal(unauthRes.status, 401);
+
+    const authHeader = 'Bearer test_token_devansh@nalsar.ac.in';
+
+    // 2. Missing full name should return 400
+    const invalidReq1 = new Request('http://localhost:3000/api/quiz/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader },
+      body: JSON.stringify({
+        fullName: '',
+        phone: '9876543210',
+        collegeName: 'NALSAR Hyderabad',
+        yearOfStudy: '3rd Year (5-Year Integrated)',
+        declaration: true,
+      }),
+    });
+    const invalidRes1 = await submitQuizRoute(invalidReq1);
+    assert.equal(invalidRes1.status, 400);
+
+    // 3. Invalid phone number (< 10 digits) should return 400
+    const invalidReq2 = new Request('http://localhost:3000/api/quiz/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader },
+      body: JSON.stringify({
+        fullName: 'Devansh Roy',
+        phone: '12345',
+        collegeName: 'NALSAR Hyderabad',
+        yearOfStudy: '3rd Year (5-Year Integrated)',
+        declaration: true,
+      }),
+    });
+    const invalidRes2 = await submitQuizRoute(invalidReq2);
+    assert.equal(invalidRes2.status, 400);
+
+    // 4. Missing declaration checkbox should return 400
+    const invalidReq3 = new Request('http://localhost:3000/api/quiz/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader },
+      body: JSON.stringify({
+        fullName: 'Devansh Roy',
+        phone: '9876543210',
+        collegeName: 'NALSAR Hyderabad',
+        yearOfStudy: '3rd Year (5-Year Integrated)',
+        declaration: false,
+      }),
+    });
+    const invalidRes3 = await submitQuizRoute(invalidReq3);
+    assert.equal(invalidRes3.status, 400);
+  });
+
+  // ---------------------------------------------------------------------------
+  // 20. End-to-End Quiz Registration & Payment Reconciliation Flow
+  // ---------------------------------------------------------------------------
+  test('20. Authenticated Quiz registration generates ₹19 order and reconciles on verified payment', async () => {
+    const authHeader = 'Bearer test_token_devansh@nalsar.ac.in';
+
+    // 1. Submit quiz registration
+    const validReq = new Request('http://localhost:3000/api/quiz/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: authHeader },
+      body: JSON.stringify({
+        fullName: 'Devansh Roy',
+        phone: '+91 9876543210',
+        collegeName: 'NALSAR Hyderabad',
+        yearOfStudy: '3rd Year (5-Year Integrated)',
+        declaration: true,
+      }),
+    });
+
+    const validRes = await submitQuizRoute(validReq);
+    assert.equal(validRes.status, 200);
+
+    const validData = await validRes.json();
+    assert.equal(validData.success, true);
+    assert.equal(validData.amount, 1900); // Authoritative ₹19.00
+    assert.equal(validData.currency, 'INR');
+    assert.ok(validData.referenceId.startsWith('QUIZ-'));
+    assert.ok(validData.orderId.startsWith('order_test_'));
+    assert.ok(validData.sessionToken);
+    assert.ok(validData.paymentUrl.includes('/payment?orderId='));
+
+    // Verify QuizRegistrations row created with payment_pending status
+    const quizRow = await findRowById('QuizRegistrations', 0, validData.referenceId);
+    assert.ok(quizRow);
+    assert.equal(quizRow.row[2], 'devansh@nalsar.ac.in');
+    assert.equal(quizRow.row[3], 'Devansh Roy');
+    assert.equal(quizRow.row[4], '+91 9876543210');
+    assert.equal(quizRow.row[5], 'NALSAR Hyderabad');
+    assert.equal(quizRow.row[7], 'payment_pending');
+
+    // Verify Payments row created
+    const payRow = await findRowById('Payments', 5, validData.orderId);
+    assert.ok(payRow);
+    assert.equal(payRow.row[6], ''); // empty payment id until captured
+    assert.equal(String(payRow.row[7]), '1900');
+    assert.equal(payRow.row[9], 'created');
+
+    // 2. Simulate Payment Verification via Token
+    const paymentId = 'pay_quiz_test_987654';
+    const validSignature = generateRazorpayHmac(
+      `${validData.orderId}|${paymentId}`,
+      process.env.RAZORPAY_KEY_SECRET!
+    );
+
+    const verifyReq = new Request('http://localhost:3000/api/payment/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        razorpay_order_id: validData.orderId,
+        razorpay_payment_id: paymentId,
+        razorpay_signature: validSignature,
+        token: validData.sessionToken,
+      }),
+    });
+
+    const verifyRes = await verifyRoute(verifyReq);
+    assert.equal(verifyRes.status, 200);
+
+    const verifyData = await verifyRes.json();
+    assert.equal(verifyData.success, true);
+    assert.equal(verifyData.referenceId, validData.referenceId);
+
+    // 3. Confirm QuizRegistrations status updated to paid
+    const updatedQuizRow = await findRowById('QuizRegistrations', 0, validData.referenceId);
+    assert.ok(updatedQuizRow);
+    assert.equal(updatedQuizRow.row[7], 'paid');
+
+    // Confirm Payments status updated to verified
+    const updatedPayRow = await findRowById('Payments', 5, validData.orderId);
+    assert.ok(updatedPayRow);
+    assert.equal(updatedPayRow.row[6], paymentId);
+    assert.equal(updatedPayRow.row[9], 'verified');
   });
 });

@@ -71,6 +71,11 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs text-ink-600 dark:text-ink-400">
               <li>
+                <Link href="/quiz" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
+                  Virtual Quiz
+                </Link>
+              </li>
+              <li>
                 <Link href="/internships" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
                   Internship Programmes
                 </Link>

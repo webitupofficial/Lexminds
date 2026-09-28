@@ -31,6 +31,7 @@ export default function Header() {
   }
 
   const navLinks = [
+    { name: 'Quiz', href: '/quiz' },
     { name: 'Mentors', href: '/mentors' },
     { name: 'Internships', href: '/internships' },
     { name: 'Publications', href: '/articles' },

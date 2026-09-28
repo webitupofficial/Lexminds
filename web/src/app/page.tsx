@@ -17,7 +17,8 @@ import {
   TrendingUp, 
   AlertCircle,
   Mail,
-  Compass
+  Compass,
+  Trophy
 } from 'lucide-react';
 import { INITIAL_INTERNSHIPS, INITIAL_ARTICLES, fetchArticlesFromCMS, fetchInternshipsFromCMS } from '@/lib/data-store';
 import HomeArticleSection from '@/components/HomeArticleSection';
@@ -171,6 +172,81 @@ export default async function HomePage() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* LEXMINDS VIRTUAL QUIZ SECTION */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p-8 sm:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal relative overflow-hidden space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <div className="lg:col-span-8 space-y-4">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="px-3 py-1 bg-royal-50 dark:bg-royal-950/40 text-royal-600 dark:text-royal-400 font-mono text-xs font-bold uppercase tracking-wider border border-royal-200 dark:border-royal-800 flex items-center space-x-1.5">
+                  <Trophy className="w-3.5 h-3.5" />
+                  <span>Virtual Competition</span>
+                </span>
+                <span className="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold border border-emerald-500/30 flex items-center space-x-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Registrations Open</span>
+                </span>
+              </div>
+
+              <h2 className="text-3xl sm:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight">
+                LexMinds Virtual Quiz
+              </h2>
+
+              <p className="text-base text-ink-600 dark:text-ink-300 leading-relaxed font-normal max-w-2xl">
+                Test your knowledge, compete with fellow participants, and take part in the upcoming LexMinds virtual quiz. Gain valuable insights, challenge your understanding of contemporary legal concepts, and earn a verified Certificate of Participation.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs font-mono text-ink-700 dark:text-ink-300">
+                <div className="flex items-center space-x-1.5">
+                  <Check className="w-4 h-4 text-royal-500" />
+                  <span>Online Format</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <Check className="w-4 h-4 text-royal-500" />
+                  <span>Open to All Law Students</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <Check className="w-4 h-4 text-royal-500" />
+                  <span>Verified E-Certificates</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 p-6 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-4 text-center sm:text-left flex flex-col justify-between">
+              <div className="space-y-1">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-ink-500 dark:text-ink-400 block">
+                  Registration Fee
+                </span>
+                <div className="flex items-baseline justify-center sm:justify-start space-x-2">
+                  <span className="text-3xl font-serif font-bold text-royal-600 dark:text-royal-400">
+                    ₹19.00
+                  </span>
+                  <span className="text-sm line-through text-ink-400">₹99.00</span>
+                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold uppercase">
+                    80% Off
+                  </span>
+                </div>
+                <span className="text-[11px] font-mono text-ink-500 dark:text-ink-400 block">
+                  Includes full participation access &amp; participation certificate
+                </span>
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/quiz"
+                  className="w-full py-3.5 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center flex items-center justify-center space-x-2"
+                >
+                  <span>Register for the Quiz</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 

@@ -20,6 +20,11 @@ export const PRODUCT_CATALOG: Record<
     amountPaise: 9900, // ₹99.00 (discounted from ₹399.00)
     currency: 'INR',
   },
+  quiz_registration: {
+    name: 'LexMinds Virtual Quiz Registration',
+    amountPaise: 1900, // ₹19.00 (1900 paise)
+    currency: 'INR',
+  },
 };
 
 /**
@@ -98,6 +103,8 @@ export async function createAuthoritativeOrder(params: {
   const internalReference =
     params.productKey === 'internship_enrollment'
       ? `APP-${Date.now().toString(36).toUpperCase()}`
+      : params.productKey === 'quiz_registration'
+      ? `QUIZ-${Date.now().toString(36).toUpperCase()}`
       : `SUB-${Date.now().toString(36).toUpperCase()}`;
 
   const receipt = `rcpt_${paymentRecordId.toLowerCase()}`;
@@ -176,7 +183,7 @@ export async function createAuthoritativeOrder(params: {
  * creates the Razorpay order, and generates a signed payment session token.
  */
 export async function createPendingSubmissionOrder(params: {
-  productKey: 'internship_enrollment' | 'article_submission';
+  productKey: 'internship_enrollment' | 'article_submission' | 'quiz_registration';
   firebaseUid: string;
   verifiedEmail: string;
   formData: Record<string, any>;
@@ -199,7 +206,12 @@ export async function createPendingSubmissionOrder(params: {
   const timestamp = new Date().toISOString();
   const paymentRecordId = `PAY-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
   
-  const referencePrefix = params.productKey === 'internship_enrollment' ? 'APP' : 'SUB';
+  const referencePrefix =
+    params.productKey === 'internship_enrollment'
+      ? 'APP'
+      : params.productKey === 'quiz_registration'
+      ? 'QUIZ'
+      : 'SUB';
   const internalReference = `${referencePrefix}-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
   const receipt = `rcpt_${paymentRecordId.toLowerCase()}`;
 
@@ -255,6 +267,23 @@ export async function createPendingSubmissionOrder(params: {
       timestamp,
     ];
     await appendToSheet('Applications', appRow);
+  } else if (params.productKey === 'quiz_registration') {
+    const quizRow = [
+      internalReference,
+      params.firebaseUid,
+      params.verifiedEmail,
+      params.formData.participantName || params.formData.fullName || 'Quiz Participant',
+      params.formData.phone || '',
+      params.formData.institution || params.formData.collegeName || '',
+      params.formData.yearOfStudy || '',
+      'payment_pending', // Status starts as payment_pending
+      paymentRecordId,
+      params.formData.quizKey || 'lexminds-virtual-quiz-2026',
+      params.formData.declaration ? 'true' : 'false',
+      timestamp,
+      timestamp,
+    ];
+    await appendToSheet('QuizRegistrations', quizRow);
   } else if (params.productKey === 'article_submission') {
     const keywordsStr = Array.isArray(params.formData.keywords)
       ? params.formData.keywords.join(', ')
@@ -400,7 +429,11 @@ export async function reconcilePaymentAndFulfill(params: {
 
   // Determine target destination tab
   const destinationTab: SheetTabName =
-    params.productKey === 'internship_enrollment' ? 'Applications' : 'ArticleSubmissions';
+    params.productKey === 'internship_enrollment'
+      ? 'Applications'
+      : params.productKey === 'quiz_registration'
+      ? 'QuizRegistrations'
+      : 'ArticleSubmissions';
 
   // 4. Re-read the destination row before writing using internal reference as deterministic identifier
   const destinationRecord = await findRowById(destinationTab, 0, internalReference);
@@ -419,6 +452,8 @@ export async function reconcilePaymentAndFulfill(params: {
     isDestinationPaid = destinationRecord.row[9] === 'paid';
   } else if (destinationTab === 'ArticleSubmissions') {
     isDestinationPaid = destinationRecord.row[16] === 'paid_submitted';
+  } else if (destinationTab === 'QuizRegistrations') {
+    isDestinationPaid = destinationRecord.row[7] === 'paid';
   }
 
   const isPaymentVerified = currentPaymentStatus === 'verified';
@@ -470,6 +505,12 @@ export async function reconcilePaymentAndFulfill(params: {
     updatedSubRow[15] = paymentRecordId;
     updatedSubRow[16] = 'paid_submitted'; // Status: paid_submitted
     await updateRowById('ArticleSubmissions', 0, internalReference, updatedSubRow);
+  } else if (destinationTab === 'QuizRegistrations') {
+    const updatedQuizRow = [...destinationRecord.row];
+    updatedQuizRow[7] = 'paid'; // Status: paid
+    updatedQuizRow[8] = paymentRecordId;
+    updatedQuizRow[12] = now; // Updated At
+    await updateRowById('QuizRegistrations', 0, internalReference, updatedQuizRow);
   }
 
   // 6. Update Payments row strictly in-place
@@ -588,7 +629,11 @@ export async function processRazorpayWebhook(
 
   if (event === 'payment.captured') {
     const targetTab: SheetTabName =
-      productKey === 'internship_enrollment' ? 'Applications' : 'ArticleSubmissions';
+      productKey === 'internship_enrollment'
+        ? 'Applications'
+        : productKey === 'quiz_registration'
+        ? 'QuizRegistrations'
+        : 'ArticleSubmissions';
 
     // Re-read destination row before writing
     const destinationRecord = await findRowById(targetTab, 0, internalReference);
@@ -596,7 +641,8 @@ export async function processRazorpayWebhook(
     const isDestinationPaid = Boolean(
       destinationRecord &&
       ((targetTab === 'Applications' && destinationRecord.row[9] === 'paid') ||
-       (targetTab === 'ArticleSubmissions' && destinationRecord.row[16] === 'paid_submitted'))
+       (targetTab === 'ArticleSubmissions' && destinationRecord.row[16] === 'paid_submitted') ||
+       (targetTab === 'QuizRegistrations' && destinationRecord.row[7] === 'paid'))
     );
 
     const isPaymentVerified = currentStatus === 'verified';
@@ -631,7 +677,7 @@ export async function processRazorpayWebhook(
       }
     }
 
-    // Reconcile linked application or submission in-place
+    // Reconcile linked application, quiz, or submission in-place
     if (destinationRecord) {
       if (targetTab === 'Applications') {
         const appRow = [...destinationRecord.row];
@@ -644,6 +690,12 @@ export async function processRazorpayWebhook(
         subRow[15] = paymentRecordId;
         subRow[16] = 'paid_submitted';
         await updateRowById('ArticleSubmissions', 0, internalReference, subRow);
+      } else if (targetTab === 'QuizRegistrations') {
+        const quizRow = [...destinationRecord.row];
+        quizRow[7] = 'paid';
+        quizRow[8] = paymentRecordId;
+        quizRow[12] = now;
+        await updateRowById('QuizRegistrations', 0, internalReference, quizRow);
       }
     }
 
@@ -675,6 +727,14 @@ export async function processRazorpayWebhook(
         appRow[9] = 'cancelled';
         appRow[13] = now;
         await updateRowById('Applications', 0, internalReference, appRow);
+      }
+    } else if (productKey === 'quiz_registration') {
+      const quizRecord = await findRowById('QuizRegistrations', 0, internalReference);
+      if (quizRecord) {
+        const quizRow = [...quizRecord.row];
+        quizRow[7] = 'cancelled';
+        quizRow[12] = now;
+        await updateRowById('QuizRegistrations', 0, internalReference, quizRow);
       }
     } else if (productKey === 'article_submission') {
       const subRecord = await findRowById('ArticleSubmissions', 0, internalReference);
@@ -771,7 +831,11 @@ export async function reconcileOrderFromGateway(orderId: string): Promise<{
 
   // 4. Update destination row
   const targetTab: SheetTabName =
-    productKey === 'internship_enrollment' ? 'Applications' : 'ArticleSubmissions';
+    productKey === 'internship_enrollment'
+      ? 'Applications'
+      : productKey === 'quiz_registration'
+      ? 'QuizRegistrations'
+      : 'ArticleSubmissions';
   const destinationRecord = await findRowById(targetTab, 0, internalReference);
 
   if (destinationRecord) {
@@ -786,6 +850,12 @@ export async function reconcileOrderFromGateway(orderId: string): Promise<{
       subRow[15] = paymentRecordId;
       subRow[16] = 'paid_submitted';
       await updateRowById('ArticleSubmissions', 0, internalReference, subRow);
+    } else if (targetTab === 'QuizRegistrations') {
+      const quizRow = [...destinationRecord.row];
+      quizRow[7] = 'paid';
+      quizRow[8] = paymentRecordId;
+      quizRow[12] = now;
+      await updateRowById('QuizRegistrations', 0, internalReference, quizRow);
     }
   }
 

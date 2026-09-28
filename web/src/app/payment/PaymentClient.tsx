@@ -242,6 +242,7 @@ export default function PaymentClient() {
   // Render Success State
   if (successData) {
     const isInternship = session.productKey === 'internship_enrollment';
+    const isQuiz = session.productKey === 'quiz_registration';
 
     return (
       <div className="max-w-2xl mx-auto my-8 sm:my-12 p-5 sm:p-8 md:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-6 sm:space-y-8 animate-editorial-reveal">
@@ -254,7 +255,11 @@ export default function PaymentClient() {
             <span>Payment Verified &bull; Record Active</span>
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50">
-            {isInternship ? 'Enrollment Record Confirmed' : 'Manuscript Submitted For Review'}
+            {isQuiz
+              ? 'Quiz Registration Confirmed'
+              : isInternship
+              ? 'Enrollment Record Confirmed'
+              : 'Manuscript Submitted For Review'}
           </h1>
           <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 max-w-lg mx-auto font-normal">
             Your transaction has been securely reconciled with our central database.
@@ -289,9 +294,15 @@ export default function PaymentClient() {
 
         {/* Next Steps Guidance */}
         <div className="p-5 bg-paper dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 text-xs space-y-2 text-ink-700 dark:text-ink-300 rounded-sm">
-          <p className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm">Next Steps &amp; Editorial Timelines:</p>
+          <p className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm">Next Steps &amp; Event Timelines:</p>
           <ul className="list-disc list-inside space-y-1.5 text-ink-600 dark:text-ink-400 font-normal leading-relaxed">
-            {isInternship ? (
+            {isQuiz ? (
+              <>
+                <li>Your registration for the LexMinds Virtual Quiz has been confirmed.</li>
+                <li>Quiz participation guidelines, schedule, and access links will be sent to <strong>{session.email}</strong>.</li>
+                <li>Please preserve your docket reference <strong>{successData.referenceId}</strong> for all correspondence.</li>
+              </>
+            ) : isInternship ? (
               <>
                 <li>Your application has been placed in the fellowship candidate evaluation pool.</li>
                 <li>Shortlisted candidates will receive communication directly at {session.email}.</li>
@@ -323,7 +334,10 @@ export default function PaymentClient() {
   // Render Checkout Order View
   const feeRupees = (session.amountPaise / 100).toFixed(2);
   const isInternship = session.productKey === 'internship_enrollment';
-  const displayProductName = isInternship
+  const isQuiz = session.productKey === 'quiz_registration';
+  const displayProductName = isQuiz
+    ? (session.productName || 'LexMinds Virtual Quiz Registration')
+    : isInternship
     ? (session.productName && !session.productName.includes('Evaluation Fee')
         ? session.productName
         : 'September Two-Week Legal Media Internship')
@@ -333,7 +347,7 @@ export default function PaymentClient() {
     <div className="max-w-2xl mx-auto my-10 sm:my-16 px-4 space-y-8">
       <Breadcrumbs
         items={[
-          { name: 'Application', href: '/internships' },
+          { name: isQuiz ? 'Quiz Registration' : 'Application', href: isQuiz ? '/quiz' : '/internships' },
           { name: 'Authoritative Checkout', href: '#' },
         ]}
       />
@@ -361,7 +375,7 @@ export default function PaymentClient() {
           <div className="flex justify-between items-start">
             <div className="space-y-0.5">
               <span className="text-xs text-ink-500 dark:text-ink-400 font-mono uppercase font-semibold">
-                {isInternship ? 'Internship Programme' : 'Designated Service'}
+                {isQuiz ? 'Virtual Quiz' : isInternship ? 'Internship Programme' : 'Designated Service'}
               </span>
               <h3 className="text-base font-serif font-bold text-ink-950 dark:text-ink-50">
                 {displayProductName}
@@ -372,7 +386,9 @@ export default function PaymentClient() {
                 <span className="text-2xl sm:text-3xl font-serif font-bold text-royal-600 dark:text-royal-400">
                   ₹{feeRupees}
                 </span>
-                {session.productKey === 'internship_enrollment' ? (
+                {session.productKey === 'quiz_registration' ? (
+                  <span className="text-sm line-through text-ink-400">₹99</span>
+                ) : session.productKey === 'internship_enrollment' ? (
                   <span className="text-sm line-through text-ink-400">₹299</span>
                 ) : (
                   <span className="text-sm line-through text-ink-400">₹399</span>

@@ -5,7 +5,8 @@ export type SheetTabName =
   | 'ArticleSubmissions'
   | 'Payments'
   | 'ContactTickets'
-  | 'Certificates';
+  | 'Certificates'
+  | 'QuizRegistrations';
 
 export const SHEET_TAB_HEADERS: Record<SheetTabName, string[]> = {
   Applications: [
@@ -50,6 +51,21 @@ export const SHEET_TAB_HEADERS: Record<SheetTabName, string[]> = {
     'Reviewed At',
     'Published At',
     'Reviewer Email',
+  ],
+  QuizRegistrations: [
+    'Registration ID',
+    'Firebase UID',
+    'Verified Email',
+    'Participant Name',
+    'Phone',
+    'Institution',
+    'Year of Study',
+    'Status',
+    'Payment Record ID',
+    'Quiz Key',
+    'Declaration Accepted',
+    'Created At',
+    'Updated At',
   ],
   Payments: [
     'Payment Record ID',
@@ -98,6 +114,7 @@ export const SHEET_TAB_HEADERS: Record<SheetTabName, string[]> = {
 const testStore: Record<SheetTabName, string[][]> = {
   Applications: [],
   ArticleSubmissions: [],
+  QuizRegistrations: [],
   Payments: [],
   ContactTickets: [],
   Certificates: [],
