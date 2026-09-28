@@ -8,7 +8,26 @@ const nextConfig = {
     serverComponentsExternalPackages: ['firebase-admin', 'googleapis'],
   },
   images: {
-    domains: ['images.unsplash.com', 'lexminds.in'],
+    domains: [
+      'images.unsplash.com',
+      'lexminds.in',
+      'lh3.googleusercontent.com',
+      'googleusercontent.com',
+    ],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.googleusercontent.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lexminds.in',
+      },
+    ],
   },
   async headers() {
     return [

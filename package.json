@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "npm run dev --workspace=web",
     "dev:web": "npm run dev --workspace=web",
-    "build": "npm run build --workspace=web",
+    "build": "node -e \"const fs=require('fs'); if(fs.existsSync('web/public')) fs.cpSync('web/public', 'public', {recursive:true});\" && npm run build --workspace=web",
     "build:web": "npm run build --workspace=web",
     "build:studio": "npm run build --workspace=studio",
     "test": "npm run test --workspace=web",

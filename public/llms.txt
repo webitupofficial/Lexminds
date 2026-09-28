@@ -1,0 +1,45 @@
+# Lex Minds (`https://lexminds.in`)
+> Legal Education, Research, Writing & Practical Learning
+
+## Overview
+Lex Minds is an independent, student-led legal education platform dedicated to empowering law students and researchers through legal learning, research fellowships, structured manuscript peer-review, and practical skill development.
+
+## Core Capabilities & Services
+
+### 1. Legal Internship & Fellowship Programmes (`/internships`)
+- **Student-Focused Programmes**: Structured experiential learning cohorts in legal research, statutory interpretation, case digest drafting, and citation standardization.
+- **Practice Areas**:
+  - Corporate Law & Regulatory Compliance
+  - Constitutional & Appellate Law
+  - Intellectual Property Rights
+  - Technology & Data Privacy (DPDP Act 2023)
+  - Commercial Dispute Resolution & Arbitration
+  - Criminal Jurisprudence (BNS / BNSS / BSA)
+- **Application Workflow**: Multi-step application with Statement of Purpose (SOP), academic credentials, Google authentication, and nominal administrative evaluation fee (₹39 INR) processed via Razorpay. Note: Payment does not guarantee selection.
+
+### 2. Article Publishing & Legal Journal (`/articles` & `/publish`)
+- **Student-Led Editorial Review**: Publishing analytical research papers, case commentaries, and statutory analyses.
+- **Publish With Us**: Transparent manuscript intake and editorial review process with citation verification and archival publication dockets. Nominal editorial evaluation fee (₹99 INR) processed via Razorpay. Payment does not guarantee acceptance or publication.
+- **Citation Standards**: Formatted to Bluebook and OSCOLA standards.
+
+### 3. Mentorship & Clinical Guidance (`/mentors` & `/about`)
+- Advisory panel of experienced legal practitioners, advocates, and academic scholars.
+- Practical guidance in legal writing, research methodologies, and career development.
+
+## Key URLs
+- Home: https://lexminds.in/
+- Mentors & Faculty: https://lexminds.in/mentors
+- Internship Programmes: https://lexminds.in/internships
+- Articles Archive: https://lexminds.in/articles
+- Publish With Us: https://lexminds.in/publish
+- Editorial Policy: https://lexminds.in/editorial-policy
+- Terms & Conditions: https://lexminds.in/terms
+- Privacy Policy: https://lexminds.in/privacy
+- Cancellation & Refund Policy: https://lexminds.in/refund-policy
+- About Us: https://lexminds.in/about
+- Contact Us: https://lexminds.in/contact
+
+## Contact & Grievance Redressal
+- Support Email: lexmindsindia@gmail.com
+- Domain: https://lexminds.in
+- Operations: Online / Pan-India Digital Operations
