@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Mail } from 'lucide-react';
 
@@ -20,8 +21,14 @@ export default function Footer() {
           {/* Brand & Mission Colophon (6 cols) */}
           <div className="lg:col-span-6 space-y-4">
             <Link href="/" className="flex items-center space-x-2.5 group">
-              <div className="w-8 h-8 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 flex items-center justify-center text-royal-500 dark:text-royal-400 font-serif font-bold text-base shadow-brutal-sm">
-                L
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border border-ink-900/15 dark:border-white/20 bg-white flex items-center justify-center shadow-brutal-sm shrink-0 transition-transform duration-200 group-hover:scale-105">
+                <Image
+                  src="/logo.png"
+                  alt="Lex Minds Logo"
+                  width={36}
+                  height={36}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="flex items-baseline space-x-1.5">
                 <span className="font-serif text-xl font-bold tracking-tight text-ink-950 dark:text-ink-50">

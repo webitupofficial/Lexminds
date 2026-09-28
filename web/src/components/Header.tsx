@@ -54,7 +54,7 @@ export default function Header() {
           <Link href="/" className="flex items-center space-x-2.5 group focus:outline-none shrink-0">
             <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden border border-ink-900/15 dark:border-white/20 bg-white flex items-center justify-center transition-transform duration-200 group-hover:scale-105 shadow-brutal-sm shrink-0">
               <Image
-                src="/logo.jpg"
+                src="/logo.png"
                 alt="Lex Minds Logo"
                 width={36}
                 height={36}
