@@ -1,7 +1,8 @@
 import crypto from 'crypto';
-import { appendToSheet, findRowById, updateRowById, upsertRowById, SheetTabName } from './google-sheets';
+import { appendToSheet, findRowById, updateRowById, upsertRowById, getTabRows, SheetTabName } from './google-sheets';
 import { InternshipApplication, ArticleSubmission, PaymentRecord } from './types';
 import { createPaymentSessionToken, verifyPaymentSessionToken, PaymentSessionPayload } from './payment-token';
+import { getAdminEmails } from './firebase-admin';
 
 // ==============================================================================
 // Authoritative Server-Side Product Catalog & Pricing (in Paise)
@@ -874,4 +875,138 @@ export async function reconcileOrderFromGateway(orderId: string): Promise<{
     alreadyProcessed: false,
   };
 }
+
+// ==============================================================================
+// 10. Quiz Access Verification for Paid Candidates
+// ==============================================================================
+export interface UserQuizAccessResult {
+  hasAccess: boolean;
+  participantName?: string;
+  email?: string;
+  referenceId?: string;
+  paymentRecordId?: string;
+  quizKey?: string;
+  status?: string;
+  paidAt?: string;
+  quizLink?: string;
+  whatsappGroupLink?: string;
+  isAdmin?: boolean;
+  reason?: string;
+}
+
+export async function checkUserQuizAccess(
+  firebaseUid: string,
+  userEmail: string
+): Promise<UserQuizAccessResult> {
+  const normalizedEmail = (userEmail || '').trim().toLowerCase();
+  const quizLink =
+    process.env.QUIZ_PORTAL_URL ||
+    process.env.NEXT_PUBLIC_QUIZ_PORTAL_URL ||
+    'https://forms.gle/LexMindsVirtualQuiz2026';
+  const whatsappGroupLink =
+    process.env.QUIZ_WHATSAPP_GROUP_URL ||
+    process.env.NEXT_PUBLIC_QUIZ_WHATSAPP_GROUP_URL ||
+    'https://chat.whatsapp.com/LexMindsQuiz2026Official';
+
+  // 1. Check Admin Override for testing/supervision
+  const adminEmails = getAdminEmails();
+  if (normalizedEmail && adminEmails.includes(normalizedEmail)) {
+    return {
+      hasAccess: true,
+      participantName: 'Administrator (LexMinds Oversight)',
+      email: normalizedEmail,
+      referenceId: 'ADMIN-OVERRIDE',
+      paymentRecordId: 'PAY-ADMIN-BYPASS',
+      quizKey: 'lexminds-virtual-quiz-2026',
+      status: 'admin_preview',
+      paidAt: new Date().toISOString(),
+      quizLink,
+      whatsappGroupLink,
+      isAdmin: true,
+    };
+  }
+
+  try {
+    // 2. Query QuizRegistrations tab
+    const quizRows = await getTabRows('QuizRegistrations');
+    for (const row of quizRows) {
+      const regId = row[0] || '';
+      const rowUid = row[1] || '';
+      const rowEmail = (row[2] || '').trim().toLowerCase();
+      const participantName = row[3] || 'Candidate';
+      const status = (row[7] || '').trim().toLowerCase();
+      const paymentRecordId = row[8] || '';
+      const quizKey = row[9] || 'lexminds-virtual-quiz-2026';
+      const updatedAt = row[12] || row[11] || '';
+
+      const isMatch =
+        (normalizedEmail && rowEmail === normalizedEmail) ||
+        (firebaseUid && rowUid === firebaseUid);
+
+      if (isMatch && status === 'paid') {
+        return {
+          hasAccess: true,
+          participantName,
+          email: rowEmail || normalizedEmail,
+          referenceId: regId,
+          paymentRecordId,
+          quizKey,
+          status: 'paid',
+          paidAt: updatedAt,
+          quizLink,
+          whatsappGroupLink,
+        };
+      }
+    }
+
+    // 3. Query Payments tab fallback
+    const paymentRows = await getTabRows('Payments');
+    for (const pRow of paymentRows) {
+      const paymentRecordId = pRow[0] || '';
+      const productKey = pRow[1] || '';
+      const internalReference = pRow[2] || '';
+      const pUid = pRow[3] || '';
+      const pEmail = (pRow[4] || '').trim().toLowerCase();
+      const pStatus = (pRow[9] || '').trim().toLowerCase();
+      const verifiedAt = pRow[13] || pRow[12] || '';
+
+      const isMatch =
+        (normalizedEmail && pEmail === normalizedEmail) ||
+        (firebaseUid && pUid === firebaseUid);
+
+      if (
+        isMatch &&
+        productKey === 'quiz_registration' &&
+        (pStatus === 'verified' || pStatus === 'captured' || pStatus === 'paid')
+      ) {
+        return {
+          hasAccess: true,
+          participantName: 'Verified Quiz Scholar',
+          email: pEmail || normalizedEmail,
+          referenceId: internalReference,
+          paymentRecordId,
+          quizKey: 'lexminds-virtual-quiz-2026',
+          status: 'paid',
+          paidAt: verifiedAt,
+          quizLink,
+          whatsappGroupLink,
+        };
+      }
+    }
+
+    return {
+      hasAccess: false,
+      email: normalizedEmail,
+      reason: 'No completed payment record found for this Google account.',
+    };
+  } catch (err: any) {
+    console.error('[checkUserQuizAccess Error]:', err.message || err);
+    return {
+      hasAccess: false,
+      email: normalizedEmail,
+      reason: 'Unable to query registration records at this moment.',
+    };
+  }
+}
+
 

@@ -134,9 +134,21 @@ export default function QuizClient() {
             <span>Virtual Competition &bull; 2026 Edition</span>
           </div>
 
-          <div className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Registrations Open</span>
+          <div className="flex flex-wrap items-center gap-3">
+            <div className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Registrations Open</span>
+            </div>
+
+            <Link
+              href="/quiz-main"
+              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm hover:shadow"
+              title="Candidates who have already completed ₹19 payment"
+            >
+              <CheckCircle2 className="w-3.5 h-3.5" />
+              <span>Already Paid Users</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
 
@@ -184,7 +196,7 @@ export default function QuizClient() {
       {/* Main Registration Form Card */}
       <div className="p-6 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-6">
         
-        <div className="border-b border-ink-900/15 dark:border-ink-700 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-ink-900/15 dark:border-ink-700 pb-4">
           <div className="flex items-center space-x-2.5">
             <div className="w-8 h-8 rounded-sm bg-royal-50 dark:bg-royal-950/50 border border-royal-200 dark:border-royal-800 flex items-center justify-center text-royal-600 dark:text-royal-400 shrink-0">
               <Trophy className="w-4 h-4" />
@@ -198,6 +210,14 @@ export default function QuizClient() {
               </p>
             </div>
           </div>
+
+          <Link
+            href="/quiz-main"
+            className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-sm border border-emerald-500/40 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 font-mono text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors shrink-0"
+          >
+            <Lock className="w-3 h-3 text-emerald-600" />
+            <span>Already paid? Enter Quiz Portal &rarr;</span>
+          </Link>
         </div>
 
         <GoogleAuthGate

@@ -44,6 +44,8 @@ import { GET as publicArticlesRoute } from '../src/app/api/articles/route';
 import { POST as maintenanceCleanupRoute } from '../src/app/api/maintenance/cleanup-abandoned/route';
 import { POST as submitContactRoute } from '../src/app/api/contact/submit/route';
 import { POST as submitQuizRoute } from '../src/app/api/quiz/submit/route';
+import { POST as quizAccessRoute } from '../src/app/api/quiz/access/route';
+import { checkUserQuizAccess } from '../src/lib/payment-service';
 
 describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => {
   beforeEach(() => {
@@ -890,4 +892,81 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     assert.ok(quizRow);
     assert.equal(quizRow.row[4], '+91 98300-12345');
   });
+
+  // ---------------------------------------------------------------------------
+  // 23. Quiz-main Paid Candidate Access Control & Gatekeeper
+  // ---------------------------------------------------------------------------
+  test('23. Quiz-main access endpoint enforces Firebase auth and restricts access to paid users', async () => {
+    // 1. Unauthenticated request rejected with 401
+    const unauthReq = new Request('http://localhost:3000/api/quiz/access', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+    });
+    const unauthRes = await quizAccessRoute(unauthReq);
+    assert.equal(unauthRes.status, 401);
+    const unauthData = await unauthRes.json();
+    assert.equal(unauthData.hasAccess, false);
+
+    // 2. Authenticated user without paid registration returns hasAccess: false
+    const unpaidReq = new Request('http://localhost:3000/api/quiz/access', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test_token_unpaid_student@example.com',
+      },
+    });
+    const unpaidRes = await quizAccessRoute(unpaidReq);
+    assert.equal(unpaidRes.status, 200);
+    const unpaidData = await unpaidRes.json();
+    assert.equal(unpaidData.hasAccess, false);
+    assert.equal(unpaidData.email, 'unpaid_student@example.com');
+
+    // 3. Paid candidate returns hasAccess: true with quiz links
+    await appendToSheet('QuizRegistrations', [
+      'QUIZ-TEST-REF-101',
+      'test_uid_devansh@nalsar.ac.in',
+      'devansh@nalsar.ac.in',
+      'Devansh Roy',
+      '+91 9876543210',
+      'NALSAR Hyderabad',
+      '3rd Year',
+      'paid',
+      'PAY-RECORD-999',
+      'lexminds-virtual-quiz-2026',
+      'true',
+      new Date().toISOString(),
+      new Date().toISOString(),
+    ]);
+
+    const paidReq = new Request('http://localhost:3000/api/quiz/access', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test_token_devansh@nalsar.ac.in',
+      },
+    });
+    const paidRes = await quizAccessRoute(paidReq);
+    assert.equal(paidRes.status, 200);
+    const paidData = await paidRes.json();
+    assert.equal(paidData.hasAccess, true);
+    assert.equal(paidData.participantName, 'Devansh Roy');
+    assert.equal(paidData.status, 'paid');
+    assert.ok(paidData.quizLink);
+    assert.ok(paidData.whatsappGroupLink);
+
+    // 4. Admin override allows supervision access
+    const adminReq = new Request('http://localhost:3000/api/quiz/access', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test_token_owner@lexminds.in',
+      },
+    });
+    const adminRes = await quizAccessRoute(adminReq);
+    assert.equal(adminRes.status, 200);
+    const adminData = await adminRes.json();
+    assert.equal(adminData.hasAccess, true);
+    assert.equal(adminData.isAdmin, true);
+  });
 });
+

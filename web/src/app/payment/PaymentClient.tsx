@@ -318,14 +318,32 @@ export default function PaymentClient() {
           </ul>
         </div>
 
-        <div className="pt-2 text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center space-x-2 px-7 py-3.5 btn-brand-primary text-xs uppercase tracking-wider"
-          >
-            <span>Return to Central Platform</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
+        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+          {isQuiz ? (
+            <>
+              <Link
+                href="/quiz-main"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-3.5 btn-brand-primary text-xs uppercase tracking-wider font-semibold shadow-md"
+              >
+                <span>Enter Quiz Portal (Quiz-main)</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 bg-paper dark:bg-ink-800 hover:bg-paper-200 dark:hover:bg-ink-700 text-ink-900 dark:text-ink-100 font-mono text-xs rounded-sm border border-ink-900/15 dark:border-ink-700 transition-colors"
+              >
+                <span>Return to Central Platform</span>
+              </Link>
+            </>
+          ) : (
+            <Link
+              href="/"
+              className="inline-flex items-center space-x-2 px-7 py-3.5 btn-brand-primary text-xs uppercase tracking-wider"
+            >
+              <span>Return to Central Platform</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          )}
         </div>
       </div>
     );
