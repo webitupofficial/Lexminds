@@ -169,11 +169,23 @@ export default function PaymentClient() {
 
           const verifyData = await verifyRes.json();
           if (verifyRes.ok && verifyData.success) {
+            const confirmedRef = verifyData.referenceId || session.referenceId;
             setSuccessData({
-              referenceId: verifyData.referenceId || session.referenceId,
+              referenceId: confirmedRef,
               paymentId: response.razorpay_payment_id,
               alreadyProcessed: verifyData.alreadyProcessed,
             });
+
+            if (isQuiz && typeof window !== 'undefined') {
+              try {
+                localStorage.setItem('lexminds_quiz_confirmed_docket', JSON.stringify({
+                  referenceId: confirmedRef,
+                  email: session.email,
+                  paymentId: response.razorpay_payment_id,
+                  timestamp: Date.now(),
+                }));
+              } catch {}
+            }
           } else {
             alert(`Payment verification notice: ${verifyData.error || 'Verification failed. Please contact support.'}`);
           }
@@ -322,7 +334,7 @@ export default function PaymentClient() {
           {isQuiz ? (
             <>
               <Link
-                href="/quiz-main"
+                href={`/quiz-main?ref=${encodeURIComponent(successData?.referenceId || session.referenceId)}&email=${encodeURIComponent(session.email || '')}`}
                 className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-3.5 btn-brand-primary text-xs uppercase tracking-wider font-semibold shadow-md"
               >
                 <span>Enter Quiz Portal (Quiz-main)</span>

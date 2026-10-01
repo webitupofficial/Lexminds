@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { 
   Trophy, 
@@ -21,7 +21,8 @@ import {
   KeyRound,
   Search,
   LogOut,
-  AlertTriangle
+  AlertTriangle,
+  UserCheck
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { 
@@ -57,6 +58,7 @@ interface QuizAccessData {
 }
 
 export default function QuizMainClient() {
+  const [mounted, setMounted] = useState(false);
   const [currentUser, setCurrentUser] = useState<FirebaseUser | null>(null);
   const [currentToken, setCurrentToken] = useState<string | null>(null);
   const [authChecking, setAuthChecking] = useState<boolean>(true);
@@ -71,21 +73,48 @@ export default function QuizMainClient() {
   const [lookupLoading, setLookupLoading] = useState<boolean>(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
 
-  // 1. Verify access using Firebase token
-  const verifyWithToken = useCallback(async (token: string) => {
+  // Guard to prevent multiple simultaneous auto-checks
+  const isCheckingRef = useRef(false);
+
+  // Core Access Verification Method
+  const checkAccess = useCallback(async (params: { token?: string; referenceId?: string; email?: string }) => {
+    if (isCheckingRef.current) return;
+    isCheckingRef.current = true;
     setVerifying(true);
+    setLookupError(null);
+
     try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      if (params.token) {
+        headers['Authorization'] = `Bearer ${params.token}`;
+      }
+
       const res = await fetch('/api/quiz/access', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({}),
+        headers,
+        body: JSON.stringify({
+          referenceId: params.referenceId || '',
+          email: params.email || '',
+        }),
       });
 
       const data = await res.json();
-      setAccessData(data);
+      if (data.hasAccess) {
+        setAccessData(data);
+        setLookupError(null);
+        if (typeof window !== 'undefined') {
+          try {
+            sessionStorage.setItem('lexminds_quiz_access_cache', JSON.stringify(data));
+          } catch {}
+        }
+      } else {
+        setAccessData(data);
+        if (params.referenceId || params.email) {
+          setLookupError(data.error || 'No confirmed paid registration found for this Docket Reference or Email.');
+        }
+      }
     } catch (err: any) {
       setAccessData({
         hasAccess: false,
@@ -93,10 +122,12 @@ export default function QuizMainClient() {
       });
     } finally {
       setVerifying(false);
+      setAuthChecking(false);
+      isCheckingRef.current = false;
     }
   }, []);
 
-  // 2. Manual Docket Reference / Email Lookup
+  // Handle Manual Docket Reference / Email Lookup Form
   const handleManualLookup = async (e: React.FormEvent) => {
     e.preventDefault();
     const query = lookupQuery.trim();
@@ -108,58 +139,92 @@ export default function QuizMainClient() {
     try {
       const isEmail = query.includes('@');
       const payload = isEmail ? { email: query } : { referenceId: query };
-
-      const res = await fetch('/api/quiz/access', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (data.hasAccess) {
-        setAccessData(data);
-        setLookupError(null);
-      } else {
-        setLookupError(data.error || 'No paid registration found matching this Docket Reference or Email.');
-      }
-    } catch (err: any) {
-      setLookupError(err.message || 'Failed to connect to verification server.');
+      await checkAccess(payload);
     } finally {
       setLookupLoading(false);
     }
   };
 
-  // 3. Monitor Firebase Auth Session
+  // Mount initialization: Check Cache, URL Params, Stored Docket, and Firebase Auth
   useEffect(() => {
+    setMounted(true);
+
+    // 1. Session Storage Cache (instant load on page return / reload)
+    let restoredFromCache = false;
+    try {
+      const cached = sessionStorage.getItem('lexminds_quiz_access_cache');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.hasAccess) {
+          setAccessData(parsed);
+          setAuthChecking(false);
+          restoredFromCache = true;
+        }
+      }
+    } catch {}
+
+    // 2. Read URL search params (?ref=... & ?email=...)
+    const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+    const urlRef = urlParams?.get('ref') || urlParams?.get('referenceId') || '';
+    const urlEmail = urlParams?.get('email') || '';
+
+    if (urlRef) {
+      setLookupQuery(urlRef);
+      if (!restoredFromCache) {
+        checkAccess({ referenceId: urlRef, email: urlEmail });
+        return;
+      }
+    }
+
+    // 3. Local Storage: Check if this browser recently completed payment
+    try {
+      const stored = localStorage.getItem('lexminds_quiz_confirmed_docket');
+      if (stored && !restoredFromCache) {
+        const parsed = JSON.parse(stored);
+        if (parsed?.referenceId) {
+          setLookupQuery(parsed.referenceId);
+          checkAccess({ referenceId: parsed.referenceId, email: parsed.email });
+          return;
+        }
+      }
+    } catch {}
+
+    // 4. Background Firebase Auth Session Check
     if (!auth || typeof onAuthStateChanged !== 'function') {
       setAuthChecking(false);
       return;
     }
 
+    let unsub: (() => void) | null = null;
     try {
-      const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      unsub = onAuthStateChanged(auth, async (user) => {
         setCurrentUser(user);
         if (user) {
           try {
             const token = await user.getIdToken();
             setCurrentToken(token);
-            verifyWithToken(token);
+            if (!restoredFromCache && !isCheckingRef.current) {
+              checkAccess({ token });
+            }
           } catch (e) {
             console.error('Failed to get token:', e);
+            setAuthChecking(false);
           }
         } else {
           setCurrentToken(null);
+          setAuthChecking(false);
         }
-        setAuthChecking(false);
       });
-
-      return () => unsubscribe();
     } catch {
       setAuthChecking(false);
     }
-  }, [verifyWithToken]);
 
-  // Handle Google Sign In
+    return () => {
+      if (unsub) unsub();
+    };
+  }, [checkAccess]);
+
+  // Google One-Click Sign In
   const handleSignIn = async () => {
     setSigningIn(true);
     setAuthError(null);
@@ -170,7 +235,7 @@ export default function QuizMainClient() {
       } else if (result.user && result.idToken) {
         setCurrentUser(result.user);
         setCurrentToken(result.idToken);
-        verifyWithToken(result.idToken);
+        await checkAccess({ token: result.idToken });
       }
     } catch (err: any) {
       setAuthError(err.message || 'Google sign-in failed');
@@ -179,12 +244,15 @@ export default function QuizMainClient() {
     }
   };
 
-  // Handle Sign Out
+  // Google Sign Out
   const handleSignOut = async () => {
     await signOutGoogle();
     setCurrentUser(null);
     setCurrentToken(null);
     setAccessData(null);
+    try {
+      sessionStorage.removeItem('lexminds_quiz_access_cache');
+    } catch {}
   };
 
   return (
@@ -194,11 +262,11 @@ export default function QuizMainClient() {
       <Breadcrumbs 
         items={[
           { name: 'Virtual Quiz', href: '/quiz' },
-          { name: 'Candidate Desk (Quiz-main)', href: '/quiz-main' }
+          { name: 'Candidate Desk', href: '/quiz-main' }
         ]} 
       />
 
-      {/* Main Header Banner - Always Rendered */}
+      {/* Main Header Banner - Always Rendered & Rock Solid */}
       <div className="p-6 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-royal-500/10 dark:bg-royal-500/15 blur-3xl pointer-events-none rounded-full" />
 
@@ -209,15 +277,15 @@ export default function QuizMainClient() {
             <span>Virtual Competition &bull; Candidate Desk</span>
           </div>
 
-          {accessData?.hasAccess ? (
-            <div className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+          {mounted && accessData?.hasAccess ? (
+            <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1 rounded-sm border border-emerald-200 dark:border-emerald-800">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Access Confirmed</span>
+              <span>Access Confirmed (₹19 Paid)</span>
             </div>
           ) : (
             <div className="flex items-center space-x-1.5 text-ink-500 dark:text-ink-400 font-mono text-[11px]">
               <Lock className="w-3 h-3 text-royal-500" />
-              <span>Paid Candidates Only (₹19)</span>
+              <span>Registered &amp; Paid Candidates Only</span>
             </div>
           )}
         </div>
@@ -225,10 +293,10 @@ export default function QuizMainClient() {
         {/* Title & Description */}
         <div className="space-y-3 relative z-10">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-tight">
-            LexMinds Virtual Quiz <span className="text-royal-600 dark:text-royal-400">Candidate Portal</span>
+            LexMinds Virtual Quiz <span className="text-royal-600 dark:text-royal-400">Candidate Desk</span>
           </h1>
           <p className="text-sm sm:text-base text-ink-600 dark:text-ink-300 leading-relaxed max-w-2xl font-normal">
-            Welcome to the official portal for registered candidates. Access your confirmed candidate docket, the private candidates WhatsApp group, and the official examination window.
+            Welcome to the official desk for verified candidates. Access your confirmed candidate docket, the private candidates WhatsApp group, and the official examination window.
           </p>
         </div>
 
@@ -256,7 +324,7 @@ export default function QuizMainClient() {
         </div>
       </div>
 
-      {/* Authenticated Profile Strip */}
+      {/* Authenticated Profile Strip (when signed in with Google) */}
       {currentUser && (
         <div className="p-4 rounded-sm bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800 flex flex-wrap items-center justify-between gap-3 transition-all">
           <div className="flex items-center space-x-3">
@@ -299,25 +367,23 @@ export default function QuizMainClient() {
         </div>
       )}
 
-      {/* Verification Loading State */}
-      {(authChecking || verifying) && (
-        <div className="p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal text-center space-y-4">
-          <Loader2 className="w-10 h-10 animate-spin text-royal-600 dark:text-royal-400 mx-auto" />
-          <h3 className="font-serif font-bold text-lg text-ink-950 dark:text-ink-50">
-            Validating Candidate Registration...
-          </h3>
-          <p className="text-xs text-ink-500 dark:text-ink-400 font-mono max-w-sm mx-auto">
-            Checking your registration records and ₹19 payment status on the LexMinds registry.
-          </p>
+      {/* In-Flight Verification Status Banner (Non-Intrusive, No Full Screen Replacement) */}
+      {(verifying || (authChecking && !accessData?.hasAccess)) && (
+        <div className="p-4 rounded-sm bg-royal-50 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 flex items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center space-x-2.5 text-royal-700 dark:text-royal-300">
+            <Loader2 className="w-4 h-4 animate-spin text-royal-600 dark:text-royal-400 shrink-0" />
+            <span>Validating candidate registration on the official LexMinds registry...</span>
+          </div>
+          <span className="text-[10px] text-ink-400 uppercase tracking-wider hidden sm:inline-block">Instant Registry Check</span>
         </div>
       )}
 
-      {/* ACCESS GRANTED: Verified Paid User */}
-      {!authChecking && !verifying && accessData?.hasAccess && (
-        <div className="space-y-8">
+      {/* SECTION A: ACCESS GRANTED -> Show Confirmed Candidate Docket & Examination Links */}
+      {accessData?.hasAccess && (
+        <div className="space-y-8 animate-editorial-reveal">
           
           {/* Confirmed Candidate Docket */}
-          <div className="p-6 sm:p-7 rounded-sm bg-emerald-50/60 dark:bg-emerald-950/30 border-2 border-emerald-500/50 dark:border-emerald-500/40 shadow-brutal space-y-4">
+          <div className="p-6 sm:p-7 rounded-sm bg-emerald-50/70 dark:bg-emerald-950/30 border-2 border-emerald-500/50 dark:border-emerald-500/40 shadow-brutal space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-emerald-300 dark:border-emerald-800">
               <div className="flex items-center space-x-2">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
@@ -331,19 +397,19 @@ export default function QuizMainClient() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
-              <div className="p-3 bg-white/80 dark:bg-ink-900/80 rounded border border-emerald-200 dark:border-emerald-800/60">
+              <div className="p-3 bg-white/90 dark:bg-ink-900/90 rounded border border-emerald-200 dark:border-emerald-800/60">
                 <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Candidate Name</span>
                 <span className="font-bold text-ink-950 dark:text-ink-50 text-sm mt-0.5 block truncate">
                   {accessData.participantName || 'Registered Scholar'}
                 </span>
               </div>
-              <div className="p-3 bg-white/80 dark:bg-ink-900/80 rounded border border-emerald-200 dark:border-emerald-800/60">
+              <div className="p-3 bg-white/90 dark:bg-ink-900/90 rounded border border-emerald-200 dark:border-emerald-800/60">
                 <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Docket Reference</span>
                 <span className="font-bold text-royal-600 dark:text-royal-400 text-sm mt-0.5 block truncate">
                   {accessData.referenceId || 'CONFIRMED'}
                 </span>
               </div>
-              <div className="p-3 bg-white/80 dark:bg-ink-900/80 rounded border border-emerald-200 dark:border-emerald-800/60">
+              <div className="p-3 bg-white/90 dark:bg-ink-900/90 rounded border border-emerald-200 dark:border-emerald-800/60">
                 <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Registration Status</span>
                 <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-sm mt-0.5 block">
                   Paid ₹19.00
@@ -356,7 +422,7 @@ export default function QuizMainClient() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* 1. WHATSAPP CANDIDATES GROUP */}
-            <div className="p-6 sm:p-7 rounded-sm bg-emerald-50/70 dark:bg-emerald-950/30 border-2 border-emerald-500/40 dark:border-emerald-500/30 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
+            <div className="p-6 sm:p-7 rounded-sm bg-emerald-50/80 dark:bg-emerald-950/30 border-2 border-emerald-500/40 dark:border-emerald-500/30 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md">
@@ -376,7 +442,7 @@ export default function QuizMainClient() {
                   </p>
                 </div>
 
-                <div className="space-y-2 text-xs font-mono text-emerald-900 dark:text-emerald-300 bg-white/70 dark:bg-ink-900/70 p-3 rounded border border-emerald-200 dark:border-emerald-800/60">
+                <div className="space-y-2 text-xs font-mono text-emerald-900 dark:text-emerald-300 bg-white/80 dark:bg-ink-900/80 p-3 rounded border border-emerald-200 dark:border-emerald-800/60">
                   <div className="flex items-center space-x-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                     <span>Live countdown &amp; examination window alerts</span>
@@ -405,7 +471,7 @@ export default function QuizMainClient() {
             </div>
 
             {/* 2. OFFICIAL QUIZ PORTAL LINK */}
-            <div className="p-6 sm:p-7 rounded-sm bg-royal-50/70 dark:bg-royal-950/30 border-2 border-royal-500/40 dark:border-royal-500/30 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
+            <div className="p-6 sm:p-7 rounded-sm bg-royal-50/80 dark:bg-royal-950/30 border-2 border-royal-500/40 dark:border-royal-500/30 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="w-12 h-12 rounded-xl bg-royal-600 text-white flex items-center justify-center shadow-md">
@@ -425,7 +491,7 @@ export default function QuizMainClient() {
                   </p>
                 </div>
 
-                <div className="space-y-2 text-xs font-mono text-royal-900 dark:text-royal-300 bg-white/70 dark:bg-ink-900/70 p-3 rounded border border-royal-200 dark:border-royal-800/60">
+                <div className="space-y-2 text-xs font-mono text-royal-900 dark:text-royal-300 bg-white/80 dark:bg-ink-900/80 p-3 rounded border border-royal-200 dark:border-royal-800/60">
                   <div className="flex items-center space-x-2">
                     <Clock className="w-3.5 h-3.5 text-royal-600 shrink-0" />
                     <span>Duration: 45 Minutes (Timed Examination)</span>
@@ -512,11 +578,11 @@ export default function QuizMainClient() {
         </div>
       )}
 
-      {/* NOT AUTHENTICATED OR ACCESS NOT YET GRANTED */}
-      {!authChecking && !verifying && !accessData?.hasAccess && (
+      {/* SECTION B: NOT YET VERIFIED -> Show Candidate Verification Gate */}
+      {(!accessData || !accessData.hasAccess) && (
         <div className="space-y-6">
           
-          {/* If signed in but no paid record found */}
+          {/* If signed in to Google but no paid record found for this specific email */}
           {currentUser && accessData && !accessData.hasAccess && (
             <div className="p-6 sm:p-8 rounded-sm bg-surface-light dark:bg-surface-dark border-2 border-amber-500/40 dark:border-amber-500/30 shadow-brutal space-y-5 text-center">
               <div className="w-12 h-12 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-300 dark:border-amber-800 flex items-center justify-center mx-auto text-amber-600 dark:text-amber-400">
@@ -528,7 +594,7 @@ export default function QuizMainClient() {
                   No Paid Registration Found for this Google Account
                 </h3>
                 <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
-                  Signed in as <strong className="text-ink-950 dark:text-ink-50">{currentUser.email}</strong>. Our records do not show a completed ₹19 payment associated with this email address.
+                  Signed in as <strong className="text-ink-950 dark:text-ink-50">{currentUser.email}</strong>. Our records do not show a completed ₹19 payment associated with this email address. If you registered under a different email or have your Docket Reference ID, verify below.
                 </p>
               </div>
 
@@ -543,17 +609,17 @@ export default function QuizMainClient() {
 
                 <button
                   type="button"
-                  onClick={() => currentToken && verifyWithToken(currentToken)}
+                  onClick={() => currentToken && checkAccess({ token: currentToken })}
                   className="w-full sm:w-auto py-3 px-5 bg-paper dark:bg-ink-800 hover:bg-paper-200 dark:hover:bg-ink-700 text-ink-900 dark:text-ink-100 font-mono text-xs font-semibold rounded-sm border border-ink-900/15 dark:border-ink-700 flex items-center justify-center space-x-2 transition-all cursor-pointer"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
-                  <span>Refresh Verification</span>
+                  <span>Re-check Google Session</span>
                 </button>
               </div>
             </div>
           )}
 
-          {/* Sign In & Verification Card */}
+          {/* Unified Verification Card */}
           <div className="p-6 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-6">
             
             <div className="text-center space-y-2 max-w-md mx-auto">
@@ -564,7 +630,7 @@ export default function QuizMainClient() {
                 Candidate Verification Gate
               </h2>
               <p className="text-xs text-ink-600 dark:text-ink-400 leading-relaxed font-normal">
-                To access the candidate WhatsApp group and quiz examination link, please authenticate below.
+                To access the candidate WhatsApp group and quiz examination link, please authenticate your paid registration below.
               </p>
             </div>
 
@@ -580,8 +646,8 @@ export default function QuizMainClient() {
               <button
                 type="button"
                 onClick={handleSignIn}
-                disabled={signingIn}
-                className="w-full py-3.5 px-5 bg-surface-light dark:bg-surface-dark hover:bg-paper dark:hover:bg-ink-800 text-ink-900 dark:text-white font-serif text-sm font-semibold rounded-sm border border-ink-900 dark:border-ink-700 shadow-brutal-sm transition-all flex items-center justify-center space-x-3 cursor-pointer"
+                disabled={signingIn || verifying}
+                className="w-full py-3.5 px-5 bg-surface-light dark:bg-surface-dark hover:bg-paper dark:hover:bg-ink-800 text-ink-900 dark:text-white font-serif text-sm font-semibold rounded-sm border border-ink-900 dark:border-ink-700 shadow-brutal-sm transition-all flex items-center justify-center space-x-3 cursor-pointer disabled:opacity-50"
               >
                 {signingIn ? (
                   <Loader2 className="w-4 h-4 animate-spin text-royal-600" />
@@ -645,15 +711,15 @@ export default function QuizMainClient() {
 
               <button
                 type="submit"
-                disabled={lookupLoading || !lookupQuery.trim()}
+                disabled={lookupLoading || verifying || !lookupQuery.trim()}
                 className="w-full py-2.5 px-4 bg-paper-200 dark:bg-ink-800 hover:bg-paper-300 dark:hover:bg-ink-700 text-ink-900 dark:text-ink-100 font-mono text-xs font-semibold rounded-sm border border-ink-900/20 dark:border-ink-700 flex items-center justify-center space-x-2 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {lookupLoading ? (
+                {lookupLoading || verifying ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
                 ) : (
                   <Search className="w-3.5 h-3.5" />
                 )}
-                <span>{lookupLoading ? 'Verifying Docket...' : 'Verify Registration & Unlock'}</span>
+                <span>{lookupLoading || verifying ? 'Verifying Registration...' : 'Verify Registration & Unlock'}</span>
               </button>
             </form>
 

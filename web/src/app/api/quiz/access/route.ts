@@ -16,9 +16,13 @@ export async function POST(req: Request) {
 async function handleAccessCheck(req: Request) {
   try {
     const verifiedUser = await verifyUserAuth(req);
-    const body = await req.json().catch(() => ({}));
-    const referenceId = typeof body.referenceId === 'string' ? body.referenceId.trim() : '';
-    const lookupEmail = typeof body.email === 'string' ? body.email.trim() : '';
+    const url = new URL(req.url);
+    const urlRef = url.searchParams.get('ref') || url.searchParams.get('referenceId') || '';
+    const urlEmail = url.searchParams.get('email') || '';
+
+    const body = req.method !== 'GET' ? await req.json().catch(() => ({})) : {};
+    const referenceId = (typeof body.referenceId === 'string' ? body.referenceId.trim() : '') || urlRef.trim();
+    const lookupEmail = (typeof body.email === 'string' ? body.email.trim() : '') || urlEmail.trim();
 
     // If authenticated via Google ID token
     if (verifiedUser && verifiedUser.email) {
