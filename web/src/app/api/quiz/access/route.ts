@@ -15,25 +15,49 @@ export async function POST(req: Request) {
 
 async function handleAccessCheck(req: Request) {
   try {
-    // 1. Mandatory Firebase Auth verification
     const verifiedUser = await verifyUserAuth(req);
-    if (!verifiedUser || !verifiedUser.email) {
-      return NextResponse.json(
-        {
-          hasAccess: false,
-          error: 'Authentication required. Please sign in with your verified Google account to check quiz access.',
-        },
-        { status: 401 }
-      );
+    const body = await req.json().catch(() => ({}));
+    const referenceId = typeof body.referenceId === 'string' ? body.referenceId.trim() : '';
+    const lookupEmail = typeof body.email === 'string' ? body.email.trim() : '';
+
+    // If authenticated via Google ID token
+    if (verifiedUser && verifiedUser.email) {
+      const accessResult = await checkUserQuizAccess(verifiedUser.uid, verifiedUser.email, referenceId);
+      return NextResponse.json({
+        success: true,
+        ...accessResult,
+      });
     }
 
-    // 2. Query Authoritative Quiz Access & Payment Status
-    const accessResult = await checkUserQuizAccess(verifiedUser.uid, verifiedUser.email);
+    // Direct Docket Reference lookup fallback (for users whose browsers block Google sign-in popups)
+    if (referenceId && referenceId.length >= 6) {
+      const accessResult = await checkUserQuizAccess('', lookupEmail, referenceId);
+      if (accessResult.hasAccess) {
+        return NextResponse.json({
+          success: true,
+          ...accessResult,
+        });
+      }
+    }
 
-    return NextResponse.json({
-      success: true,
-      ...accessResult,
-    });
+    // Direct email lookup if provided
+    if (lookupEmail && lookupEmail.includes('@')) {
+      const accessResult = await checkUserQuizAccess('', lookupEmail, referenceId);
+      if (accessResult.hasAccess) {
+        return NextResponse.json({
+          success: true,
+          ...accessResult,
+        });
+      }
+    }
+
+    return NextResponse.json(
+      {
+        hasAccess: false,
+        error: 'Authentication or valid Registration Docket ID required to access candidate portal.',
+      },
+      { status: 401 }
+    );
   } catch (err: any) {
     console.error('[Quiz Access API Error]:', err.message || err);
     return NextResponse.json(

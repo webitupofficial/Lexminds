@@ -39,6 +39,11 @@ export default function GoogleAuthGate({
   const [signingIn, setSigningIn] = useState<boolean>(false);
   const [authError, setAuthError] = useState<string | null>(null);
 
+  const onAuthStateChangeRef = React.useRef(onAuthStateChange);
+  React.useEffect(() => {
+    onAuthStateChangeRef.current = onAuthStateChange;
+  });
+
   useEffect(() => {
     if (!auth || typeof onAuthStateChanged !== 'function') {
       setLoading(false);
@@ -51,13 +56,13 @@ export default function GoogleAuthGate({
           try {
             const token = await user.getIdToken();
             setCurrentToken(token);
-            if (onAuthStateChange) onAuthStateChange(user, token);
+            onAuthStateChangeRef.current?.(user, token);
           } catch (e) {
             console.error('Failed to get user token:', e);
           }
         } else {
           setCurrentToken(null);
-          if (onAuthStateChange) onAuthStateChange(null, null);
+          onAuthStateChangeRef.current?.(null, null);
         }
         setLoading(false);
       });
@@ -66,7 +71,7 @@ export default function GoogleAuthGate({
     } catch {
       setLoading(false);
     }
-  }, [onAuthStateChange]);
+  }, []);
 
   const handleSignIn = async () => {
     setSigningIn(true);

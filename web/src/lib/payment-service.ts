@@ -896,9 +896,11 @@ export interface UserQuizAccessResult {
 
 export async function checkUserQuizAccess(
   firebaseUid: string,
-  userEmail: string
+  userEmail: string,
+  referenceId?: string
 ): Promise<UserQuizAccessResult> {
   const normalizedEmail = (userEmail || '').trim().toLowerCase();
+  const normalizedRef = (referenceId || '').trim().toUpperCase();
   const quizLink =
     process.env.QUIZ_PORTAL_URL ||
     process.env.NEXT_PUBLIC_QUIZ_PORTAL_URL ||
@@ -930,7 +932,7 @@ export async function checkUserQuizAccess(
     // 2. Query QuizRegistrations tab
     const quizRows = await getTabRows('QuizRegistrations');
     for (const row of quizRows) {
-      const regId = row[0] || '';
+      const regId = (row[0] || '').trim().toUpperCase();
       const rowUid = row[1] || '';
       const rowEmail = (row[2] || '').trim().toLowerCase();
       const participantName = row[3] || 'Candidate';
@@ -940,6 +942,7 @@ export async function checkUserQuizAccess(
       const updatedAt = row[12] || row[11] || '';
 
       const isMatch =
+        (normalizedRef && regId === normalizedRef) ||
         (normalizedEmail && rowEmail === normalizedEmail) ||
         (firebaseUid && rowUid === firebaseUid);
 
@@ -948,7 +951,7 @@ export async function checkUserQuizAccess(
           hasAccess: true,
           participantName,
           email: rowEmail || normalizedEmail,
-          referenceId: regId,
+          referenceId: row[0],
           paymentRecordId,
           quizKey,
           status: 'paid',
@@ -964,13 +967,14 @@ export async function checkUserQuizAccess(
     for (const pRow of paymentRows) {
       const paymentRecordId = pRow[0] || '';
       const productKey = pRow[1] || '';
-      const internalReference = pRow[2] || '';
+      const internalReference = (pRow[2] || '').trim().toUpperCase();
       const pUid = pRow[3] || '';
       const pEmail = (pRow[4] || '').trim().toLowerCase();
       const pStatus = (pRow[9] || '').trim().toLowerCase();
       const verifiedAt = pRow[13] || pRow[12] || '';
 
       const isMatch =
+        (normalizedRef && internalReference === normalizedRef) ||
         (normalizedEmail && pEmail === normalizedEmail) ||
         (firebaseUid && pUid === firebaseUid);
 
@@ -983,7 +987,7 @@ export async function checkUserQuizAccess(
           hasAccess: true,
           participantName: 'Verified Quiz Scholar',
           email: pEmail || normalizedEmail,
-          referenceId: internalReference,
+          referenceId: pRow[2],
           paymentRecordId,
           quizKey: 'lexminds-virtual-quiz-2026',
           status: 'paid',
