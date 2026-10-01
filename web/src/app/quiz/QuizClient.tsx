@@ -346,7 +346,7 @@ export default function QuizClient() {
               </div>
             </div>
 
-            {/* Field 6: Required Quiz Declaration */}
+            {/* Field 6: Required Quiz Declaration & Terms Agreement */}
             <div className="p-4 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 space-y-3">
               <label className="flex items-start space-x-3 cursor-pointer">
                 <input
@@ -354,17 +354,20 @@ export default function QuizClient() {
                   name="declaration"
                   checked={formData.declaration}
                   onChange={handleChange}
-                  className="mt-0.5 w-4 h-4 text-coral-500 focus:ring-vermilion rounded-none cursor-pointer"
+                  className="mt-0.5 w-4 h-4 text-coral-500 focus:ring-vermilion rounded-none cursor-pointer shrink-0"
                 />
                 <span className="text-xs text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
-                  <strong>I confirm that the information provided is correct and agree to follow the quiz rules announced by LexMinds.</strong> I have also read and agree to the{' '}
-                  <Link href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
-                    Terms &amp; Conditions
+                  <strong className="text-ink-950 dark:text-ink-50">By checking this, you agree to the Terms and Conditions for Quiz.</strong> I confirm that the information provided is correct, and I agree to abide by the{' '}
+                  <Link href="/quiz/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold hover:text-royal-700">
+                    Terms &amp; Conditions for Quiz
                   </Link>,{' '}
-                  <Link href="/privacy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                  <Link href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold hover:text-royal-700">
+                    General Terms
+                  </Link>,{' '}
+                  <Link href="/privacy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold hover:text-royal-700">
                     Privacy Policy
                   </Link>, and{' '}
-                  <Link href="/cancellation-refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                  <Link href="/cancellation-refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold hover:text-royal-700">
                     Cancellation &amp; Refund Policy
                   </Link>.
                 </span>
@@ -438,6 +441,15 @@ export default function QuizClient() {
             <span>Merit recognition for top performers on LexMinds platforms.</span>
           </li>
         </ul>
+        <div className="pt-3 border-t border-ink-900/10 dark:border-ink-800 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+          <span className="text-ink-500 dark:text-ink-400">Official Competition Governance:</span>
+          <Link
+            href="/quiz/terms"
+            className="text-royal-600 dark:text-royal-400 hover:underline font-semibold flex items-center space-x-1"
+          >
+            <span>Read Terms &amp; Conditions for Quiz &rarr;</span>
+          </Link>
+        </div>
       </div>
 
     </div>

@@ -54,6 +54,20 @@ export default function TermsPage() {
             </a>
           </span>
         </div>
+
+        {/* Specialized Quiz Terms Callout */}
+        <div className="p-4 rounded-sm bg-royal-50/70 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs font-mono">
+          <div className="flex items-center space-x-2.5 text-royal-900 dark:text-royal-200">
+            <Scale className="w-4 h-4 text-royal-600 dark:text-royal-400 shrink-0" />
+            <span>Participating in the Virtual Quiz? Review our specialized competition rulebook.</span>
+          </div>
+          <Link
+            href="/quiz/terms"
+            className="text-royal-600 dark:text-royal-400 font-bold hover:underline shrink-0 flex items-center space-x-1"
+          >
+            <span>Terms &amp; Conditions for Quiz &rarr;</span>
+          </Link>
+        </div>
       </div>
 
       {/* Main Content Container */}

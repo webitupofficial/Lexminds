@@ -557,6 +557,17 @@ export default function QuizMainClient() {
                 </ul>
               </div>
             </div>
+
+            <div className="pt-3 border-t border-ink-900/10 dark:border-ink-800 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+              <span className="text-ink-500 dark:text-ink-400">Governance &amp; Official Rules:</span>
+              <Link
+                href="/quiz/terms"
+                target="_blank"
+                className="text-royal-600 dark:text-royal-400 hover:underline font-semibold flex items-center space-x-1"
+              >
+                <span>Read Official Terms &amp; Conditions for Quiz &rarr;</span>
+              </Link>
+            </div>
           </div>
 
           {/* Need Assistance Bar */}
