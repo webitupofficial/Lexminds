@@ -244,7 +244,7 @@ export default function MentorsClient({
                     </span>
                   </div>
 
-                  <div className="space-y-8">
+                  <div className="space-y-5">
                     {leadershipAssociates.map((leader) => {
                       const leaderInitials = leader.name
                         .split(' ')
@@ -256,28 +256,28 @@ export default function MentorsClient({
                       return (
                         <div
                           key={leader.id}
-                          className="relative group overflow-hidden rounded-2xl border-2 border-amber-400/50 dark:border-amber-500/30 bg-gradient-to-br from-amber-50/95 via-white/85 to-amber-100/40 dark:from-ink-900/90 dark:via-ink-950/95 dark:to-amber-950/30 backdrop-blur-2xl shadow-[0_12px_45px_rgba(217,119,6,0.15)] dark:shadow-[0_16px_50px_rgba(0,0,0,0.6)] p-6 sm:p-8 md:p-10 transition-all duration-300 hover:shadow-[0_20px_60px_rgba(217,119,6,0.25)] hover:border-amber-400/80"
+                          className="relative group overflow-hidden rounded-2xl border-2 border-amber-400/50 dark:border-amber-500/30 bg-gradient-to-br from-amber-50/95 via-white/85 to-amber-100/40 dark:from-ink-900/90 dark:via-ink-950/95 dark:to-amber-950/30 backdrop-blur-2xl shadow-[0_10px_35px_rgba(217,119,6,0.12)] dark:shadow-[0_14px_40px_rgba(0,0,0,0.55)] p-5 sm:p-6 md:p-7 transition-all duration-300 hover:shadow-[0_16px_50px_rgba(217,119,6,0.2)] hover:border-amber-400/80"
                         >
                           {/* Ambient backlight accents */}
-                          <div className="absolute -top-24 -right-24 w-80 h-80 bg-gradient-to-br from-amber-400/25 via-amber-300/10 to-transparent dark:from-amber-500/20 dark:via-amber-400/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
-                          <div className="absolute -bottom-24 -left-24 w-80 h-80 bg-gradient-to-tr from-royal-600/15 via-royal-500/10 to-transparent dark:from-royal-600/20 dark:via-royal-700/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
+                          <div className="absolute -top-20 -right-20 w-64 h-64 bg-gradient-to-br from-amber-400/20 via-amber-300/10 to-transparent dark:from-amber-500/15 dark:via-amber-400/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
+                          <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-gradient-to-tr from-royal-600/10 via-royal-500/5 to-transparent dark:from-royal-600/15 dark:via-royal-700/10 dark:to-transparent rounded-full blur-3xl pointer-events-none" />
 
-                          <div className="relative z-10 flex flex-col md:flex-row items-center md:items-start gap-6 sm:gap-8 md:gap-10">
+                          <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 md:gap-7">
                             {/* Portrait Frame with Crown Insignia */}
                             <div className="relative group shrink-0">
-                              <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-2xl p-1.5 bg-gradient-to-tr from-amber-400 via-amber-200 to-royal-600 dark:from-amber-500 dark:via-amber-300 dark:to-royal-400 shadow-2xl ring-4 ring-amber-400/25 dark:ring-amber-500/25 transition-transform duration-500 group-hover:scale-[1.02]">
+                              <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-2xl p-1 bg-gradient-to-tr from-amber-400 via-amber-200 to-royal-600 dark:from-amber-500 dark:via-amber-300 dark:to-royal-400 shadow-xl ring-2 ring-amber-400/30 dark:ring-amber-500/30 transition-transform duration-500 group-hover:scale-[1.02]">
                                 <div className="w-full h-full rounded-xl overflow-hidden relative bg-ink-900 shadow-inner">
                                   {leader.imageUrl ? (
                                     <Image
                                       src={leader.imageUrl}
                                       alt={leader.name}
-                                      width={200}
-                                      height={200}
+                                      width={140}
+                                      height={140}
                                       unoptimized
                                       className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                     />
                                   ) : (
-                                    <div className="w-full h-full flex items-center justify-center font-serif font-bold text-3xl bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950">
+                                    <div className="w-full h-full flex items-center justify-center font-serif font-bold text-2xl bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950">
                                       {leaderInitials}
                                     </div>
                                   )}
@@ -285,56 +285,49 @@ export default function MentorsClient({
                               </div>
                               {/* Insignia crown badge on photo */}
                               <div
-                                className="absolute -bottom-2 -right-2 bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950 p-2 rounded-xl shadow-lg border-2 border-white dark:border-ink-900 flex items-center justify-center"
+                                className="absolute -bottom-1.5 -right-1.5 bg-gradient-to-br from-amber-400 to-amber-600 text-ink-950 p-1.5 rounded-lg shadow-md border-2 border-white dark:border-ink-900 flex items-center justify-center"
                                 title={`${leader.role} of Lex Minds`}
                               >
-                                <Crown className="w-4 h-4 fill-ink-950 text-ink-950" />
+                                <Crown className="w-3.5 h-3.5 fill-ink-950 text-ink-950" />
                               </div>
                             </div>
 
                             {/* Leader Info & Leadership Vision */}
-                            <div className="flex-1 text-center md:text-left space-y-4">
-                              <div className="space-y-2">
-                                <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
-                                  <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider uppercase bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700/80 shadow-sm">
-                                    <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                            <div className="flex-1 text-center sm:text-left space-y-3">
+                              <div className="space-y-1.5">
+                                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                  <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-bold tracking-wider uppercase bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-300/80 dark:border-amber-700/80 shadow-xs">
+                                    <Sparkles className="w-3 h-3 text-amber-600 dark:text-amber-400" />
                                     <span>{leader.role} &bull; Lex Minds</span>
                                   </div>
-
-                                  {leader.degree && (
-                                    <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold bg-royal-50 dark:bg-royal-950/60 text-royal-700 dark:text-royal-300 border border-royal-200 dark:border-royal-800 shadow-sm">
-                                      <GraduationCap className="w-3.5 h-3.5 text-royal-500 shrink-0" />
-                                      <span>{leader.degree}</span>
-                                    </div>
-                                  )}
                                 </div>
 
-                                <h3 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-none">
+                                <h3 className="text-xl sm:text-2xl md:text-3xl font-serif font-bold text-ink-950 dark:text-ink-50 tracking-tight leading-snug">
                                   {leader.name}
                                 </h3>
 
-                                <p className="text-xs sm:text-sm font-mono font-semibold text-royal-700 dark:text-royal-300 tracking-wide uppercase">
+                                <p className="text-xs font-mono font-semibold text-royal-700 dark:text-royal-300 tracking-wide uppercase">
                                   {leader.subtitle || `${leader.role} • Lex Minds`}
                                 </p>
                               </div>
 
                               {/* Vision / Bio Quote */}
                               {leader.bio && (
-                                <p className="text-xs sm:text-sm md:text-base text-ink-700 dark:text-ink-200 leading-relaxed max-w-3xl font-normal pt-1 italic">
+                                <p className="text-xs sm:text-sm text-ink-700 dark:text-ink-200 leading-relaxed max-w-3xl font-normal pt-0.5 italic">
                                   &ldquo;{leader.bio}&rdquo;
                                 </p>
                               )}
 
                               {/* Core Executive Competencies */}
-                              <div className="pt-3 border-t border-amber-400/30 dark:border-amber-500/20 space-y-2.5">
+                              <div className="pt-2.5 border-t border-amber-400/30 dark:border-amber-500/20 space-y-2">
                                 <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-ink-600 dark:text-ink-400">
                                   Leadership &amp; Executive Competencies
                                 </div>
-                                <div className="flex flex-wrap justify-center md:justify-start gap-2">
+                                <div className="flex flex-wrap justify-center sm:justify-start gap-1.5">
                                   {leader.skills.map((skill, sIdx) => (
                                     <span
                                       key={sIdx}
-                                      className="inline-flex items-center space-x-1.5 px-3 py-1.5 text-xs font-mono font-semibold rounded-lg bg-white/90 dark:bg-ink-900/90 border border-amber-300/80 dark:border-amber-600/40 text-amber-950 dark:text-amber-200 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md"
+                                      className="inline-flex items-center space-x-1.5 px-2.5 py-1 text-xs font-mono font-medium rounded-lg bg-white/90 dark:bg-ink-900/90 border border-amber-300/80 dark:border-amber-600/40 text-amber-950 dark:text-amber-200 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-xs"
                                     >
                                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0" />
                                       <span>{skill}</span>
@@ -363,7 +356,7 @@ export default function MentorsClient({
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-7">
                     {teamAssociates.map((assoc) => {
                       const initials = assoc.name
                         .split(' ')
@@ -375,62 +368,88 @@ export default function MentorsClient({
                       return (
                         <div
                           key={assoc.id}
-                          className="relative group rounded-xl p-6 flex flex-col justify-between space-y-5 transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-xl bg-white/75 dark:bg-ink-900/75 border border-white/80 dark:border-white/10 shadow-[0_8px_30px_rgb(0,0,0,0.05)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.35)] hover:shadow-[0_14px_38px_rgba(30,58,138,0.14)] hover:border-royal-400/50 dark:hover:border-royal-400/40"
+                          className="relative group rounded-2xl p-6 sm:p-7 flex flex-col justify-between space-y-6 transition-all duration-300 transform hover:-translate-y-1 backdrop-blur-xl bg-white/85 dark:bg-ink-900/85 border border-ink-900/15 dark:border-white/10 shadow-[0_10px_35px_rgba(0,0,0,0.06)] dark:shadow-[0_12px_40px_rgba(0,0,0,0.45)] hover:shadow-[0_18px_50px_rgba(30,58,138,0.18)] dark:hover:shadow-[0_18px_50px_rgba(37,99,235,0.2)] hover:border-royal-400/60 dark:hover:border-royal-400/50 overflow-hidden"
                         >
-                          <div className="space-y-4">
-                            <div className="flex items-start justify-between gap-3">
-                              <div className="flex items-center space-x-3.5 min-w-0">
-                                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden shrink-0 shadow-md border-2 border-white/90 dark:border-white/20 transition-transform duration-300 group-hover:scale-105 flex items-center justify-center relative">
-                                  {assoc.imageUrl ? (
-                                    <Image
-                                      src={assoc.imageUrl}
-                                      alt={assoc.name}
-                                      width={64}
-                                      height={64}
-                                      unoptimized
-                                      className="w-full h-full object-cover object-top"
-                                    />
-                                  ) : (
-                                    <div className="w-full h-full flex items-center justify-center font-serif font-bold text-sm bg-gradient-to-br from-royal-600 to-royal-800 text-white shadow-inner">
-                                      {initials}
-                                    </div>
-                                  )}
-                                </div>
-                                <div className="min-w-0">
-                                  <h3 className="font-serif font-bold text-base sm:text-lg text-ink-950 dark:text-ink-50 truncate leading-snug">
-                                    {assoc.name}
-                                  </h3>
-                                  <div className="flex items-center space-x-2 mt-1">
-                                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-royal-50 dark:bg-royal-950/70 text-royal-700 dark:text-royal-300 border border-royal-200 dark:border-royal-800">
-                                      Associate
-                                    </span>
-                                    {assoc.degree && (
-                                      <span className="inline-flex items-center space-x-1 text-[11px] font-mono text-ink-600 dark:text-ink-400 font-medium">
-                                        <GraduationCap className="w-3 h-3 text-royal-500 shrink-0" />
-                                        <span>{assoc.degree}</span>
-                                      </span>
+                          {/* Ambient soft glow accent */}
+                          <div className="absolute -top-12 -right-12 w-44 h-44 bg-gradient-to-br from-royal-500/15 via-royal-400/5 to-transparent rounded-full blur-2xl pointer-events-none group-hover:scale-125 transition-transform duration-500" />
+
+                          <div className="space-y-5 relative z-10">
+                            {/* Card Header: Large Portrait + Identity */}
+                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
+                              {/* Large Portrait Frame */}
+                              <div className="relative group shrink-0">
+                                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl p-1 bg-gradient-to-tr from-royal-600 via-royal-400 to-indigo-300 dark:from-royal-500 dark:via-royal-400 dark:to-indigo-300 shadow-lg ring-2 ring-royal-400/25 dark:ring-royal-500/25 transition-transform duration-300 group-hover:scale-[1.03]">
+                                  <div className="w-full h-full rounded-xl overflow-hidden relative bg-ink-900 shadow-inner flex items-center justify-center">
+                                    {assoc.imageUrl ? (
+                                      <Image
+                                        src={assoc.imageUrl}
+                                        alt={assoc.name}
+                                        width={128}
+                                        height={128}
+                                        unoptimized
+                                        className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center font-serif font-bold text-2xl bg-gradient-to-br from-royal-600 to-royal-800 text-white shadow-inner">
+                                        {initials}
+                                      </div>
                                     )}
                                   </div>
                                 </div>
+                                {/* Associate emblem badge */}
+                                <div
+                                  className="absolute -bottom-1.5 -right-1.5 bg-gradient-to-br from-royal-600 to-royal-800 text-white p-1.5 rounded-lg shadow-md border-2 border-white dark:border-ink-900 flex items-center justify-center"
+                                  title="Associate • Lex Minds"
+                                >
+                                  <Sparkles className="w-3 h-3 text-royal-200" />
+                                </div>
+                              </div>
+
+                              {/* Identity & Role Info */}
+                              <div className="min-w-0 flex-1 text-center sm:text-left space-y-1.5">
+                                <div className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-semibold bg-royal-50 dark:bg-royal-950/70 text-royal-700 dark:text-royal-300 border border-royal-200 dark:border-royal-800 shadow-xs">
+                                  <span className="w-1.5 h-1.5 rounded-full bg-royal-500 animate-pulse" />
+                                  <span>Associate</span>
+                                </div>
+
+                                <h3 className="font-serif font-bold text-xl sm:text-2xl text-ink-950 dark:text-ink-50 leading-snug group-hover:text-royal-600 dark:group-hover:text-royal-400 transition-colors">
+                                  {assoc.name}
+                                </h3>
+
+                                <p className="text-xs font-mono text-ink-500 dark:text-ink-400">
+                                  Legal Research &amp; Drafting Desk
+                                </p>
                               </div>
                             </div>
 
                             {/* Skills ledger */}
-                            <div className="space-y-2 pt-2 border-t border-ink-900/10 dark:border-ink-800">
-                              <span className="text-[10px] font-mono uppercase tracking-wider text-ink-500 dark:text-ink-400 font-semibold block">
-                                Core Skills &amp; Practice Areas
-                              </span>
-                              <div className="flex flex-wrap gap-1.5">
+                            <div className="space-y-2.5 pt-3.5 border-t border-ink-900/10 dark:border-ink-800">
+                              <div className="flex items-center justify-between text-[11px] font-mono font-bold uppercase tracking-wider text-ink-600 dark:text-ink-400">
+                                <span>Core Legal Skills &amp; Practice Areas</span>
+                                <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-royal-50 dark:bg-royal-950 text-royal-700 dark:text-royal-300 border border-royal-200/80 dark:border-royal-800/80">
+                                  {assoc.skills.length} Areas
+                                </span>
+                              </div>
+                              <div className="flex flex-wrap gap-2">
                                 {assoc.skills.map((skill, sIdx) => (
                                   <span
                                     key={sIdx}
-                                    className="px-2.5 py-1 text-xs font-mono rounded-md backdrop-blur-sm transition-colors bg-paper-100/90 dark:bg-ink-800/80 border border-ink-900/10 dark:border-white/10 text-ink-800 dark:text-ink-200 group-hover:border-royal-500/40 group-hover:text-royal-700 dark:group-hover:text-royal-300"
+                                    className="px-3 py-1.5 text-xs font-mono font-medium rounded-lg backdrop-blur-sm transition-all duration-200 bg-paper-100/90 dark:bg-ink-800/80 border border-ink-900/10 dark:border-white/10 text-ink-800 dark:text-ink-200 hover:border-royal-500/40 hover:text-royal-700 dark:hover:text-royal-300 hover:-translate-y-0.5 shadow-xs"
                                   >
                                     {skill}
                                   </span>
                                 ))}
                               </div>
                             </div>
+                          </div>
+
+                          {/* Associate Card Footer */}
+                          <div className="pt-3.5 border-t border-ink-900/10 dark:border-ink-800 flex items-center justify-between text-[11px] font-mono text-ink-500 dark:text-ink-400 relative z-10">
+                            <span>Editorial &amp; Research Desk</span>
+                            <span className="inline-flex items-center space-x-1 text-royal-600 dark:text-royal-400 font-semibold">
+                              <Scale className="w-3.5 h-3.5" />
+                              <span>Lex Minds Associate</span>
+                            </span>
                           </div>
                         </div>
                       );
