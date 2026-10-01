@@ -78,6 +78,23 @@ export const ASSOCIATES_DATA: Associate[] = [
     bio: 'Championing innovation and technological integration at Lex Minds, dedicated to building cutting-edge research systems, practical drafting workflows, and empowering legal minds across the nation.',
   },
   {
+    id: 'assoc-aditya-sharma-associate',
+    name: 'Aditya Sharma',
+    role: 'Associate',
+    imageUrl: '/associates/Adityanew.jpeg',
+    skills: [
+      'Drafting',
+      'International Mooting',
+      'GST Compliance',
+      'ITR Returns Filing',
+      'Arbitration',
+      'Client Counselling',
+      'Litigation',
+      'Paper Presentation',
+      'Expertise in Non-profit companies under Section 8 & 25 of Companies Act',
+    ],
+  },
+  {
     id: 'assoc-sohani-sharma',
     name: 'Sohani Sharma',
     role: 'Associate',
