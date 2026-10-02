@@ -18,7 +18,11 @@ import {
   Sparkles,
   Award,
   Globe,
-  Check
+  Check,
+  FileCheck2,
+  Gift,
+  BookOpen,
+  AlertTriangle
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import GoogleAuthGate from '@/components/GoogleAuthGate';
@@ -455,39 +459,152 @@ export default function QuizClient() {
 
       </div>
 
-      {/* Quiz Rules & Highlights Section */}
-      <div className="p-6 sm:p-8 rounded-sm bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-4">
-        <h3 className="font-serif font-bold text-base text-ink-950 dark:text-ink-50 flex items-center space-x-2">
-          <HelpCircle className="w-4 h-4 text-royal-500" />
-          <span>Competition Guidelines &amp; Highlights</span>
-        </h3>
-        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-ink-600 dark:text-ink-300 font-normal leading-relaxed">
-          <li className="flex items-start space-x-2">
-            <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
-            <span>Virtual online format: <strong>25 Questions in 30 Minutes</strong>.</span>
-          </li>
-          <li className="flex items-start space-x-2">
-            <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
-            <span><strong>General Legal Awareness:</strong> Easy to Medium level with 4–5 tricky analytical questions.</span>
-          </li>
-          <li className="flex items-start space-x-2">
-            <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
-            <span><strong>Winner Prize:</strong> The top Winner will receive an exclusive official Prize from LexMinds!</span>
-          </li>
-          <li className="flex items-start space-x-2">
-            <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
-            <span><strong>Participation:</strong> Every single Quiz Attendee will receive an official Certificate of Participation.</span>
-          </li>
-        </ul>
+      {/* Comprehensive Examination Guidelines & Protocol */}
+      <div className="p-6 sm:p-10 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-6">
+        
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-ink-900/10 dark:border-ink-800">
+          <div className="flex items-center space-x-3">
+            <div className="w-9 h-9 rounded-sm bg-royal-50 dark:bg-royal-950/50 border border-royal-200 dark:border-royal-800 flex items-center justify-center text-royal-600 dark:text-royal-400 shrink-0">
+              <FileCheck2 className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-serif font-bold text-xl sm:text-2xl text-ink-950 dark:text-ink-50">
+                Examination Guidelines &amp; Protocol
+              </h3>
+              <p className="text-xs text-ink-500 dark:text-ink-400 font-mono">
+                Official scope, test parameters, syllabus, and participant offerings.
+              </p>
+            </div>
+          </div>
+          <span className="self-start sm:self-auto px-2.5 py-1 rounded-full text-[10px] font-mono font-bold uppercase bg-royal-50 dark:bg-royal-950/60 text-royal-700 dark:text-royal-300 border border-royal-200 dark:border-royal-800">
+            2026 Virtual Edition
+          </span>
+        </div>
+
+        {/* 4 Key Parameter Cards: Format, Schedule, Difficulty, Scope */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+          <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-1">
+            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Format &amp; Time</span>
+            <span className="font-bold text-ink-950 dark:text-ink-50 text-sm block">25 MCQs &bull; 30 Mins</span>
+            <span className="text-[11px] text-ink-500">Strict timed online window</span>
+          </div>
+
+          <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-1">
+            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Examination Window</span>
+            <span className="font-bold text-ink-950 dark:text-ink-50 text-sm block">11 Oct, 9 AM – 5 PM</span>
+            <span className="text-[11px] text-ink-500">Available till 5:00 PM IST</span>
+          </div>
+
+          <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-1">
+            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Difficulty Level</span>
+            <span className="font-bold text-ink-950 dark:text-ink-50 text-sm block">Easy to Medium</span>
+            <span className="text-[11px] text-ink-500">+ 4–5 tricky analytical Qs</span>
+          </div>
+
+          <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-1">
+            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Syllabus Scope</span>
+            <span className="font-bold text-royal-600 dark:text-royal-400 text-sm block">General Legal Awareness</span>
+            <span className="text-[11px] text-ink-500">Civic &amp; constitutional law</span>
+          </div>
+        </div>
+
+        {/* Detailed 2-Column Ledger: Syllabus Breakdown & LexMinds Offerings */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-1">
+          
+          {/* Column 1: Scope & Syllabus */}
+          <div className="p-5 rounded-sm bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-3">
+            <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 text-base flex items-center space-x-2">
+              <BookOpen className="w-4 h-4 text-royal-600 dark:text-royal-400" />
+              <span>Syllabus &amp; Question Coverage</span>
+            </h4>
+            <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+              Formulated to evaluate legal acumen, fundamental principles, and general awareness:
+            </p>
+            <ul className="space-y-2 text-xs font-mono text-ink-800 dark:text-ink-200">
+              <li className="flex items-start space-x-2">
+                <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
+                <span><strong>Core Constitutional Fundamentals:</strong> Fundamental Rights, Directive Principles, and Basic Structure.</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
+                <span><strong>Landmark Judicial Precedents:</strong> Landmark Supreme Court of India judgments and doctrines.</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
+                <span><strong>Contemporary Legal Awareness:</strong> Modern statutory updates (BNS, BNSS, BSA) &amp; tech jurisprudence.</span>
+              </li>
+              <li className="flex items-start space-x-2">
+                <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
+                <span><strong>Analytical Problem-Solving:</strong> 4–5 tricky questions designed to test candidate sharpness.</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 2: What Are The Offerings From Us */}
+          <div className="p-5 rounded-sm bg-emerald-50/50 dark:bg-emerald-950/20 border-2 border-emerald-500/30 dark:border-emerald-500/20 space-y-3">
+            <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 text-base flex items-center space-x-2">
+              <Gift className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+              <span>Official Offerings &amp; Rewards from Us</span>
+            </h4>
+            <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+              Every candidate gains verifiable academic credentialing and competition rewards:
+            </p>
+            <ul className="space-y-2.5 text-xs font-mono">
+              <li className="p-2.5 bg-white dark:bg-ink-900 rounded border border-emerald-200 dark:border-emerald-800/60 flex items-start space-x-2.5">
+                <Trophy className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-ink-950 dark:text-ink-50 block">Exclusive Prize for Winner:</strong>
+                  <span className="text-ink-600 dark:text-ink-300 text-[11px]">The top Winner will receive an exclusive official Prize from Us (LexMinds India) with merit recognition!</span>
+                </div>
+              </li>
+              <li className="p-2.5 bg-white dark:bg-ink-900 rounded border border-emerald-200 dark:border-emerald-800/60 flex items-start space-x-2.5">
+                <Award className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-ink-950 dark:text-ink-50 block">Certificate of Participation for All:</strong>
+                  <span className="text-ink-600 dark:text-ink-300 text-[11px]">Every registered candidate who attends and submits the quiz will receive an official verifiable digital Certificate of Participation.</span>
+                </div>
+              </li>
+              <li className="p-2.5 bg-white dark:bg-ink-900 rounded border border-emerald-200 dark:border-emerald-800/60 flex items-start space-x-2.5">
+                <ShieldCheck className="w-4 h-4 text-royal-600 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-ink-950 dark:text-ink-50 block">Candidate Desk &amp; WhatsApp Group:</strong>
+                  <span className="text-ink-600 dark:text-ink-300 text-[11px]">Direct coordinator support, live countdown reminders, and candidate docket access.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+
+        {/* Important Participation Rules & Amendment Rights */}
+        <div className="p-4 bg-amber-50/80 dark:bg-amber-950/40 border border-amber-400 dark:border-amber-700/60 rounded-sm text-xs font-mono space-y-2">
+          <div className="flex items-center space-x-2 font-bold uppercase text-[11px] text-amber-900 dark:text-amber-300">
+            <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <span>Crucial Rules &amp; Institutional Governance</span>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px] text-amber-950 dark:text-amber-100 leading-relaxed">
+            <div>
+              <strong>Single-ID Winner Rule:</strong> A person with one ID is eligible for the Post of Winner. Any person attempting or submitting with multiple IDs will be disqualified from the quiz.
+            </div>
+            <div>
+              <strong>Amendment Rights:</strong> Terms and conditions are subject to change according to operational needs. We reserve full rights to change or make amendments without prior notice.
+            </div>
+          </div>
+        </div>
+
+        {/* Official Governance Link */}
         <div className="pt-3 border-t border-ink-900/10 dark:border-ink-800 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
           <span className="text-ink-500 dark:text-ink-400">Official Competition Governance:</span>
           <Link
             href="/quiz/terms"
+            target="_blank"
             className="text-royal-600 dark:text-royal-400 hover:underline font-semibold flex items-center space-x-1"
           >
-            <span>Read Terms &amp; Conditions for Quiz &rarr;</span>
+            <span>Read Complete Terms &amp; Conditions for Quiz &rarr;</span>
           </Link>
         </div>
+
       </div>
 
     </div>
