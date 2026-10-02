@@ -344,6 +344,7 @@ export default function PaymentClient() {
             {isQuiz ? (
               <>
                 <li>Your registration for the LexMinds Virtual Quiz has been confirmed.</li>
+                <li>Format: <strong>25 Questions in 30 Minutes</strong> (General Legal Awareness). The Winner will receive an exclusive official Prize from LexMinds, and every Quiz Attendee will receive a Certificate of Participation.</li>
                 <li>You can access the Candidate Dashboard by visiting the <strong>Quiz Registration page (/quiz)</strong> and clicking <strong>&quot;Access Quiz Dashboard&quot;</strong>, or entering directly below.</li>
                 <li>Quiz participation guidelines, schedule, and access links are linked to your verified email <strong>{session.email}</strong>.</li>
                 <li>Please preserve your docket reference <strong>{successData.referenceId}</strong> for all correspondence.</li>

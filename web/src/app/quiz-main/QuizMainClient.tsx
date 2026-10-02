@@ -381,11 +381,11 @@ export default function QuizMainClient() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-ink-900/10 dark:border-ink-800 text-xs font-mono relative z-10">
           <div className="p-3 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
             <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Format</span>
-            <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">Online MCQs</span>
+            <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">25 Questions (MCQs)</span>
           </div>
           <div className="p-3 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
             <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Duration</span>
-            <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">45 Minutes</span>
+            <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">30 Minutes</span>
           </div>
           <div className="p-3 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
             <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Registration Fee</span>
@@ -395,7 +395,7 @@ export default function QuizMainClient() {
             <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Recognition</span>
             <span className="font-semibold text-emerald-600 dark:text-emerald-400 mt-1 block flex items-center gap-1">
               <Award className="w-3 h-3" />
-              E-Certificate
+              Prize &amp; Certificate
             </span>
           </div>
         </div>
@@ -534,7 +534,7 @@ export default function QuizMainClient() {
                   </div>
 
                   <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
-                    Join our private WhatsApp community exclusively for verified candidates. All live updates, test countdown alerts, real-time guidance, answer keys, and rankings take place here.
+                    Join our private WhatsApp community exclusively for verified candidates. All live updates, test countdown alerts, real-time guidance, and winner announcements take place here.
                   </p>
 
                   <div className="space-y-2 text-xs font-mono text-emerald-900 dark:text-emerald-300 bg-white/80 dark:bg-ink-900/80 p-3.5 rounded border border-emerald-200 dark:border-emerald-800/60">
@@ -548,7 +548,7 @@ export default function QuizMainClient() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      <span>Post-quiz answer keys &amp; participation e-certificates</span>
+                      <span>Official announcements &amp; ranking notifications</span>
                     </div>
                   </div>
                 </div>
@@ -605,8 +605,36 @@ export default function QuizMainClient() {
                     The official examination is hosted on our verified Google Form. The quiz will open strictly on <strong>11 Oct at 9:00 AM</strong> and will remain available till <strong>5:00 PM</strong>.
                   </p>
 
+                  {/* Format & Difficulty Breakdown */}
+                  <div className="space-y-1.5 text-xs font-mono text-royal-900 dark:text-royal-300 bg-white/80 dark:bg-ink-900/80 p-3 rounded border border-royal-200 dark:border-royal-800/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-ink-500 dark:text-ink-400">Structure:</span>
+                      <span className="font-bold text-ink-900 dark:text-ink-100">25 Questions &bull; 30 Minutes</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-ink-500 dark:text-ink-400">Level:</span>
+                      <span className="font-semibold text-ink-900 dark:text-ink-100">Easy to Medium + 4–5 Tricky Questions</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-ink-500 dark:text-ink-400">Syllabus:</span>
+                      <span className="font-semibold text-royal-600 dark:text-royal-400">General Legal Awareness</span>
+                    </div>
+                  </div>
+
+                  {/* Prize & Certificate Announcement */}
+                  <div className="p-3 bg-emerald-50/90 dark:bg-emerald-950/40 border border-emerald-500/40 rounded-sm text-xs font-mono text-emerald-900 dark:text-emerald-200 space-y-1">
+                    <div className="flex items-center space-x-1.5 font-bold uppercase text-[10px] tracking-wider text-emerald-800 dark:text-emerald-300">
+                      <Award className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Awards &amp; Certificates:</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed">
+                      🎁 <strong>Winner:</strong> The Winner will receive an exclusive official Prize from Us!<br />
+                      📜 <strong>Every Quiz Attendee:</strong> Will receive an official Certificate of Participation.
+                    </p>
+                  </div>
+
                   {/* Crucial Winner Eligibility Rule Box */}
-                  <div className="p-3.5 bg-amber-50/90 dark:bg-amber-950/50 border border-amber-400 dark:border-amber-700/60 rounded-sm text-xs font-mono text-amber-900 dark:text-amber-200 space-y-1.5">
+                  <div className="p-3 bg-amber-50/90 dark:bg-amber-950/50 border border-amber-400 dark:border-amber-700/60 rounded-sm text-xs font-mono text-amber-900 dark:text-amber-200 space-y-1">
                     <div className="flex items-center space-x-1.5 text-amber-800 dark:text-amber-300 font-bold uppercase text-[10px] tracking-wider">
                       <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
                       <span>Single-ID Winner Eligibility Rule:</span>
@@ -709,23 +737,23 @@ export default function QuizMainClient() {
                   <span>Subject Coverage &amp; Syllabus</span>
                 </h4>
                 <ul className="space-y-2 font-mono text-[11px] list-disc list-inside">
-                  <li>Constitutional Law &amp; Fundamental Rights</li>
-                  <li>Landmark Judgments of the Supreme Court of India</li>
-                  <li>Bharatiya Nyaya Sanhita (BNS) &amp; Criminal Procedure</li>
-                  <li>Contemporary Legal Developments &amp; Tech Jurisprudence</li>
+                  <li><strong>General Legal Awareness:</strong> Core legal concepts, basic rights, and civic duties</li>
+                  <li><strong>Constitution &amp; Landmark Principles:</strong> Supreme Court of India precedents</li>
+                  <li><strong>Contemporary Developments:</strong> Modern legal awareness and tech jurisprudence</li>
+                  <li><strong>Question Profile:</strong> Easy to Medium difficulty + 4–5 tricky analytical questions</li>
                 </ul>
               </div>
 
               <div className="space-y-3">
                 <h4 className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm flex items-center space-x-1.5">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span>Important Instructions for Participants</span>
+                  <span>Important Instructions &amp; Recognition</span>
                 </h4>
                 <ul className="space-y-2 font-mono text-[11px] list-disc list-inside">
-                  <li>Ensure a stable internet connection on laptop or phone before launching the quiz link.</li>
-                  <li>Submit your responses before the countdown finishes; late responses are not logged.</li>
-                  <li>All official notifications, instructions, and rankings are published in the WhatsApp group.</li>
-                  <li>E-Certificates of Participation will be issued to all verified attendees.</li>
+                  <li><strong>Test Window:</strong> 25 Questions to be completed within 30 Minutes duration.</li>
+                  <li><strong>Winner Prize:</strong> The top Winner will receive an exclusive official Prize from Us!</li>
+                  <li><strong>All Attendees:</strong> Every Quiz Attendee will receive an official Certificate of Participation.</li>
+                  <li><strong>Governance:</strong> Terms and conditions are subject to change according to operational needs.</li>
                 </ul>
               </div>
             </div>

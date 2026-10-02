@@ -83,8 +83,13 @@ export default function QuizTermsPage() {
               Cancellation &amp; Refund Policy
             </Link>.
           </p>
-          <div className="p-4 bg-royal-50/60 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 rounded-sm text-xs font-mono text-royal-900 dark:text-royal-200">
-            <strong>Mandatory Affirmation:</strong> If you do not accept these terms in their entirety, you must not check the declaration box or submit the registration form.
+          <div className="p-4 bg-royal-50/60 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 rounded-sm text-xs font-mono text-royal-900 dark:text-royal-200 space-y-1.5">
+            <div>
+              <strong>Right to Amend Without Prior Notice:</strong> Terms and conditions are subject to change according to needs and we have full rights to change, update, or make amendments without any prior notice. All participants agree that any revisions made after publishing shall be effective and binding immediately.
+            </div>
+            <div>
+              <strong>Mandatory Affirmation:</strong> If you do not accept these terms in their entirety, you must not check the declaration box or submit the registration form.
+            </div>
           </div>
         </section>
 
@@ -136,15 +141,15 @@ export default function QuizTermsPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-mono">
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
               <span className="text-ink-500 uppercase text-[10px] block">Test Structure</span>
-              <span className="font-bold text-ink-950 dark:text-ink-50 mt-1 block">50 Multiple Choice Questions (MCQs)</span>
+              <span className="font-bold text-ink-950 dark:text-ink-50 mt-1 block">25 Questions (MCQs) &bull; 30 Mins</span>
             </div>
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
               <span className="text-ink-500 uppercase text-[10px] block">Examination Window</span>
               <span className="font-bold text-ink-950 dark:text-ink-50 mt-1 block">Opens 11 Oct 9:00 AM &bull; Available till 5:00 PM</span>
             </div>
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
-              <span className="text-ink-500 uppercase text-[10px] block">Mode</span>
-              <span className="font-bold text-royal-600 dark:text-royal-400 mt-1 block">Official Google Form Examination Link</span>
+              <span className="text-ink-500 uppercase text-[10px] block">Mode &amp; Level</span>
+              <span className="font-bold text-royal-600 dark:text-royal-400 mt-1 block">Google Form &bull; Easy–Medium + 4–5 Tricky</span>
             </div>
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
               <span className="text-ink-500 uppercase text-[10px] block">Candidate Portal</span>
@@ -152,10 +157,10 @@ export default function QuizTermsPage() {
             </div>
           </div>
           <p className="pt-2">
-            <strong>Syllabus Scope:</strong> The competition evaluates constitutional fundamentals, landmark Supreme Court of India precedents, modern criminal jurisprudence (Bharatiya Nyaya Sanhita, BNSS, BSA), contemporary legal developments, and digital data protection laws.
+            <strong>Syllabus Scope &amp; Format:</strong> The quiz comprises <strong>25 multiple choice questions</strong> to be completed within <strong>30 minutes</strong>. The syllabus evaluates <strong>General Legal Awareness</strong>, covering foundational constitutional principles, basic legal rights, landmark Supreme Court jurisprudence, and contemporary legal awareness. The overall difficulty is calibrated from <strong>Easy to Medium</strong>, supplemented by <strong>4–5 tricky questions</strong> to assess analytical reasoning.
           </p>
           <div className="p-3.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-500/40 rounded-sm text-xs font-mono text-amber-900 dark:text-amber-200">
-            <strong>Winner Eligibility &amp; Disqualification Rule:</strong> A person with one ID is eligible for the Post of Winner. Any person attempting, registering, or submitting with multiple IDs will be strictly disqualified from the quiz and stripped of all winner and merit recognition.
+            <strong>Winner Eligibility &amp; Disqualification Rule:</strong> A person with one ID is eligible for the Post of Winner. Any person attempting, registering, or submitting with multiple IDs will be strictly disqualified from the quiz and stripped of all winner, prize, and merit recognition.
           </div>
           <p>
             <strong>Single Attempt Rule:</strong> Only the first submitted form from a verified participant email/docket will be evaluated. Subsequent or duplicate submissions from the same candidate will be automatically discarded.
@@ -226,12 +231,13 @@ export default function QuizTermsPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5 border-b border-ink-900/10 dark:border-ink-800 pb-2">
             <span className="font-mono text-royal-600 dark:text-royal-400 text-base">08.</span>
-            <span>Recognition, Awards &amp; E-Certificates</span>
+            <span>Recognition, Awards, Prizes &amp; E-Certificates</span>
           </h2>
           <ul className="list-disc list-inside space-y-1.5 text-xs font-mono pl-2">
-            <li><strong>Certificate of Participation:</strong> Every registered candidate who successfully submits their responses within the official test window will receive an authoritative digital E-Certificate of Participation.</li>
-            <li><strong>Merit Certificates:</strong> Top performers and rank holders will receive official Merit E-Certificates and editorial recognition on LexMinds platforms.</li>
-            <li><strong>Issuance Timeline:</strong> Digital certificates are dispatched to the registered candidate email within 7&ndash;14 business days following publication of the final verified rankings.</li>
+            <li><strong>Prize for Winner:</strong> The official Winner of the competition will receive an exclusive official Prize from Us (LexMinds India), subject to verified single-ID eligibility and committee authentication.</li>
+            <li><strong>Certificate of Participation for Every Attendee:</strong> Every registered candidate who attends the quiz and submits their responses within the official test window will receive an authoritative digital Certificate of Participation.</li>
+            <li><strong>Merit Recognition:</strong> Top performers and rank holders will receive official editorial recognition on LexMinds platforms.</li>
+            <li><strong>Issuance Timeline:</strong> Digital certificates and prize notifications will be communicated to the registered candidate email within 7&ndash;14 business days following publication of the final verified rankings.</li>
           </ul>
         </section>
 
@@ -250,10 +256,10 @@ export default function QuizTermsPage() {
         <section className="space-y-3">
           <h2 className="text-xl font-serif font-bold text-ink-950 dark:text-ink-50 flex items-center space-x-2.5 border-b border-ink-900/10 dark:border-ink-800 pb-2">
             <span className="font-mono text-royal-600 dark:text-royal-400 text-base">10.</span>
-            <span>Modifications &amp; Grievance Redressal</span>
+            <span>Modifications &amp; Unilateral Right of Amendment</span>
           </h2>
           <p>
-            LexMinds reserves the right to amend competition timelines, question count, or test schedules if required by unforeseen technical or operational contingencies. Any schedule revisions will be announced in advance on the official Candidate Desk and WhatsApp group.
+            <strong>Terms and conditions are subject to change according to needs.</strong> LexMinds India reserves full, unrestricted rights to change, update, modify, alter, or make amendments to these Terms &amp; Conditions, competition guidelines, format, questions count, syllabus, prize structures, or timelines at any time <strong>without any prior notice</strong>. All participants agree that any such amendments made after publishing shall be binding upon publication on the platform.
           </p>
           <div className="p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 text-xs font-mono space-y-1.5">
             <span className="font-bold text-ink-950 dark:text-ink-50 block uppercase text-[11px]">

@@ -183,15 +183,15 @@ export default function QuizClient() {
         {/* Quick Facts Ledger Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-ink-900/10 dark:border-ink-800 text-xs font-mono">
           <div className="p-3 sm:p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
-            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Format</span>
+            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Format &amp; Time</span>
             <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block flex items-center gap-1">
               <Globe className="w-3.5 h-3.5 text-royal-500" />
-              Online Quiz
+              25 MCQs &bull; 30 Mins
             </span>
           </div>
           <div className="p-3 sm:p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
-            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Eligibility</span>
-            <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">All Students</span>
+            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Level &amp; Syllabus</span>
+            <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block">General Legal Awareness</span>
           </div>
           <div className="p-3 sm:p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
             <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Registration Fee</span>
@@ -201,10 +201,10 @@ export default function QuizClient() {
             </div>
           </div>
           <div className="p-3 sm:p-4 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700">
-            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Recognition</span>
+            <span className="text-ink-500 dark:text-ink-400 block text-[10px] uppercase">Awards &amp; Recognition</span>
             <span className="font-semibold text-ink-950 dark:text-ink-50 mt-1 block flex items-center gap-1">
               <Award className="w-3.5 h-3.5 text-emerald-600" />
-              Certificates
+              Prize &amp; Certificates
             </span>
           </div>
         </div>
@@ -464,19 +464,19 @@ export default function QuizClient() {
         <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-ink-600 dark:text-ink-300 font-normal leading-relaxed">
           <li className="flex items-start space-x-2">
             <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
-            <span>Virtual online format accessible from phone or laptop.</span>
+            <span>Virtual online format: <strong>25 Questions in 30 Minutes</strong>.</span>
           </li>
           <li className="flex items-start space-x-2">
             <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
-            <span>Covers constitutional law, landmark judgments, and contemporary jurisprudence.</span>
+            <span><strong>General Legal Awareness:</strong> Easy to Medium level with 4–5 tricky analytical questions.</span>
+          </li>
+          <li className="flex items-start space-x-2">
+            <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+            <span><strong>Winner Prize:</strong> The top Winner will receive an exclusive official Prize from LexMinds!</span>
           </li>
           <li className="flex items-start space-x-2">
             <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
-            <span>E-Certificates of Participation for all verified participants.</span>
-          </li>
-          <li className="flex items-start space-x-2">
-            <Check className="w-3.5 h-3.5 text-royal-500 shrink-0 mt-0.5" />
-            <span>Merit recognition for top performers on LexMinds platforms.</span>
+            <span><strong>Participation:</strong> Every single Quiz Attendee will receive an official Certificate of Participation.</span>
           </li>
         </ul>
         <div className="pt-3 border-t border-ink-900/10 dark:border-ink-800 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
