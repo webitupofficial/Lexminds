@@ -22,7 +22,9 @@ import {
   Search,
   LogOut,
   AlertTriangle,
-  UserCheck
+  UserCheck,
+  XCircle,
+  Ban
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { 
@@ -72,6 +74,81 @@ export default function QuizMainClient() {
   const [lookupQuery, setLookupQuery] = useState<string>('');
   const [lookupLoading, setLookupLoading] = useState<boolean>(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
+
+  // Quiz Schedule: 11 October, 9:00 AM to 5:00 PM IST
+  const [timingState, setTimingState] = useState<{
+    status: 'upcoming' | 'active' | 'closed';
+    countdownText: string;
+    targetOpenTimeStr: string;
+    targetCloseTimeStr: string;
+  }>({
+    status: 'upcoming',
+    countdownText: '',
+    targetOpenTimeStr: '11 Oct, 9:00 AM IST',
+    targetCloseTimeStr: '11 Oct, 5:00 PM IST',
+  });
+
+  useEffect(() => {
+    function updateQuizTiming() {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+
+      // 11 October 9:00 AM IST (+05:30)
+      const startTime = new Date(`${currentYear}-10-11T09:00:00+05:30`);
+      // 11 October 5:00 PM IST (+05:30)
+      const endTime = new Date(`${currentYear}-10-11T17:00:00+05:30`);
+
+      const nowTime = now.getTime();
+      const startMs = startTime.getTime();
+      const endMs = endTime.getTime();
+
+      if (nowTime < startMs) {
+        const diffMs = Math.max(0, startMs - nowTime);
+        const totalSecs = Math.floor(diffMs / 1000);
+        const days = Math.floor(totalSecs / (3600 * 24));
+        const hours = Math.floor((totalSecs % (3600 * 24)) / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const secs = totalSecs % 60;
+
+        const parts: string[] = [];
+        if (days > 0) parts.push(`${days}d`);
+        parts.push(`${hours}h`);
+        parts.push(`${mins}m`);
+        parts.push(`${secs}s`);
+
+        setTimingState({
+          status: 'upcoming',
+          countdownText: parts.join(' '),
+          targetOpenTimeStr: '11 Oct, 9:00 AM IST',
+          targetCloseTimeStr: '11 Oct, 5:00 PM IST',
+        });
+      } else if (nowTime >= startMs && nowTime <= endMs) {
+        const diffMs = Math.max(0, endMs - nowTime);
+        const totalSecs = Math.floor(diffMs / 1000);
+        const hours = Math.floor(totalSecs / 3600);
+        const mins = Math.floor((totalSecs % 3600) / 60);
+        const secs = totalSecs % 60;
+
+        setTimingState({
+          status: 'active',
+          countdownText: `${hours}h ${mins}m ${secs}s`,
+          targetOpenTimeStr: '11 Oct, 9:00 AM IST',
+          targetCloseTimeStr: '11 Oct, 5:00 PM IST',
+        });
+      } else {
+        setTimingState({
+          status: 'closed',
+          countdownText: 'Window Ended',
+          targetOpenTimeStr: '11 Oct, 9:00 AM IST',
+          targetCloseTimeStr: '11 Oct, 5:00 PM IST',
+        });
+      }
+    }
+
+    updateQuizTiming();
+    const interval = setInterval(updateQuizTiming, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Guard to prevent multiple simultaneous auto-checks
   const isCheckingRef = useRef(false);
@@ -418,105 +495,200 @@ export default function QuizMainClient() {
             </div>
           </div>
 
-          {/* TWO CORE CANDIDATE ACTIONS: WHATSAPP GROUP & QUIZ LINK */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* CANDIDATE WORKFLOW: STEP-BY-STEP REARRANGED FOR SUPERIOR USER EXPERIENCE */}
+          <div className="space-y-6">
             
-            {/* 1. WHATSAPP CANDIDATES GROUP */}
-            <div className="p-6 sm:p-7 rounded-sm bg-emerald-50/80 dark:bg-emerald-950/30 border-2 border-emerald-500/40 dark:border-emerald-500/30 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md">
-                    <WhatsAppIcon className="w-6 h-6 fill-white" />
-                  </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-100 dark:bg-emerald-900/70 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700">
-                    Paid Candidates Only
-                  </span>
-                </div>
-
-                <div className="space-y-1.5">
-                  <h3 className="font-serif font-bold text-xl text-ink-950 dark:text-ink-50">
-                    Official Candidates WhatsApp Group
-                  </h3>
-                  <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
-                    Join the private WhatsApp community exclusively for verified candidates. All live updates, test countdown alerts, instructions, answer keys, and rankings take place here.
-                  </p>
-                </div>
-
-                <div className="space-y-2 text-xs font-mono text-emerald-900 dark:text-emerald-300 bg-white/80 dark:bg-ink-900/80 p-3 rounded border border-emerald-200 dark:border-emerald-800/60">
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Live countdown &amp; examination window alerts</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Direct coordinator support &amp; guidance</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                    <span>Post-quiz answer keys &amp; participation e-certificates</span>
-                  </div>
-                </div>
+            {/* Quick Direction Banner */}
+            <div className="p-4 rounded-sm bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs font-mono">
+              <div className="flex items-center space-x-2 text-ink-700 dark:text-ink-300">
+                <Sparkles className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <span>Follow the two mandatory steps below to complete your candidate onboarding and examination.</span>
               </div>
-
-              <a
-                href={accessData.whatsappGroupLink || 'https://chat.whatsapp.com/LexMindsQuiz2026Official'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3.5 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-serif text-sm font-semibold rounded-sm shadow-md transition-all flex items-center justify-center space-x-2.5 cursor-pointer group"
-              >
-                <WhatsAppIcon className="w-4 h-4 fill-white shrink-0 group-hover:scale-110 transition-transform" />
-                <span>Join Candidates WhatsApp Group</span>
-                <ExternalLink className="w-4 h-4 shrink-0" />
-              </a>
+              <span className="text-[11px] font-bold text-royal-600 dark:text-royal-400 uppercase tracking-wider">
+                Official Examination Hub
+              </span>
             </div>
 
-            {/* 2. OFFICIAL QUIZ PORTAL LINK */}
-            <div className="p-6 sm:p-7 rounded-sm bg-royal-50/80 dark:bg-royal-950/30 border-2 border-royal-500/40 dark:border-royal-500/30 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-royal-600 text-white flex items-center justify-center shadow-md">
-                    <Trophy className="w-6 h-6" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+              
+              {/* STEP 1: WHATSAPP CANDIDATES GROUP */}
+              <div className="p-6 sm:p-7 rounded-sm bg-emerald-50/80 dark:bg-emerald-950/30 border-2 border-emerald-500/50 dark:border-emerald-500/40 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md">
+                        <WhatsAppIcon className="w-6 h-6 fill-white" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-300 block">
+                          Step 1 of 2
+                        </span>
+                        <h3 className="font-serif font-bold text-xl text-ink-950 dark:text-ink-50">
+                          Candidates WhatsApp Group
+                        </h3>
+                      </div>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-100 dark:bg-emerald-900/70 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700">
+                      Join First
+                    </span>
                   </div>
-                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-royal-100 dark:bg-royal-900/70 text-royal-800 dark:text-royal-200 border border-royal-300 dark:border-royal-700">
-                    Examination Portal
-                  </span>
-                </div>
 
-                <div className="space-y-1.5">
-                  <h3 className="font-serif font-bold text-xl text-ink-950 dark:text-ink-50">
-                    Official Quiz Examination Link
-                  </h3>
                   <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
-                    Access the official examination window. When the quiz window goes live as announced in the WhatsApp group, click below to open your questions and submit your answers.
+                    Join our private WhatsApp community exclusively for verified candidates. All live updates, test countdown alerts, real-time guidance, answer keys, and rankings take place here.
                   </p>
+
+                  <div className="space-y-2 text-xs font-mono text-emerald-900 dark:text-emerald-300 bg-white/80 dark:bg-ink-900/80 p-3.5 rounded border border-emerald-200 dark:border-emerald-800/60">
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Live countdown &amp; examination window alerts</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Direct coordinator support &amp; guidance</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Post-quiz answer keys &amp; participation e-certificates</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="space-y-2 text-xs font-mono text-royal-900 dark:text-royal-300 bg-white/80 dark:bg-ink-900/80 p-3 rounded border border-royal-200 dark:border-royal-800/60">
-                  <div className="flex items-center space-x-2">
-                    <Clock className="w-3.5 h-3.5 text-royal-600 shrink-0" />
-                    <span>Duration: 45 Minutes (Timed Examination)</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <BookOpen className="w-3.5 h-3.5 text-royal-600 shrink-0" />
-                    <span>50 Multiple Choice Legal Jurisprudence Questions</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <ShieldCheck className="w-3.5 h-3.5 text-royal-600 shrink-0" />
-                    <span>Single submission per registered candidate</span>
-                  </div>
+                <div className="pt-2">
+                  <a
+                    href={accessData.whatsappGroupLink || 'https://chat.whatsapp.com/IYbzPBThA2P9lTh8m9uHUk'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3.5 px-5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-serif text-sm font-semibold rounded-sm shadow-md transition-all flex items-center justify-center space-x-2.5 cursor-pointer group"
+                  >
+                    <WhatsAppIcon className="w-4 h-4 fill-white shrink-0 group-hover:scale-110 transition-transform" />
+                    <span>Join Candidates WhatsApp Group</span>
+                    <ExternalLink className="w-4 h-4 shrink-0" />
+                  </a>
                 </div>
               </div>
 
-              <a
-                href={accessData.quizLink || 'https://forms.gle/LexMindsVirtualQuiz2026'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-3.5 px-5 bg-royal-600 hover:bg-royal-700 active:bg-royal-800 text-white font-serif text-sm font-semibold rounded-sm shadow-md transition-all flex items-center justify-center space-x-2.5 cursor-pointer group"
-              >
-                <Trophy className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
-                <span>Launch Official Quiz Portal</span>
-                <ExternalLink className="w-4 h-4 shrink-0" />
-              </a>
+              {/* STEP 2: OFFICIAL QUIZ G-FORM EXAMINATION PORTAL */}
+              <div className="p-6 sm:p-7 rounded-sm bg-royal-50/80 dark:bg-royal-950/30 border-2 border-royal-500/50 dark:border-royal-500/40 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 rounded-xl bg-royal-600 text-white flex items-center justify-center shadow-md">
+                        <Trophy className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-royal-700 dark:text-royal-300 block">
+                          Step 2 of 2
+                        </span>
+                        <h3 className="font-serif font-bold text-xl text-ink-950 dark:text-ink-50">
+                          Quiz G-Form Portal
+                        </h3>
+                      </div>
+                    </div>
+                    {timingState.status === 'upcoming' ? (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-amber-100 dark:bg-amber-900/70 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 flex items-center space-x-1">
+                        <Clock className="w-3 h-3" />
+                        <span>Opens 11 Oct 9 AM</span>
+                      </span>
+                    ) : timingState.status === 'active' ? (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-100 dark:bg-emerald-900/70 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 animate-pulse flex items-center space-x-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        <span>Live Now</span>
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-rose-100 dark:bg-rose-900/70 text-rose-800 dark:text-rose-200 border border-rose-300 dark:border-rose-700">
+                        Window Closed
+                      </span>
+                    )}
+                  </div>
+
+                  <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
+                    The official examination is hosted on our verified Google Form. The quiz will open strictly on <strong>11 Oct at 9:00 AM</strong> and will remain available till <strong>5:00 PM</strong>.
+                  </p>
+
+                  {/* Crucial Winner Eligibility Rule Box */}
+                  <div className="p-3.5 bg-amber-50/90 dark:bg-amber-950/50 border border-amber-400 dark:border-amber-700/60 rounded-sm text-xs font-mono text-amber-900 dark:text-amber-200 space-y-1.5">
+                    <div className="flex items-center space-x-1.5 text-amber-800 dark:text-amber-300 font-bold uppercase text-[10px] tracking-wider">
+                      <AlertTriangle className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 shrink-0" />
+                      <span>Single-ID Winner Eligibility Rule:</span>
+                    </div>
+                    <p className="text-[11px] leading-relaxed text-amber-950 dark:text-amber-100">
+                      <strong>A person with one ID is eligible for the Post of Winner.</strong> Persons attempting or submitting with multiple IDs will be <strong>disqualified from the quiz</strong>.
+                    </p>
+                  </div>
+
+                  <div className="space-y-1.5 text-xs font-mono text-royal-900 dark:text-royal-300 bg-white/80 dark:bg-ink-900/80 p-3 rounded border border-royal-200 dark:border-royal-800/60">
+                    <div className="flex items-center justify-between">
+                      <span className="text-ink-500 dark:text-ink-400">Quiz Opens:</span>
+                      <span className="font-bold text-ink-900 dark:text-ink-100">11 Oct, 9:00 AM IST</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-ink-500 dark:text-ink-400">Available Till:</span>
+                      <span className="font-bold text-ink-900 dark:text-ink-100">11 Oct, 5:00 PM IST (Strict)</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* DYNAMIC TIME-GATED BUTTON WITH CROSSED MARK FOR UPCOMING/CLOSED STATES */}
+                <div className="pt-2">
+                  {timingState.status === 'upcoming' ? (
+                    <div className="space-y-2">
+                      <button
+                        type="button"
+                        disabled
+                        aria-disabled="true"
+                        title="Quiz examination link will unlock on 11 Oct at 9:00 AM IST"
+                        className="w-full py-3.5 px-4 bg-paper-200 dark:bg-ink-850 text-ink-600 dark:text-ink-400 font-serif text-xs sm:text-sm font-semibold rounded-sm border-2 border-dashed border-rose-400/80 dark:border-rose-500/60 shadow-sm flex items-center justify-center space-x-2 cursor-not-allowed select-none transition-all"
+                      >
+                        <XCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
+                        <span>Will Open on 11 Oct at 9:00 AM</span>
+                      </button>
+
+                      <div className="flex items-center justify-between text-[11px] font-mono px-1">
+                        <span className="text-ink-500 dark:text-ink-400">Countdown to 11 Oct 9 AM:</span>
+                        <span className="font-bold text-royal-600 dark:text-royal-400">
+                          {timingState.countdownText}
+                        </span>
+                      </div>
+                      <p className="text-[10px] font-mono text-ink-400 text-center">
+                        Quiz will be available till 5:00 PM &bull; Single ID required for winner eligibility
+                      </p>
+                    </div>
+                  ) : timingState.status === 'active' ? (
+                    <div className="space-y-2">
+                      <a
+                        href={accessData.quizLink || 'https://forms.gle/LexMindsVirtualQuiz2026'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-full py-3.5 px-5 bg-royal-600 hover:bg-royal-700 active:bg-royal-800 text-white font-serif text-sm font-semibold rounded-sm shadow-md transition-all flex items-center justify-center space-x-2.5 cursor-pointer group"
+                      >
+                        <Trophy className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
+                        <span>Launch Official Quiz G-Form</span>
+                        <ExternalLink className="w-4 h-4 shrink-0" />
+                      </a>
+                      <div className="flex items-center justify-between text-[11px] font-mono px-1 text-emerald-700 dark:text-emerald-300">
+                        <span>Window Active (Closes 5:00 PM):</span>
+                        <span className="font-bold">{timingState.countdownText}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <button
+                        type="button"
+                        disabled
+                        aria-disabled="true"
+                        className="w-full py-3.5 px-4 bg-paper-200 dark:bg-ink-850 text-ink-500 dark:text-ink-400 font-serif text-xs sm:text-sm font-semibold rounded-sm border border-ink-900/20 dark:border-ink-700 shadow-sm flex items-center justify-center space-x-2 cursor-not-allowed select-none"
+                      >
+                        <Ban className="w-4 h-4 text-rose-500 shrink-0" />
+                        <span>Quiz Closed at 5:00 PM IST</span>
+                      </button>
+                      <p className="text-[11px] font-mono text-ink-400 text-center">
+                        Submissions are closed. Rankings &amp; answer keys will be announced in WhatsApp.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
             </div>
 
           </div>

@@ -139,12 +139,12 @@ export default function QuizTermsPage() {
               <span className="font-bold text-ink-950 dark:text-ink-50 mt-1 block">50 Multiple Choice Questions (MCQs)</span>
             </div>
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
-              <span className="text-ink-500 uppercase text-[10px] block">Time Allowed</span>
-              <span className="font-bold text-ink-950 dark:text-ink-50 mt-1 block">45 Minutes Strict Timed Window</span>
+              <span className="text-ink-500 uppercase text-[10px] block">Examination Window</span>
+              <span className="font-bold text-ink-950 dark:text-ink-50 mt-1 block">Opens 11 Oct 9:00 AM &bull; Available till 5:00 PM</span>
             </div>
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
               <span className="text-ink-500 uppercase text-[10px] block">Mode</span>
-              <span className="font-bold text-royal-600 dark:text-royal-400 mt-1 block">Virtual Online Examination Link</span>
+              <span className="font-bold text-royal-600 dark:text-royal-400 mt-1 block">Official Google Form Examination Link</span>
             </div>
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
               <span className="text-ink-500 uppercase text-[10px] block">Candidate Portal</span>
@@ -154,6 +154,9 @@ export default function QuizTermsPage() {
           <p className="pt-2">
             <strong>Syllabus Scope:</strong> The competition evaluates constitutional fundamentals, landmark Supreme Court of India precedents, modern criminal jurisprudence (Bharatiya Nyaya Sanhita, BNSS, BSA), contemporary legal developments, and digital data protection laws.
           </p>
+          <div className="p-3.5 bg-amber-50 dark:bg-amber-950/40 border border-amber-500/40 rounded-sm text-xs font-mono text-amber-900 dark:text-amber-200">
+            <strong>Winner Eligibility &amp; Disqualification Rule:</strong> A person with one ID is eligible for the Post of Winner. Any person attempting, registering, or submitting with multiple IDs will be strictly disqualified from the quiz and stripped of all winner and merit recognition.
+          </div>
           <p>
             <strong>Single Attempt Rule:</strong> Only the first submitted form from a verified participant email/docket will be evaluated. Subsequent or duplicate submissions from the same candidate will be automatically discarded.
           </p>
@@ -203,10 +206,19 @@ export default function QuizTermsPage() {
             <span>Official Candidate WhatsApp Channel &amp; Alerts</span>
           </h2>
           <p>
-            All critical operational announcements, test window countdowns, immediate answer keys, and rankings are published through the <strong>Official Candidates WhatsApp Group</strong> accessible on the Candidate Desk (<Link href="/quiz-main" className="text-royal-600 dark:text-royal-400 underline font-semibold">/quiz-main</Link>).
+            All critical operational announcements, test window countdowns, immediate answer keys, and rankings are published through the{' '}
+            <a
+              href="https://chat.whatsapp.com/IYbzPBThA2P9lTh8m9uHUk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-600 dark:text-emerald-400 font-semibold underline"
+            >
+              Official Candidates WhatsApp Group
+            </a>{' '}
+            accessible on the Candidate Desk (<Link href="/quiz-main" className="text-royal-600 dark:text-royal-400 underline font-semibold">/quiz-main</Link>).
           </p>
           <p className="text-xs font-mono">
-            Candidates are responsible for joining the WhatsApp channel promptly upon completing their ₹19 registration. LexMinds is not liable for missed instructions resulting from a candidate&apos;s failure to join the official communication channel.
+            Candidates are responsible for joining the WhatsApp channel promptly upon completing their ₹19 registration. Follow this link to join: <a href="https://chat.whatsapp.com/IYbzPBThA2P9lTh8m9uHUk" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline">https://chat.whatsapp.com/IYbzPBThA2P9lTh8m9uHUk</a>. LexMinds is not liable for missed instructions resulting from a candidate&apos;s failure to join the official communication channel.
           </p>
         </section>
 

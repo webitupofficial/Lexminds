@@ -273,9 +273,20 @@ export default function PaymentClient() {
               ? 'Enrollment Record Confirmed'
               : 'Manuscript Submitted For Review'}
           </h1>
-          <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 max-w-lg mx-auto font-normal">
-            Your transaction has been securely reconciled with our central database.
-          </p>
+          {isQuiz ? (
+            <div className="p-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-500/40 rounded-sm space-y-1">
+              <p className="text-base sm:text-lg font-serif font-bold text-emerald-800 dark:text-emerald-200">
+                🎉 Yaaayeee you made the payment!
+              </p>
+              <p className="text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 font-normal">
+                Now You can access the Dashboard for the Quiz portel, by visiting the quiz registration page.
+              </p>
+            </div>
+          ) : (
+            <p className="text-xs sm:text-sm text-ink-600 dark:text-ink-300 max-w-lg mx-auto font-normal">
+              Your transaction has been securely reconciled with our central database.
+            </p>
+          )}
         </div>
 
         {/* Docket Details Card */}
@@ -304,6 +315,28 @@ export default function PaymentClient() {
           </div>
         </div>
 
+        {/* Quiz WhatsApp Group Direct Card */}
+        {isQuiz && (
+          <div className="p-4 sm:p-5 rounded-sm bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-500/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="space-y-1 text-center sm:text-left">
+              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
+                Official Candidates WhatsApp Group
+              </span>
+              <p className="text-xs text-ink-700 dark:text-ink-300">
+                Join our private WhatsApp group for live countdowns, rules, and test announcements.
+              </p>
+            </div>
+            <a
+              href="https://chat.whatsapp.com/IYbzPBThA2P9lTh8m9uHUk"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-mono text-xs font-semibold rounded-sm shadow transition-all flex items-center justify-center space-x-2 shrink-0"
+            >
+              <span>Join WhatsApp Group &rarr;</span>
+            </a>
+          </div>
+        )}
+
         {/* Next Steps Guidance */}
         <div className="p-5 bg-paper dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 text-xs space-y-2 text-ink-700 dark:text-ink-300 rounded-sm">
           <p className="font-serif font-bold text-ink-950 dark:text-ink-50 text-sm">Next Steps &amp; Event Timelines:</p>
@@ -311,7 +344,8 @@ export default function PaymentClient() {
             {isQuiz ? (
               <>
                 <li>Your registration for the LexMinds Virtual Quiz has been confirmed.</li>
-                <li>Quiz participation guidelines, schedule, and access links will be sent to <strong>{session.email}</strong>.</li>
+                <li>You can access the Candidate Dashboard by visiting the <strong>Quiz Registration page (/quiz)</strong> and clicking <strong>&quot;Access Quiz Dashboard&quot;</strong>, or entering directly below.</li>
+                <li>Quiz participation guidelines, schedule, and access links are linked to your verified email <strong>{session.email}</strong>.</li>
                 <li>Please preserve your docket reference <strong>{successData.referenceId}</strong> for all correspondence.</li>
               </>
             ) : isInternship ? (
@@ -330,21 +364,27 @@ export default function PaymentClient() {
           </ul>
         </div>
 
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="pt-2 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3">
           {isQuiz ? (
             <>
               <Link
                 href={`/quiz-main?ref=${encodeURIComponent(successData?.referenceId || session.referenceId)}&email=${encodeURIComponent(session.email || '')}`}
-                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-3.5 btn-brand-primary text-xs uppercase tracking-wider font-semibold shadow-md"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 btn-brand-primary text-xs uppercase tracking-wider font-semibold shadow-md"
               >
-                <span>Enter Quiz Portal (Quiz-main)</span>
+                <span>Enter Quiz Dashboard</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href="/"
+                href="/quiz"
                 className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-6 py-3.5 bg-paper dark:bg-ink-800 hover:bg-paper-200 dark:hover:bg-ink-700 text-ink-900 dark:text-ink-100 font-mono text-xs rounded-sm border border-ink-900/15 dark:border-ink-700 transition-colors"
               >
-                <span>Return to Central Platform</span>
+                <span>Quiz Registration Page (/quiz)</span>
+              </Link>
+              <Link
+                href="/"
+                className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-5 py-3.5 bg-paper dark:bg-ink-800 hover:bg-paper-200 dark:hover:bg-ink-700 text-ink-700 dark:text-ink-300 font-mono text-xs rounded-sm border border-ink-900/15 dark:border-ink-700 transition-colors"
+              >
+                <span>Redirect to Home Page</span>
               </Link>
             </>
           ) : (

@@ -124,6 +124,36 @@ export default function QuizClient() {
       {/* Breadcrumbs */}
       <Breadcrumbs items={[{ name: 'Virtual Quiz', href: '/quiz' }]} />
 
+      {/* Prominent Quick-Access Header for Returning Paid Candidates */}
+      <div className="p-4 sm:p-5 rounded-sm bg-gradient-to-r from-emerald-500/15 via-emerald-500/10 to-transparent border-2 border-emerald-600/50 dark:border-emerald-500/50 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-10 h-10 rounded-sm bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+            <CheckCircle2 className="w-5 h-5" />
+          </div>
+          <div>
+            <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 block">
+              Returning Candidate Portal
+            </span>
+            <h2 className="text-sm sm:text-base font-serif font-bold text-ink-950 dark:text-ink-50">
+              Already completed your ₹19 registration payment?
+            </h2>
+            <p className="text-xs text-ink-600 dark:text-ink-300 font-mono">
+              Access your Candidate Dashboard, official WhatsApp group, and the Quiz Examination link directly.
+            </p>
+          </div>
+        </div>
+
+        <Link
+          href="/quiz-main"
+          id="btn-quiz-dashboard"
+          className="inline-flex items-center justify-center space-x-2 px-5 py-3 rounded-sm bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-md hover:shadow-lg shrink-0"
+        >
+          <CheckCircle2 className="w-4 h-4" />
+          <span>Access Quiz Dashboard</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </Link>
+      </div>
+
       {/* Header Banner */}
       <div className="p-6 sm:p-10 md:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal space-y-6">
         
@@ -134,21 +164,9 @@ export default function QuizClient() {
             <span>Virtual Competition &bull; 2026 Edition</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Registrations Open</span>
-            </div>
-
-            <Link
-              href="/quiz-main"
-              className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-sm bg-emerald-600 hover:bg-emerald-700 text-white font-mono font-bold text-xs uppercase tracking-wider transition-all shadow-sm hover:shadow"
-              title="Candidates who have already completed ₹19 payment"
-            >
-              <CheckCircle2 className="w-3.5 h-3.5" />
-              <span>Already Paid Users</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+          <div className="flex items-center space-x-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>Registrations Open</span>
           </div>
         </div>
 
@@ -216,8 +234,21 @@ export default function QuizClient() {
             className="self-start sm:self-auto inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-sm border border-emerald-500/40 bg-emerald-50/70 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 font-mono text-xs font-semibold hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition-colors shrink-0"
           >
             <Lock className="w-3 h-3 text-emerald-600" />
-            <span>Already paid? Enter Quiz Portal &rarr;</span>
+            <span>Access Quiz Dashboard &rarr;</span>
           </Link>
+        </div>
+
+        {/* Clear Step-by-Step Guidance Box */}
+        <div className="p-4 rounded-sm bg-royal-50/80 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 text-xs text-royal-950 dark:text-royal-100 flex items-start space-x-3">
+          <AlertCircle className="w-4 h-4 text-royal-600 dark:text-royal-400 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="font-semibold text-royal-900 dark:text-royal-200">
+              Important: Registration &amp; Dashboard Access Guide
+            </p>
+            <p className="text-ink-600 dark:text-ink-300 font-mono text-[11px] leading-relaxed">
+              After filling the form and completing your ₹19 payment on Razorpay, return to this Quiz Registration page and click on <strong>&quot;Access Quiz Dashboard&quot;</strong> to access your dashboard and examination link.
+            </p>
+          </div>
         </div>
 
         <GoogleAuthGate
@@ -409,6 +440,13 @@ export default function QuizClient() {
                 </div>
                 <span>&bull;</span>
                 <span>Immediate Registration Receipt</span>
+              </div>
+
+              {/* Guidance Line on Return Flow */}
+              <div className="p-3 bg-paper-100 dark:bg-ink-850 border border-emerald-500/30 rounded-sm text-center">
+                <p className="text-xs text-ink-700 dark:text-ink-300 font-mono">
+                  💡 <strong>Next Step after Payment:</strong> After completing the ₹19 payment on Razorpay, return to this Quiz page and click the <strong>&quot;Access Quiz Dashboard&quot;</strong> button at the top to access your Dashboard.
+                </p>
               </div>
             </div>
 

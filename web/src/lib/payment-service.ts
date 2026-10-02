@@ -908,7 +908,7 @@ export async function checkUserQuizAccess(
   const whatsappGroupLink =
     process.env.QUIZ_WHATSAPP_GROUP_URL ||
     process.env.NEXT_PUBLIC_QUIZ_WHATSAPP_GROUP_URL ||
-    'https://chat.whatsapp.com/LexMindsQuiz2026Official';
+    'https://chat.whatsapp.com/IYbzPBThA2P9lTh8m9uHUk';
 
   // 1. Check Admin Override for testing/supervision
   const adminEmails = getAdminEmails();
