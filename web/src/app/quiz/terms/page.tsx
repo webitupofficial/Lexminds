@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import QuizInstructionsBanner from '@/components/QuizInstructionsBanner';
 import { 
   Scale, 
   Trophy, 
@@ -61,6 +62,9 @@ export default function QuizTermsPage() {
           </span>
         </div>
       </div>
+
+      {/* Official Instructions, Guidance & Warnings */}
+      <QuizInstructionsBanner />
 
       {/* Main Content Container */}
       <div className="p-6 sm:p-12 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 space-y-10 text-sm text-ink-700 dark:text-ink-300 leading-relaxed shadow-brutal">
@@ -145,7 +149,7 @@ export default function QuizTermsPage() {
             </div>
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
               <span className="text-ink-500 uppercase text-[10px] block">Examination Window</span>
-              <span className="font-bold text-ink-950 dark:text-ink-50 mt-1 block">Opens 11 Oct 9:00 AM &bull; Available till 5:00 PM</span>
+              <span className="font-bold text-ink-950 dark:text-ink-50 mt-1 block">Opens 11 Oct 12:00 PM &bull; Closes 1:00 PM (IST)</span>
             </div>
             <div className="p-3.5 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-800">
               <span className="text-ink-500 uppercase text-[10px] block">Mode &amp; Level</span>
@@ -286,26 +290,30 @@ export default function QuizTermsPage() {
       {/* Bottom Navigation CTA */}
       <div className="p-6 rounded-sm bg-surface-light dark:bg-surface-dark border border-ink-900 dark:border-ink-700 shadow-brutal flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="space-y-1 text-center sm:text-left">
+          <div className="inline-flex items-center space-x-1.5 px-2 py-0.5 rounded-sm bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-[10px] font-mono font-bold uppercase">
+            <span className="w-1.5 h-1.5 rounded-full bg-rose-500" />
+            <span>Registrations Closed</span>
+          </div>
           <h3 className="font-serif font-bold text-base text-ink-950 dark:text-ink-50">
-            Ready to participate in the Virtual Quiz?
+            Legal Awareness Quiz Competition Hub
           </h3>
           <p className="text-xs text-ink-600 dark:text-ink-400 font-mono">
-            Register and pay ₹19 to secure your examination docket.
+            Quiz timing: 11 October 2026, from 12:00 PM to 1:00 PM (IST).
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Link
-            href="/quiz"
+            href="/quiz-main"
             className="py-2.5 px-5 btn-brand-primary text-xs font-semibold uppercase tracking-wider flex items-center space-x-2"
           >
-            <span>Go to Quiz Registration</span>
+            <span>Access Candidate Desk</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </Link>
           <Link
-            href="/quiz-main"
+            href="/quiz"
             className="py-2.5 px-4 bg-paper dark:bg-ink-800 hover:bg-paper-200 dark:hover:bg-ink-700 text-ink-900 dark:text-ink-100 font-mono text-xs rounded-sm border border-ink-900/15 dark:border-ink-700 transition-colors"
           >
-            <span>Candidate Desk</span>
+            <span>Quiz Details</span>
           </Link>
         </div>
       </div>

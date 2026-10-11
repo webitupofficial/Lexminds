@@ -27,6 +27,7 @@ import {
   Ban
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import QuizInstructionsBanner from '@/components/QuizInstructionsBanner';
 import { 
   signInWithGoogle, 
   signOutGoogle, 
@@ -75,7 +76,7 @@ export default function QuizMainClient() {
   const [lookupLoading, setLookupLoading] = useState<boolean>(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
 
-  // Quiz Schedule: 11 October, 9:00 AM to 5:00 PM IST
+  // Quiz Schedule: 11 October, 12:00 PM to 1:00 PM IST
   const [timingState, setTimingState] = useState<{
     status: 'upcoming' | 'active' | 'closed';
     countdownText: string;
@@ -84,8 +85,8 @@ export default function QuizMainClient() {
   }>({
     status: 'upcoming',
     countdownText: '',
-    targetOpenTimeStr: '11 Oct, 9:00 AM IST',
-    targetCloseTimeStr: '11 Oct, 5:00 PM IST',
+    targetOpenTimeStr: '11 Oct, 12:00 PM IST',
+    targetCloseTimeStr: '11 Oct, 1:00 PM IST',
   });
 
   useEffect(() => {
@@ -93,10 +94,10 @@ export default function QuizMainClient() {
       const now = new Date();
       const currentYear = now.getFullYear();
 
-      // 11 October 9:00 AM IST (+05:30)
-      const startTime = new Date(`${currentYear}-10-11T09:00:00+05:30`);
-      // 11 October 5:00 PM IST (+05:30)
-      const endTime = new Date(`${currentYear}-10-11T17:00:00+05:30`);
+      // 11 October 12:00 PM IST (+05:30)
+      const startTime = new Date(`${currentYear}-10-11T12:00:00+05:30`);
+      // 11 October 1:00 PM IST (+05:30)
+      const endTime = new Date(`${currentYear}-10-11T13:00:00+05:30`);
 
       const nowTime = now.getTime();
       const startMs = startTime.getTime();
@@ -119,8 +120,8 @@ export default function QuizMainClient() {
         setTimingState({
           status: 'upcoming',
           countdownText: parts.join(' '),
-          targetOpenTimeStr: '11 Oct, 9:00 AM IST',
-          targetCloseTimeStr: '11 Oct, 5:00 PM IST',
+          targetOpenTimeStr: '11 Oct, 12:00 PM IST',
+          targetCloseTimeStr: '11 Oct, 1:00 PM IST',
         });
       } else if (nowTime >= startMs && nowTime <= endMs) {
         const diffMs = Math.max(0, endMs - nowTime);
@@ -132,15 +133,15 @@ export default function QuizMainClient() {
         setTimingState({
           status: 'active',
           countdownText: `${hours}h ${mins}m ${secs}s`,
-          targetOpenTimeStr: '11 Oct, 9:00 AM IST',
-          targetCloseTimeStr: '11 Oct, 5:00 PM IST',
+          targetOpenTimeStr: '11 Oct, 12:00 PM IST',
+          targetCloseTimeStr: '11 Oct, 1:00 PM IST',
         });
       } else {
         setTimingState({
           status: 'closed',
           countdownText: 'Window Ended',
-          targetOpenTimeStr: '11 Oct, 9:00 AM IST',
-          targetCloseTimeStr: '11 Oct, 5:00 PM IST',
+          targetOpenTimeStr: '11 Oct, 12:00 PM IST',
+          targetCloseTimeStr: '11 Oct, 1:00 PM IST',
         });
       }
     }
@@ -587,7 +588,7 @@ export default function QuizMainClient() {
                     {timingState.status === 'upcoming' ? (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-amber-100 dark:bg-amber-900/70 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 flex items-center space-x-1">
                         <Clock className="w-3 h-3" />
-                        <span>Opens 11 Oct 9 AM</span>
+                        <span>Opens 11 Oct 12 PM</span>
                       </span>
                     ) : timingState.status === 'active' ? (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-100 dark:bg-emerald-900/70 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 animate-pulse flex items-center space-x-1">
@@ -602,7 +603,7 @@ export default function QuizMainClient() {
                   </div>
 
                   <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
-                    The official examination is hosted on our verified Google Form. The quiz will open strictly on <strong>11 Oct at 9:00 AM</strong> and will remain available till <strong>5:00 PM</strong>.
+                    The official examination is hosted on our verified Google Form. The quiz will open strictly on <strong>11 Oct at 12:00 PM</strong> and will remain available till <strong>1:00 PM (IST)</strong>.
                   </p>
 
                   {/* Format & Difficulty Breakdown */}
@@ -647,11 +648,11 @@ export default function QuizMainClient() {
                   <div className="space-y-1.5 text-xs font-mono text-royal-900 dark:text-royal-300 bg-white/80 dark:bg-ink-900/80 p-3 rounded border border-royal-200 dark:border-royal-800/60">
                     <div className="flex items-center justify-between">
                       <span className="text-ink-500 dark:text-ink-400">Quiz Opens:</span>
-                      <span className="font-bold text-ink-900 dark:text-ink-100">11 Oct, 9:00 AM IST</span>
+                      <span className="font-bold text-ink-900 dark:text-ink-100">11 Oct, 12:00 PM IST</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-ink-500 dark:text-ink-400">Available Till:</span>
-                      <span className="font-bold text-ink-900 dark:text-ink-100">11 Oct, 5:00 PM IST (Strict)</span>
+                      <span className="font-bold text-ink-900 dark:text-ink-100">11 Oct, 1:00 PM IST (Strict)</span>
                     </div>
                   </div>
                 </div>
@@ -664,21 +665,21 @@ export default function QuizMainClient() {
                         type="button"
                         disabled
                         aria-disabled="true"
-                        title="Quiz examination link will unlock on 11 Oct at 9:00 AM IST"
+                        title="Quiz examination link will unlock on 11 Oct at 12:00 PM IST"
                         className="w-full py-3.5 px-4 bg-paper-200 dark:bg-ink-850 text-ink-600 dark:text-ink-400 font-serif text-xs sm:text-sm font-semibold rounded-sm border-2 border-dashed border-rose-400/80 dark:border-rose-500/60 shadow-sm flex items-center justify-center space-x-2 cursor-not-allowed select-none transition-all"
                       >
                         <XCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
-                        <span>Will Open on 11 Oct at 9:00 AM</span>
+                        <span>Will Open on 11 Oct at 12:00 PM</span>
                       </button>
 
                       <div className="flex items-center justify-between text-[11px] font-mono px-1">
-                        <span className="text-ink-500 dark:text-ink-400">Countdown to 11 Oct 9 AM:</span>
+                        <span className="text-ink-500 dark:text-ink-400">Countdown to 11 Oct 12 PM:</span>
                         <span className="font-bold text-royal-600 dark:text-royal-400">
                           {timingState.countdownText}
                         </span>
                       </div>
                       <p className="text-[10px] font-mono text-ink-400 text-center">
-                        Quiz will be available till 5:00 PM &bull; Single ID required for winner eligibility
+                        Quiz will be available till 1:00 PM IST &bull; No late submissions accepted
                       </p>
                     </div>
                   ) : timingState.status === 'active' ? (
@@ -694,7 +695,7 @@ export default function QuizMainClient() {
                         <ExternalLink className="w-4 h-4 shrink-0" />
                       </a>
                       <div className="flex items-center justify-between text-[11px] font-mono px-1 text-emerald-700 dark:text-emerald-300">
-                        <span>Window Active (Closes 5:00 PM):</span>
+                        <span>Window Active (Closes 1:00 PM):</span>
                         <span className="font-bold">{timingState.countdownText}</span>
                       </div>
                     </div>
@@ -707,7 +708,7 @@ export default function QuizMainClient() {
                         className="w-full py-3.5 px-4 bg-paper-200 dark:bg-ink-850 text-ink-500 dark:text-ink-400 font-serif text-xs sm:text-sm font-semibold rounded-sm border border-ink-900/20 dark:border-ink-700 shadow-sm flex items-center justify-center space-x-2 cursor-not-allowed select-none"
                       >
                         <Ban className="w-4 h-4 text-rose-500 shrink-0" />
-                        <span>Quiz Closed at 5:00 PM IST</span>
+                        <span>Quiz Closed at 1:00 PM IST</span>
                       </button>
                       <p className="text-[11px] font-mono text-ink-400 text-center">
                         Submissions are closed. Rankings &amp; answer keys will be announced in WhatsApp.
@@ -718,6 +719,9 @@ export default function QuizMainClient() {
               </div>
 
             </div>
+
+            {/* Official Guidance & Warnings Card */}
+            <QuizInstructionsBanner />
 
           </div>
 
@@ -810,13 +814,9 @@ export default function QuizMainClient() {
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-                <Link
-                  href="/quiz"
-                  className="w-full sm:w-auto py-3 px-6 btn-brand-primary text-xs uppercase tracking-wider font-semibold flex items-center justify-center space-x-2"
-                >
-                  <span>Register &amp; Pay ₹19 for Quiz</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+                <span className="w-full sm:w-auto py-2.5 px-4 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-mono text-xs font-semibold rounded-sm border border-rose-300 dark:border-rose-800">
+                  Registrations Now Closed
+                </span>
 
                 <button
                   type="button"
@@ -934,20 +934,21 @@ export default function QuizMainClient() {
               </button>
             </form>
 
-            {/* Haven't Registered Callout */}
-            <div className="pt-4 border-t border-ink-900/10 dark:border-ink-800 text-center max-w-md mx-auto space-y-2">
-              <p className="text-xs text-ink-500 dark:text-ink-400 font-mono">
-                Haven&apos;t registered for the LexMinds Virtual Quiz yet?
+            {/* Registrations Closed Notice */}
+            <div className="pt-4 border-t border-ink-900/10 dark:border-ink-800 text-center max-w-md mx-auto space-y-1.5">
+              <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-sm bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 text-rose-700 dark:text-rose-300 text-xs font-mono font-semibold">
+                <span className="w-2 h-2 rounded-full bg-rose-500" />
+                <span>Registrations are Officially Closed</span>
+              </div>
+              <p className="text-[11px] text-ink-500 dark:text-ink-400 font-mono">
+                Only candidates who previously registered and paid can access this desk.
               </p>
-              <Link
-                href="/quiz"
-                className="inline-flex items-center space-x-1.5 text-xs font-mono font-bold text-royal-600 dark:text-royal-400 hover:underline"
-              >
-                <span>Complete Registration &amp; Pay ₹19 &rarr;</span>
-              </Link>
             </div>
 
           </div>
+
+          {/* Official Guidance & Warnings for All Visitors */}
+          <QuizInstructionsBanner />
 
         </div>
       )}

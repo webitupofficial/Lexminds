@@ -186,9 +186,9 @@ export default async function HomePage() {
                   <Trophy className="w-3.5 h-3.5" />
                   <span>Virtual Competition</span>
                 </span>
-                <span className="px-2.5 py-1 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 font-mono text-xs font-semibold border border-emerald-500/30 flex items-center space-x-1.5">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Registrations Open</span>
+                <span className="px-2.5 py-1 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 font-mono text-xs font-semibold border border-rose-500/30 flex items-center space-x-1.5">
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  <span>Registrations Closed</span>
                 </span>
               </div>
 
@@ -197,21 +197,21 @@ export default async function HomePage() {
               </h2>
 
               <p className="text-base text-ink-600 dark:text-ink-300 leading-relaxed font-normal max-w-2xl">
-                Test your knowledge, compete with fellow participants, and take part in the upcoming LexMinds virtual quiz. Gain valuable insights, challenge your understanding of contemporary legal concepts, and earn a verified Certificate of Participation.
+                Registrations are now closed for the Legal Awareness Quiz Competition. Registered participants must complete the quiz during the designated test window tomorrow, 11 October 2026, from 12:00 PM to 1:00 PM (IST).
               </p>
 
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs font-mono text-ink-700 dark:text-ink-300">
                 <div className="flex items-center space-x-1.5">
                   <Check className="w-4 h-4 text-royal-500" />
-                  <span>Online Format</span>
+                  <span>11 Oct, 12:00 PM – 1:00 PM IST</span>
                 </div>
                 <div className="flex items-center space-x-1.5">
                   <Check className="w-4 h-4 text-royal-500" />
-                  <span>Open to All Law Students</span>
+                  <span>25 MCQs (30 Mins)</span>
                 </div>
                 <div className="flex items-center space-x-1.5">
                   <Check className="w-4 h-4 text-royal-500" />
-                  <span>Verified E-Certificates</span>
+                  <span>Verified E-Certificates &amp; Prize</span>
                 </div>
               </div>
             </div>
@@ -219,29 +219,31 @@ export default async function HomePage() {
             <div className="lg:col-span-4 p-6 bg-paper dark:bg-ink-900 border border-ink-900/15 dark:border-ink-700 space-y-4 text-center sm:text-left flex flex-col justify-between">
               <div className="space-y-1">
                 <span className="text-[11px] font-mono uppercase tracking-wider text-ink-500 dark:text-ink-400 block">
-                  Registration Fee
+                  Quiz Schedule (IST)
                 </span>
                 <div className="flex items-baseline justify-center sm:justify-start space-x-2">
-                  <span className="text-3xl font-serif font-bold text-royal-600 dark:text-royal-400">
-                    ₹19.00
-                  </span>
-                  <span className="text-sm line-through text-ink-400">₹99.00</span>
-                  <span className="text-[10px] font-mono text-emerald-600 dark:text-emerald-400 font-semibold uppercase">
-                    80% Off
+                  <span className="text-xl sm:text-2xl font-serif font-bold text-royal-600 dark:text-royal-400">
+                    12:00 PM – 1:00 PM
                   </span>
                 </div>
                 <span className="text-[11px] font-mono text-ink-500 dark:text-ink-400 block">
-                  Includes full participation access &amp; participation certificate
+                  Strict deadline &bull; No late submissions
                 </span>
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 space-y-2">
                 <Link
-                  href="/quiz"
+                  href="/quiz-main"
                   className="w-full py-3.5 btn-brand-primary text-xs font-semibold uppercase tracking-wider text-center flex items-center justify-center space-x-2"
                 >
-                  <span>Register for the Quiz</span>
+                  <span>Access Candidate Desk</span>
                   <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/quiz"
+                  className="w-full py-2 bg-paper dark:bg-ink-800 text-ink-700 dark:text-ink-300 font-mono text-xs text-center block hover:underline"
+                >
+                  View Important Instructions &rarr;
                 </Link>
               </div>
             </div>
