@@ -892,6 +892,10 @@ export interface UserQuizAccessResult {
   whatsappGroupLink?: string;
   isAdmin?: boolean;
   reason?: string;
+  quizTimingStatus?: 'upcoming' | 'active' | 'closed';
+  opensAt?: string;
+  closesAt?: string;
+  serverNow?: string;
 }
 
 export async function checkUserQuizAccess(
@@ -901,18 +905,43 @@ export async function checkUserQuizAccess(
 ): Promise<UserQuizAccessResult> {
   const normalizedEmail = (userEmail || '').trim().toLowerCase();
   const normalizedRef = (referenceId || '').trim().toUpperCase();
-  const quizLink =
+
+  // Authoritative server-side examination URL (Form-Timer)
+  const targetQuizUrl =
     process.env.QUIZ_PORTAL_URL ||
-    process.env.NEXT_PUBLIC_QUIZ_PORTAL_URL ||
-    'https://forms.gle/LexMindsVirtualQuiz2026';
+    'https://form-timer.com/start/348faea3';
+
   const whatsappGroupLink =
     process.env.QUIZ_WHATSAPP_GROUP_URL ||
     process.env.NEXT_PUBLIC_QUIZ_WHATSAPP_GROUP_URL ||
     'https://chat.whatsapp.com/IYbzPBThA2P9lTh8m9uHUk';
 
+  // Compute authoritative server-side timing for the quiz examination window
+  // 11 October, 12:00 PM to 1:00 PM IST (+05:30)
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const startTime = new Date(`${currentYear}-10-11T12:00:00+05:30`);
+  const endTime = new Date(`${currentYear}-10-11T13:00:00+05:30`);
+
+  const nowMs = now.getTime();
+  const isLive = nowMs >= startTime.getTime() && nowMs <= endTime.getTime();
+  const isUpcoming = nowMs < startTime.getTime();
+  const quizTimingStatus: 'upcoming' | 'active' | 'closed' = isUpcoming
+    ? 'upcoming'
+    : isLive
+    ? 'active'
+    : 'closed';
+
   // 1. Check Admin Override for testing/supervision
   const adminEmails = getAdminEmails();
-  if (normalizedEmail && adminEmails.includes(normalizedEmail)) {
+  const isAdmin = Boolean(normalizedEmail && adminEmails.includes(normalizedEmail));
+
+  // Security Gate:
+  // Before 12:00 PM IST, or after 1:00 PM IST, NEVER expose the target URL in responses for candidates.
+  // Only administrators inspecting the portal can preview the link prior to launch.
+  const candidateQuizLink = isLive ? targetQuizUrl : undefined;
+
+  if (isAdmin) {
     return {
       hasAccess: true,
       participantName: 'Administrator (LexMinds Oversight)',
@@ -921,10 +950,14 @@ export async function checkUserQuizAccess(
       paymentRecordId: 'PAY-ADMIN-BYPASS',
       quizKey: 'lexminds-virtual-quiz-2026',
       status: 'admin_preview',
-      paidAt: new Date().toISOString(),
-      quizLink,
+      paidAt: now.toISOString(),
+      quizLink: targetQuizUrl,
       whatsappGroupLink,
       isAdmin: true,
+      quizTimingStatus,
+      opensAt: startTime.toISOString(),
+      closesAt: endTime.toISOString(),
+      serverNow: now.toISOString(),
     };
   }
 
@@ -956,8 +989,12 @@ export async function checkUserQuizAccess(
           quizKey,
           status: 'paid',
           paidAt: updatedAt,
-          quizLink,
+          quizLink: candidateQuizLink,
           whatsappGroupLink,
+          quizTimingStatus,
+          opensAt: startTime.toISOString(),
+          closesAt: endTime.toISOString(),
+          serverNow: now.toISOString(),
         };
       }
     }
@@ -992,8 +1029,12 @@ export async function checkUserQuizAccess(
           quizKey: 'lexminds-virtual-quiz-2026',
           status: 'paid',
           paidAt: verifiedAt,
-          quizLink,
+          quizLink: candidateQuizLink,
           whatsappGroupLink,
+          quizTimingStatus,
+          opensAt: startTime.toISOString(),
+          closesAt: endTime.toISOString(),
+          serverNow: now.toISOString(),
         };
       }
     }
@@ -1002,6 +1043,10 @@ export async function checkUserQuizAccess(
       hasAccess: false,
       email: normalizedEmail,
       reason: 'No completed payment record found for this Google account.',
+      quizTimingStatus,
+      opensAt: startTime.toISOString(),
+      closesAt: endTime.toISOString(),
+      serverNow: now.toISOString(),
     };
   } catch (err: any) {
     console.error('[checkUserQuizAccess Error]:', err.message || err);
@@ -1009,6 +1054,10 @@ export async function checkUserQuizAccess(
       hasAccess: false,
       email: normalizedEmail,
       reason: 'Unable to query registration records at this moment.',
+      quizTimingStatus,
+      opensAt: startTime.toISOString(),
+      closesAt: endTime.toISOString(),
+      serverNow: now.toISOString(),
     };
   }
 }

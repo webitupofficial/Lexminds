@@ -197,7 +197,7 @@ export default async function HomePage() {
               </h2>
 
               <p className="text-base text-ink-600 dark:text-ink-300 leading-relaxed font-normal max-w-2xl">
-                Registrations are now closed for the Legal Awareness Quiz Competition. Registered participants must complete the quiz during the designated test window tomorrow, 11 October 2026, from 12:00 PM to 1:00 PM (IST).
+                Registrations are now closed for the Legal Awareness Quiz Competition. Registered participants must complete the quiz during the designated test window today, 11 October 2026, from 12:00 PM to 1:00 PM (IST).
               </p>
 
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs font-mono text-ink-700 dark:text-ink-300">

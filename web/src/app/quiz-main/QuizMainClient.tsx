@@ -58,6 +58,10 @@ interface QuizAccessData {
   isAdmin?: boolean;
   error?: string;
   reason?: string;
+  quizTimingStatus?: 'upcoming' | 'active' | 'closed';
+  opensAt?: string;
+  closesAt?: string;
+  serverNow?: string;
 }
 
 export default function QuizMainClient() {
@@ -76,22 +80,36 @@ export default function QuizMainClient() {
   const [lookupLoading, setLookupLoading] = useState<boolean>(false);
   const [lookupError, setLookupError] = useState<string | null>(null);
 
+  // Server clock skew synchronization ref
+  const serverClockOffsetRef = useRef<number>(0);
+
   // Quiz Schedule: 11 October, 12:00 PM to 1:00 PM IST
   const [timingState, setTimingState] = useState<{
     status: 'upcoming' | 'active' | 'closed';
     countdownText: string;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    days: number;
+    totalSecondsLeft: number;
     targetOpenTimeStr: string;
     targetCloseTimeStr: string;
   }>({
     status: 'upcoming',
     countdownText: '',
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+    days: 0,
+    totalSecondsLeft: 0,
     targetOpenTimeStr: '11 Oct, 12:00 PM IST',
     targetCloseTimeStr: '11 Oct, 1:00 PM IST',
   });
 
   useEffect(() => {
     function updateQuizTiming() {
-      const now = new Date();
+      // Use authoritative synchronized time if serverNow was provided
+      const now = new Date(Date.now() + serverClockOffsetRef.current);
       const currentYear = now.getFullYear();
 
       // 11 October 12:00 PM IST (+05:30)
@@ -113,13 +131,18 @@ export default function QuizMainClient() {
 
         const parts: string[] = [];
         if (days > 0) parts.push(`${days}d`);
-        parts.push(`${hours}h`);
-        parts.push(`${mins}m`);
-        parts.push(`${secs}s`);
+        parts.push(`${hours.toString().padStart(2, '0')}h`);
+        parts.push(`${mins.toString().padStart(2, '0')}m`);
+        parts.push(`${secs.toString().padStart(2, '0')}s`);
 
         setTimingState({
           status: 'upcoming',
           countdownText: parts.join(' '),
+          hours,
+          minutes: mins,
+          seconds: secs,
+          days,
+          totalSecondsLeft: totalSecs,
           targetOpenTimeStr: '11 Oct, 12:00 PM IST',
           targetCloseTimeStr: '11 Oct, 1:00 PM IST',
         });
@@ -132,7 +155,12 @@ export default function QuizMainClient() {
 
         setTimingState({
           status: 'active',
-          countdownText: `${hours}h ${mins}m ${secs}s`,
+          countdownText: `${mins.toString().padStart(2, '0')}m ${secs.toString().padStart(2, '0')}s`,
+          hours,
+          minutes: mins,
+          seconds: secs,
+          days: 0,
+          totalSecondsLeft: totalSecs,
           targetOpenTimeStr: '11 Oct, 12:00 PM IST',
           targetCloseTimeStr: '11 Oct, 1:00 PM IST',
         });
@@ -140,6 +168,11 @@ export default function QuizMainClient() {
         setTimingState({
           status: 'closed',
           countdownText: 'Window Ended',
+          hours: 0,
+          minutes: 0,
+          seconds: 0,
+          days: 0,
+          totalSecondsLeft: 0,
           targetOpenTimeStr: '11 Oct, 12:00 PM IST',
           targetCloseTimeStr: '11 Oct, 1:00 PM IST',
         });
@@ -179,6 +212,12 @@ export default function QuizMainClient() {
       });
 
       const data = await res.json();
+      if (data.serverNow) {
+        try {
+          serverClockOffsetRef.current = new Date(data.serverNow).getTime() - Date.now();
+        } catch {}
+      }
+
       if (data.hasAccess) {
         setAccessData(data);
         setLookupError(null);
@@ -204,6 +243,30 @@ export default function QuizMainClient() {
       isCheckingRef.current = false;
     }
   }, []);
+
+  // Auto-fetch unlocked quiz link as soon as 12:00 PM hits
+  const prevTimingStatusRef = useRef(timingState.status);
+  const attemptedAutoUnlockRef = useRef(false);
+
+  useEffect(() => {
+    // When timer transitions from upcoming to active, automatically re-check access
+    // to retrieve the unlocked secret examination link from the server
+    if (prevTimingStatusRef.current === 'upcoming' && timingState.status === 'active') {
+      if (accessData?.hasAccess && !accessData.quizLink && !attemptedAutoUnlockRef.current) {
+        attemptedAutoUnlockRef.current = true;
+        const isEmail = lookupQuery.includes('@');
+        checkAccess({
+          token: currentToken || undefined,
+          referenceId: !isEmail ? lookupQuery : undefined,
+          email: isEmail ? lookupQuery : undefined,
+        });
+      }
+    }
+    if (timingState.status === 'upcoming') {
+      attemptedAutoUnlockRef.current = false;
+    }
+    prevTimingStatusRef.current = timingState.status;
+  }, [timingState.status, accessData?.hasAccess, accessData?.quizLink, currentToken, lookupQuery, checkAccess]);
 
   // Handle Manual Docket Reference / Email Lookup Form
   const handleManualLookup = async (e: React.FormEvent) => {
@@ -445,6 +508,81 @@ export default function QuizMainClient() {
         </div>
       )}
 
+      {/* Authoritative Live Quiz Window Banner with Real-Time Countdown Clock */}
+      <div
+        className={`p-5 sm:p-6 rounded-sm border-2 shadow-brutal transition-all ${
+          timingState.status === 'active'
+            ? 'bg-emerald-50/90 dark:bg-emerald-950/40 border-emerald-500/60 dark:border-emerald-500/50'
+            : timingState.status === 'upcoming'
+            ? 'bg-royal-50/90 dark:bg-royal-950/40 border-royal-500/60 dark:border-royal-500/50'
+            : 'bg-paper-200 dark:bg-ink-900 border-ink-900/20 dark:border-ink-700'
+        }`}
+      >
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center space-x-2">
+              {timingState.status === 'active' ? (
+                <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-600 text-white animate-pulse">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                  <span>EXAMINATION LIVE NOW</span>
+                </span>
+              ) : timingState.status === 'upcoming' ? (
+                <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-royal-600 text-white">
+                  <Clock className="w-3 h-3" />
+                  <span>SCHEDULED TEST WINDOW</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-rose-600 text-white">
+                  <Ban className="w-3 h-3" />
+                  <span>EXAMINATION WINDOW CONCLUDED</span>
+                </span>
+              )}
+              <span className="text-[11px] font-mono text-ink-500 dark:text-ink-400">
+                12:00 PM – 1:00 PM IST Strict
+              </span>
+            </div>
+            <h2 className="font-serif font-bold text-lg sm:text-xl text-ink-950 dark:text-ink-50">
+              {timingState.status === 'active'
+                ? 'Official Quiz Examination is Currently Live'
+                : timingState.status === 'upcoming'
+                ? 'Quiz Opens Today at 12:00 PM IST Sharp'
+                : 'Official Submission Window is Closed'}
+            </h2>
+            <p className="text-xs text-ink-600 dark:text-ink-300 font-mono">
+              {timingState.status === 'active'
+                ? 'Complete and submit your responses before 1:00 PM IST. Any attempt submitted after 1:00 PM will be disqualified.'
+                : timingState.status === 'upcoming'
+                ? 'Candidate verification is open. The timed examination portal will unlock precisely at 12:00 PM.'
+                : 'The test window closed at 1:00 PM IST. Answer keys and merit rankings will be released via WhatsApp.'}
+            </p>
+          </div>
+
+          {/* Prominent Digital Countdown Segmented Timer */}
+          <div className="flex items-center space-x-2 shrink-0 bg-white/90 dark:bg-ink-950/90 p-2.5 sm:p-3 rounded border border-ink-900/15 dark:border-ink-800 shadow-sm">
+            <div className="text-center px-2 py-1 min-w-[50px] bg-paper dark:bg-ink-900 rounded border border-ink-900/10 dark:border-ink-800">
+              <span className="block font-mono font-bold text-lg sm:text-2xl text-ink-950 dark:text-ink-50 leading-none">
+                {String(timingState.hours).padStart(2, '0')}
+              </span>
+              <span className="text-[9px] font-mono uppercase text-ink-400 tracking-wider">Hours</span>
+            </div>
+            <span className="font-mono font-bold text-lg text-ink-400">:</span>
+            <div className="text-center px-2 py-1 min-w-[50px] bg-paper dark:bg-ink-900 rounded border border-ink-900/10 dark:border-ink-800">
+              <span className="block font-mono font-bold text-lg sm:text-2xl text-ink-950 dark:text-ink-50 leading-none">
+                {String(timingState.minutes).padStart(2, '0')}
+              </span>
+              <span className="text-[9px] font-mono uppercase text-ink-400 tracking-wider">Mins</span>
+            </div>
+            <span className="font-mono font-bold text-lg text-ink-400">:</span>
+            <div className="text-center px-2 py-1 min-w-[50px] bg-paper dark:bg-ink-900 rounded border border-ink-900/10 dark:border-ink-800">
+              <span className="block font-mono font-bold text-lg sm:text-2xl text-royal-600 dark:text-royal-400 leading-none">
+                {String(timingState.seconds).padStart(2, '0')}
+              </span>
+              <span className="text-[9px] font-mono uppercase text-ink-400 tracking-wider">Secs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* In-Flight Verification Status Banner (Non-Intrusive, No Full Screen Replacement) */}
       {(verifying || (authChecking && !accessData?.hasAccess)) && (
         <div className="p-4 rounded-sm bg-royal-50 dark:bg-royal-950/40 border border-royal-200 dark:border-royal-800 flex items-center justify-between gap-3 text-xs font-mono">
@@ -568,7 +706,7 @@ export default function QuizMainClient() {
                 </div>
               </div>
 
-              {/* STEP 2: OFFICIAL QUIZ G-FORM EXAMINATION PORTAL */}
+              {/* STEP 2: OFFICIAL TIMED EXAMINATION PORTAL (FORM-TIMER) */}
               <div className="p-6 sm:p-7 rounded-sm bg-royal-50/80 dark:bg-royal-950/30 border-2 border-royal-500/50 dark:border-royal-500/40 shadow-brutal flex flex-col justify-between space-y-6 transition-all hover:shadow-lg">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
@@ -581,14 +719,14 @@ export default function QuizMainClient() {
                           Step 2 of 2
                         </span>
                         <h3 className="font-serif font-bold text-xl text-ink-950 dark:text-ink-50">
-                          Quiz G-Form Portal
+                          Timed Examination Portal
                         </h3>
                       </div>
                     </div>
                     {timingState.status === 'upcoming' ? (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-amber-100 dark:bg-amber-900/70 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700 flex items-center space-x-1">
                         <Clock className="w-3 h-3" />
-                        <span>Opens 11 Oct 12 PM</span>
+                        <span>Opens 12:00 PM Sharp</span>
                       </span>
                     ) : timingState.status === 'active' ? (
                       <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-emerald-100 dark:bg-emerald-900/70 text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 animate-pulse flex items-center space-x-1">
@@ -603,7 +741,7 @@ export default function QuizMainClient() {
                   </div>
 
                   <p className="text-xs text-ink-600 dark:text-ink-300 leading-relaxed font-normal">
-                    The official examination is hosted on our verified Google Form. The quiz will open strictly on <strong>11 Oct at 12:00 PM</strong> and will remain available till <strong>1:00 PM (IST)</strong>.
+                    The official examination is hosted on our verified timed portal (Form-Timer). The quiz will open strictly at <strong>12:00 PM Sharp</strong> and will remain available till <strong>1:00 PM (IST)</strong>.
                   </p>
 
                   {/* Format & Difficulty Breakdown */}
@@ -611,6 +749,10 @@ export default function QuizMainClient() {
                     <div className="flex items-center justify-between">
                       <span className="text-ink-500 dark:text-ink-400">Structure:</span>
                       <span className="font-bold text-ink-900 dark:text-ink-100">25 Questions &bull; 30 Minutes</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-ink-500 dark:text-ink-400">Platform:</span>
+                      <span className="font-semibold text-royal-600 dark:text-royal-400">Form-Timer Protected</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-ink-500 dark:text-ink-400">Level:</span>
@@ -648,16 +790,16 @@ export default function QuizMainClient() {
                   <div className="space-y-1.5 text-xs font-mono text-royal-900 dark:text-royal-300 bg-white/80 dark:bg-ink-900/80 p-3 rounded border border-royal-200 dark:border-royal-800/60">
                     <div className="flex items-center justify-between">
                       <span className="text-ink-500 dark:text-ink-400">Quiz Opens:</span>
-                      <span className="font-bold text-ink-900 dark:text-ink-100">11 Oct, 12:00 PM IST</span>
+                      <span className="font-bold text-ink-900 dark:text-ink-100">Today, 12:00 PM IST (Sharp)</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-ink-500 dark:text-ink-400">Available Till:</span>
-                      <span className="font-bold text-ink-900 dark:text-ink-100">11 Oct, 1:00 PM IST (Strict)</span>
+                      <span className="font-bold text-ink-900 dark:text-ink-100">Today, 1:00 PM IST (Strict Deadline)</span>
                     </div>
                   </div>
                 </div>
 
-                {/* DYNAMIC TIME-GATED BUTTON WITH CROSSED MARK FOR UPCOMING/CLOSED STATES */}
+                {/* DYNAMIC TIME-GATED BUTTON */}
                 <div className="pt-2">
                   {timingState.status === 'upcoming' ? (
                     <div className="space-y-2">
@@ -665,38 +807,66 @@ export default function QuizMainClient() {
                         type="button"
                         disabled
                         aria-disabled="true"
-                        title="Quiz examination link will unlock on 11 Oct at 12:00 PM IST"
+                        title="Quiz examination link will unlock automatically at 12:00 PM IST sharp"
                         className="w-full py-3.5 px-4 bg-paper-200 dark:bg-ink-850 text-ink-600 dark:text-ink-400 font-serif text-xs sm:text-sm font-semibold rounded-sm border-2 border-dashed border-rose-400/80 dark:border-rose-500/60 shadow-sm flex items-center justify-center space-x-2 cursor-not-allowed select-none transition-all"
                       >
-                        <XCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
-                        <span>Will Open on 11 Oct at 12:00 PM</span>
+                        <Lock className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
+                        <span>Unlocks Today at 12:00 PM Sharp</span>
                       </button>
 
                       <div className="flex items-center justify-between text-[11px] font-mono px-1">
-                        <span className="text-ink-500 dark:text-ink-400">Countdown to 11 Oct 12 PM:</span>
+                        <span className="text-ink-500 dark:text-ink-400">Countdown to 12:00 PM:</span>
                         <span className="font-bold text-royal-600 dark:text-royal-400">
                           {timingState.countdownText}
                         </span>
                       </div>
                       <p className="text-[10px] font-mono text-ink-400 text-center">
-                        Quiz will be available till 1:00 PM IST &bull; No late submissions accepted
+                        Link is securely locked and will become accessible at 12:00 PM IST.
                       </p>
                     </div>
                   ) : timingState.status === 'active' ? (
                     <div className="space-y-2">
-                      <a
-                        href={accessData.quizLink || 'https://forms.gle/LexMindsVirtualQuiz2026'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full py-3.5 px-5 bg-royal-600 hover:bg-royal-700 active:bg-royal-800 text-white font-serif text-sm font-semibold rounded-sm shadow-md transition-all flex items-center justify-center space-x-2.5 cursor-pointer group"
-                      >
-                        <Trophy className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform" />
-                        <span>Launch Official Quiz G-Form</span>
-                        <ExternalLink className="w-4 h-4 shrink-0" />
-                      </a>
+                      {accessData?.quizLink ? (
+                        <a
+                          href={accessData.quizLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3.5 px-5 bg-royal-600 hover:bg-royal-700 active:bg-royal-800 text-white font-serif text-sm font-semibold rounded-sm shadow-md transition-all flex items-center justify-center space-x-2.5 cursor-pointer group"
+                        >
+                          <Trophy className="w-4 h-4 shrink-0 group-hover:scale-110 transition-transform text-amber-300" />
+                          <span>Start Timed Quiz on Form-Timer &rarr;</span>
+                          <ExternalLink className="w-4 h-4 shrink-0" />
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const isEmail = lookupQuery.includes('@');
+                            checkAccess({
+                              token: currentToken || undefined,
+                              referenceId: !isEmail ? lookupQuery : undefined,
+                              email: isEmail ? lookupQuery : undefined,
+                            });
+                          }}
+                          disabled={verifying}
+                          className="w-full py-3.5 px-5 bg-royal-600 hover:bg-royal-700 text-white font-serif text-sm font-semibold rounded-sm shadow-md transition-all flex items-center justify-center space-x-2.5 cursor-pointer"
+                        >
+                          {verifying ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                              <span>Unlocking Form-Timer Portal...</span>
+                            </>
+                          ) : (
+                            <>
+                              <RefreshCw className="w-4 h-4 shrink-0" />
+                              <span>Click to Unlock Form-Timer Link</span>
+                            </>
+                          )}
+                        </button>
+                      )}
                       <div className="flex items-center justify-between text-[11px] font-mono px-1 text-emerald-700 dark:text-emerald-300">
                         <span>Window Active (Closes 1:00 PM):</span>
-                        <span className="font-bold">{timingState.countdownText}</span>
+                        <span className="font-bold">{timingState.countdownText} remaining</span>
                       </div>
                     </div>
                   ) : (

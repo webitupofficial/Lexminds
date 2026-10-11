@@ -951,10 +951,15 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     assert.equal(paidData.hasAccess, true);
     assert.equal(paidData.participantName, 'Devansh Roy');
     assert.equal(paidData.status, 'paid');
-    assert.ok(paidData.quizLink);
+    // Timing-gated examination link check: only exposed when live (12 PM - 1 PM IST) or for admin
+    if (paidData.quizTimingStatus === 'active') {
+      assert.ok(paidData.quizLink);
+    } else {
+      assert.equal(paidData.quizLink, undefined);
+    }
     assert.ok(paidData.whatsappGroupLink);
 
-    // 4. Admin override allows supervision access
+    // 4. Admin override allows supervision access and always sees quizLink
     const adminReq = new Request('http://localhost:3000/api/quiz/access', {
       method: 'POST',
       headers: {
@@ -967,6 +972,7 @@ describe('LexMinds Final MVP Security & Transaction Pipeline Test Suite', () => 
     const adminData = await adminRes.json();
     assert.equal(adminData.hasAccess, true);
     assert.equal(adminData.isAdmin, true);
+    assert.ok(adminData.quizLink);
   });
 });
 

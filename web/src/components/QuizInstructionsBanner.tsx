@@ -43,7 +43,7 @@ export default function QuizInstructionsBanner({
       number: '3',
       title: 'Quiz Timing and Submission Deadline',
       description:
-        'The quiz will be available tomorrow, 11 October 2026, from 12:00 PM to 1:00 PM (IST). All participants must complete and submit their responses within this time period.',
+        'The quiz will be available today, 11 October 2026, from 12:00 PM to 1:00 PM (IST). All participants must complete and submit their responses within this time period.',
       icon: Clock,
       badgeColor: 'text-royal-700 dark:text-royal-400 bg-royal-50 dark:bg-royal-950/60 border-royal-200 dark:border-royal-900',
       tag: '12:00 PM – 1:00 PM IST',

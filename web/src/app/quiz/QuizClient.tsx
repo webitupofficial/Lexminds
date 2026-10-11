@@ -80,7 +80,7 @@ export default function QuizClient() {
             LexMinds <span className="text-royal-500 dark:text-royal-400">Virtual Quiz Competition</span>
           </h1>
           <p className="text-sm sm:text-base text-ink-600 dark:text-ink-300 leading-relaxed max-w-2xl font-normal">
-            Registrations for the Legal Awareness Quiz Competition are now officially closed. The quiz will take place tomorrow, <strong className="text-royal-600 dark:text-royal-400 font-bold">11 October 2026, from 12:00 PM to 1:00 PM (IST)</strong>.
+            Registrations for the Legal Awareness Quiz Competition are now officially closed. The quiz will take place today, <strong className="text-royal-600 dark:text-royal-400 font-bold">11 October 2026, from 12:00 PM to 1:00 PM (IST)</strong>.
           </p>
         </div>
 
