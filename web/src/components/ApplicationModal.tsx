@@ -14,7 +14,8 @@ import {
   Building2,
   Sparkles,
   Loader2,
-  AlertCircle
+  AlertCircle,
+  ShieldCheck
 } from 'lucide-react';
 import { Internship } from '@/lib/types';
 import GoogleAuthGate from './GoogleAuthGate';
@@ -43,6 +44,8 @@ export default function ApplicationModal({
     academicScore: '',
     sop: '',
     declaration: false,
+    dpdpConsent: false,
+    ageConsent: false,
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -74,7 +77,12 @@ export default function ApplicationModal({
   };
 
   const validateStep3 = () => {
-    return formData.sop.trim().length >= 20 && formData.declaration;
+    return (
+      formData.sop.trim().length >= 20 &&
+      formData.declaration &&
+      formData.dpdpConsent &&
+      formData.ageConsent
+    );
   };
 
   const handleNext = () => {
@@ -323,26 +331,70 @@ export default function ApplicationModal({
                       </p>
                     </div>
 
-                    <div className="p-3.5 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 space-y-2">
+                    {/* DPDP Act Section 5 Statutory Notice */}
+                    <div className="p-3 bg-royal-50/60 dark:bg-royal-950/30 border border-royal-200 dark:border-royal-800 text-[11px] text-ink-700 dark:text-ink-300 space-y-1">
+                      <div className="flex items-center space-x-1.5 font-mono font-bold text-royal-700 dark:text-royal-300 uppercase tracking-wider text-[10px]">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        <span>Data Fiduciary Notice &bull; DPDP Act 2023</span>
+                      </div>
+                      <p className="leading-relaxed">
+                        Lex Minds collects and processes your personal details (name, phone, academic status, SOP) solely for assessing, administering, and coordinating your internship application. You may exercise Data Principal rights (access, correction, erasure, withdrawal) anytime via our{' '}
+                        <a href="/privacy/rights" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                          Rights Portal
+                        </a>.
+                      </p>
+                    </div>
+
+                    <div className="p-3.5 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 space-y-3">
+                      {/* Checkbox 1: Terms & Declaration */}
                       <label className="flex items-start space-x-2.5 cursor-pointer">
                         <input
                           type="checkbox"
                           name="declaration"
                           checked={formData.declaration}
                           onChange={handleChange}
-                          className="mt-0.5 text-coral-500 focus:ring-vermilion rounded-none"
+                          className="mt-0.5 text-coral-500 focus:ring-vermilion rounded-none shrink-0"
                         />
                         <span className="text-[11px] text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
-                          I confirm that the information provided is accurate. I understand that the evaluation fee does not guarantee selection, enrollment, certification, publication, or any specific outcome. Lex Minds is an educational platform and not a law firm. I have read and agree to the{' '}
+                          I confirm that all submitted details are accurate. I agree to the{' '}
                           <a href="/terms" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
                             Terms &amp; Conditions
-                          </a>,{' '}
-                          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
-                            Privacy Policy
-                          </a>, and{' '}
+                          </a>{' '}
+                          and{' '}
                           <a href="/cancellation-refund-policy" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
                             Cancellation &amp; Refund Policy
                           </a>.
+                        </span>
+                      </label>
+
+                      {/* Checkbox 2: DPDP Affirmative Consent */}
+                      <label className="flex items-start space-x-2.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          name="dpdpConsent"
+                          checked={formData.dpdpConsent}
+                          onChange={handleChange}
+                          className="mt-0.5 text-royal-600 focus:ring-royal-500 rounded-none shrink-0"
+                        />
+                        <span className="text-[11px] text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
+                          <strong>DPDP Consent:</strong> I voluntarily consent to Lex Minds processing my personal data for internship evaluation and cohort operations in accordance with the{' '}
+                          <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                            Privacy Policy
+                          </a>.
+                        </span>
+                      </label>
+
+                      {/* Checkbox 3: Age & Minor Protection (DPDP Section 9) */}
+                      <label className="flex items-start space-x-2.5 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          name="ageConsent"
+                          checked={formData.ageConsent}
+                          onChange={handleChange}
+                          className="mt-0.5 text-royal-600 focus:ring-royal-500 rounded-none shrink-0"
+                        />
+                        <span className="text-[11px] text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
+                          <strong>Age Affirmation (Section 9 DPDP Act):</strong> I confirm that I am 18 years of age or older, or have obtained verifiable parental/guardian consent to apply.
                         </span>
                       </label>
                     </div>

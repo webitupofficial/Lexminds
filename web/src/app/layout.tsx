@@ -5,6 +5,7 @@ import Footer from '@/components/Footer';
 import JsonLd from '@/components/JsonLd';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import WhatsAppCommunityWidget from '@/components/WhatsAppCommunityWidget';
+import DpdpConsentBanner from '@/components/DpdpConsentBanner';
 import Script from 'next/script';
 import { GA_TRACKING_ID } from '@/lib/gtag';
 
@@ -142,10 +143,30 @@ export default function RootLayout({
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
 
-        {/* Immediate zero-blocking dataLayer & gtag stub */}
+        {/* Immediate zero-blocking dataLayer & DPDP Act Consent Mode v2 stub */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}`,
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              // DPDPA 2023 Default: Non-essential tracking denied by default until affirmative consent
+              var hasConsent = false;
+              try {
+                var stored = localStorage.getItem('lexminds_dpdp_consent_v1');
+                if (stored) {
+                  var p = JSON.parse(stored);
+                  hasConsent = !!p.analytics;
+                }
+              } catch (e) {}
+              gtag('consent', 'default', {
+                'analytics_storage': hasConsent ? 'granted' : 'denied',
+                'ad_storage': 'denied',
+                'personalization_storage': 'denied',
+                'functionality_storage': 'granted',
+                'security_storage': 'granted',
+                'wait_for_update': 500
+              });
+            `,
           }}
         />
 
@@ -179,6 +200,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
             <WhatsAppCommunityWidget />
+            <DpdpConsentBanner />
           </div>
         </ThemeProvider>
 

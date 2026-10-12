@@ -41,6 +41,8 @@ export default function PublishClient() {
     originalityDeclaration: false,
     aiReviewConsent: false,
     consentToPublish: false,
+    dpdpConsent: false,
+    ageConsent: false,
   });
 
   const [submitting, setSubmitting] = useState(false);
@@ -79,7 +81,9 @@ export default function PublishClient() {
       formData.content.trim().length >= 10 &&
       formData.originalityDeclaration &&
       formData.aiReviewConsent &&
-      formData.consentToPublish
+      formData.consentToPublish &&
+      formData.dpdpConsent &&
+      formData.ageConsent
     );
   };
 
@@ -418,13 +422,54 @@ export default function PublishClient() {
                     <strong>Open-Access Consent &amp; Policy Acceptance:</strong> Upon editorial acceptance, I grant Lex Minds the non-exclusive right to publish this treatise in open-access format with author attribution. I understand that the editorial evaluation fee does not guarantee selection, enrollment, certification, publication, or any specific outcome. Lex Minds is an educational platform and not a law firm. I have read and agree to the{' '}
                     <Link href="/terms" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
                       Terms &amp; Conditions
-                    </Link>,{' '}
-                    <Link href="/privacy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
-                      Privacy Policy
-                    </Link>, and{' '}
+                    </Link>{' '}
+                    and{' '}
                     <Link href="/cancellation-refund-policy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
                       Cancellation &amp; Refund Policy
                     </Link>.
+                  </span>
+                </label>
+
+                {/* DPDP Act Section 5 Notice & Consent */}
+                <div className="p-3 bg-royal-50/60 dark:bg-royal-950/30 border border-royal-200 dark:border-royal-800 text-[11px] text-ink-700 dark:text-ink-300 space-y-1">
+                  <div className="flex items-center space-x-1.5 font-mono font-bold text-royal-700 dark:text-royal-300 uppercase tracking-wider text-[10px]">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Data Fiduciary Notice &bull; DPDP Act 2023</span>
+                  </div>
+                  <p className="leading-relaxed">
+                    Lex Minds processes author information (name, designation, institution, bio) for academic evaluation, peer review attribution, and open-access publication. You may exercise Data Principal rights anytime via our{' '}
+                    <Link href="/privacy/rights" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                      Rights Portal
+                    </Link>.
+                  </p>
+                </div>
+
+                <label className="flex items-start space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="dpdpConsent"
+                    checked={formData.dpdpConsent}
+                    onChange={handleChange}
+                    className="mt-0.5 text-royal-600 focus:ring-royal-500 rounded-none shrink-0"
+                  />
+                  <span className="text-xs text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
+                    <strong>DPDP Consent:</strong> I voluntarily consent to Lex Minds processing my personal and biographical details for manuscript peer review, editorial records, and publication in accordance with the{' '}
+                    <Link href="/privacy" target="_blank" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                      Privacy Policy
+                    </Link>.
+                  </span>
+                </label>
+
+                <label className="flex items-start space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="ageConsent"
+                    checked={formData.ageConsent}
+                    onChange={handleChange}
+                    className="mt-0.5 text-royal-600 focus:ring-royal-500 rounded-none shrink-0"
+                  />
+                  <span className="text-xs text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
+                    <strong>Age Affirmation (Section 9 DPDP Act):</strong> I confirm that I am 18 years of age or older, or have secured verifiable parental/guardian consent to submit this manuscript.
                   </span>
                 </label>
               </div>

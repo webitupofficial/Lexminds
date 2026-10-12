@@ -27,6 +27,7 @@ const INQUIRY_CATEGORIES = [
   'Article Submission & Peer Review',
   'Certificate & Credential Verification',
   'Academic Partnership & Campus Outreach',
+  'Data Principal Rights / Privacy Query (DPDP Act)',
   'General Inquiry & Support',
 ];
 
@@ -42,6 +43,7 @@ export default function ContactClient() {
     category: 'Internship & Research Fellowship',
     subject: '',
     message: '',
+    dpdpConsent: false,
     hp_website: '', // Honeypot field for bot suppression
   });
 
@@ -58,8 +60,13 @@ export default function ContactClient() {
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setFormData((prev) => ({ ...prev, [name]: checked }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
     if (errorMessage) setErrorMessage(null);
   };
 
@@ -85,6 +92,11 @@ export default function ContactClient() {
 
     if (formData.message.trim().length < 10) {
       setErrorMessage('Please enter an inquiry message with at least 10 characters.');
+      return;
+    }
+
+    if (!formData.dpdpConsent) {
+      setErrorMessage('Please confirm your consent for personal data processing under India’s DPDP Act, 2023.');
       return;
     }
 
@@ -119,6 +131,7 @@ export default function ContactClient() {
         category: 'Internship & Research Fellowship',
         subject: '',
         message: '',
+        dpdpConsent: false,
         hp_website: '',
       });
     } catch (err: any) {
@@ -449,8 +462,41 @@ export default function ContactClient() {
                 />
               </div>
 
-              {/* Submit Button */}
-              <div className="pt-2">
+              {/* DPDP Act Section 5 Notice & Consent */}
+              <div className="p-3 bg-paper-100 dark:bg-ink-850 border border-ink-900/15 dark:border-ink-700 space-y-2">
+                  <div className="flex items-center space-x-1.5 text-[10px] font-mono font-bold uppercase tracking-wider text-royal-700 dark:text-royal-300">
+                    <Shield className="w-3.5 h-3.5" />
+                    <span>DPDP Act 2023 Notice &bull; Data Fiduciary</span>
+                  </div>
+                  <label className="flex items-start space-x-2.5 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      name="dpdpConsent"
+                      checked={formData.dpdpConsent}
+                      onChange={handleInputChange}
+                      className="mt-0.5 text-royal-600 focus:ring-royal-500 rounded-none shrink-0"
+                    />
+                    <span className="text-[11px] text-ink-700 dark:text-ink-300 leading-relaxed font-normal">
+                      I voluntarily consent to Lex Minds processing my submitted contact details solely to evaluate, route, and respond to this inquiry in accordance with the{' '}
+                      <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                        Privacy Policy
+                      </a>. I understand I may exercise Data Principal rights anytime via the{' '}
+                      <a href="/privacy/rights" target="_blank" rel="noopener noreferrer" className="text-royal-600 dark:text-royal-400 underline font-semibold">
+                        Rights Portal
+                      </a>.
+                    </span>
+                  </label>
+                </div>
+
+                {errorMessage && (
+                  <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-500/30 text-rose-600 dark:text-rose-400 flex items-center space-x-2 font-mono text-xs">
+                    <AlertCircle className="w-4 h-4 shrink-0" />
+                    <span>{errorMessage}</span>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <div className="pt-2">
                 <button
                   type="submit"
                   disabled={submitting}

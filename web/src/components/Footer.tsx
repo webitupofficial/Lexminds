@@ -118,8 +118,27 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs text-ink-600 dark:text-ink-400">
               <li>
                 <Link href="/privacy" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
-                  Privacy Policy
+                  Privacy Policy (DPDP)
                 </Link>
+              </li>
+              <li>
+                <Link href="/privacy/rights" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors flex items-center space-x-1">
+                  <span>Data Principal Rights</span>
+                  <span className="text-[10px] font-mono px-1 py-0.2 bg-royal-100 dark:bg-royal-950 text-royal-700 dark:text-royal-300 border border-royal-300 dark:border-royal-800">DPDP</span>
+                </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (typeof window !== 'undefined') {
+                      window.dispatchEvent(new CustomEvent('dpdp-open-consent-settings'));
+                    }
+                  }}
+                  className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors text-left text-xs text-ink-600 dark:text-ink-400 cursor-pointer"
+                >
+                  Manage Consent / Cookies
+                </button>
               </li>
               <li>
                 <Link href="/terms" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
@@ -159,13 +178,27 @@ export default function Footer() {
               Webitup24
             </a>
           </div>
-          <div className="flex items-center space-x-6">
+          <div className="flex flex-wrap items-center gap-y-2 gap-x-5">
             <Link href="/about" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
               About
             </Link>
             <Link href="/privacy" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
               Privacy
             </Link>
+            <Link href="/privacy/rights" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
+              DPDP Rights
+            </Link>
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new CustomEvent('dpdp-open-consent-settings'));
+                }
+              }}
+              className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors cursor-pointer text-ink-500 dark:text-ink-400"
+            >
+              Cookie Settings
+            </button>
             <Link href="/terms" className="hover:text-royal-500 dark:hover:text-royal-400 transition-colors">
               Terms
             </Link>
